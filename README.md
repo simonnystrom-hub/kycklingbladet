@@ -4,7 +4,7 @@ Daglig satirisk alarmtext baserad på dagens högst scorade rubrik från Alarmin
 
 ## Kom igång
 
-1. Skapa ett Sanity-projekt för Kycklingbladet och sätt samma project id i båda repos’ `.env` (frontend: kopiera från `.env.example`; studio: `../kycklingbladet-studio`).
+1. Skapa ett Sanity-projekt för Kycklingbladet och sätt samma project id i båda repos’ `.env`: frontend `NEXT_PUBLIC_SANITY_PROJECT_ID` (kopiera från `.env.example`) och Studio `SANITY_STUDIO_PROJECT_ID` plus `SANITY_STUDIO_DATASET` i `../kycklingbladet-studio` (se Studio `.env.example`).
 2. Seed:a Studio-schemat och initialt innehåll:
 
 ```bash
@@ -33,8 +33,10 @@ npm run daily
 
 | Variabel | Beskrivning |
 |----------|-------------|
-| `NEXT_PUBLIC_SANITY_PROJECT_ID` | Kycklingbladets Sanity project id |
+| `NEXT_PUBLIC_SANITY_PROJECT_ID` | Kycklingbladets Sanity project id (frontend) |
 | `NEXT_PUBLIC_SANITY_DATASET` | Dataset (default `production`) |
+| `SANITY_STUDIO_PROJECT_ID` | Samma Sanity project id i Studio (`../kycklingbladet-studio`) |
+| `SANITY_STUDIO_DATASET` | Studio-dataset (default `production`) |
 | `NEXT_PUBLIC_SANITY_API_VERSION` | Sanity API-version (default `2025-01-01`) |
 | `NEXT_PUBLIC_SITE_URL` | Publik site-URL (default `http://localhost:3000`) |
 | `SANITY_API_WRITE_TOKEN` | Token för att skapa alarm-dokument |
