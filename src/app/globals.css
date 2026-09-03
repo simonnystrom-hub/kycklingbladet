@@ -1,1 +1,21 @@
 @import "tailwindcss";
+
+@theme inline {
+  --font-family-serif: var(--font-serif), Georgia, "Times New Roman", serif;
+}
+
+:root {
+  --bg: #14110c;
+  --ink: #e8dcc4;
+  --ink-muted: #d7cbb3;
+  --brass: #c4a574;
+  --rule: #3d3426;
+}
+
+html { background: var(--bg); color: var(--ink); }
+body {
+  font-family: var(--font-serif), Georgia, serif;
+  background: var(--bg);
+  color: var(--ink);
+}
+a:hover { color: var(--brass); }
