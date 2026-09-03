@@ -4,9 +4,17 @@ Daglig satirisk alarmtext baserad på dagens högst scorade rubrik från Alarmin
 
 ## Kom igång
 
-1. Skapa Sanity-projekt och kopiera project ID till `.env` (kopiera från `.env.example`).
-2. Starta Studio i `../kycklingbladet-studio`.
-3. Starta frontend:
+1. Skapa ett Sanity-projekt för Kycklingbladet och sätt samma project id i båda repos’ `.env` (frontend: kopiera från `.env.example`; studio: `../kycklingbladet-studio`).
+2. Seed:a Studio-schemat och initialt innehåll:
+
+```bash
+cd ../kycklingbladet-studio
+npm i
+npm run seed
+```
+
+3. Kopiera Alarmindex project id till `ALARMINDEX_SANITY_PROJECT_ID` från `../alarmindex/.env.local` (variabelnamnet där — skriv inte in själva värdet i README eller git).
+4. Installera och starta frontend:
 
 ```bash
 npm install
@@ -14,6 +22,12 @@ npm run dev
 ```
 
 Öppna http://localhost:3000
+
+5. Manuell daglig generering (kräver write-token + Anthropic):
+
+```bash
+npm run daily
+```
 
 ## Miljövariabler
 
@@ -30,3 +44,20 @@ npm run dev
 | `ALARMINDEX_SANITY_READ_TOKEN` | Valfri read-token om Alarmindex-dataset kräver det |
 | `ANTHROPIC_API_KEY` | Claude API-nyckel (daglig generering) |
 | `ANTHROPIC_MODEL` | Claude-modell (valfri override) |
+
+## GitHub Actions (daily job)
+
+Schemat körs via `.github/workflows/daily.yml` (vardagar 12:00, helg 14:00 Europe/Stockholm). Sätt dessa repository secrets så de matchar workflowen:
+
+| Secret | Används som |
+|--------|-------------|
+| `NEXT_PUBLIC_SANITY_PROJECT_ID` | Kycklingbladet Sanity project id |
+| `SANITY_API_WRITE_TOKEN` | Write-token för att skapa alarm |
+| `ALARMINDEX_SANITY_PROJECT_ID` | Alarmindex Sanity project id |
+| `ALARMINDEX_SANITY_READ_TOKEN` | Valfri Alarmindex read-token |
+| `ANTHROPIC_API_KEY` | Claude API-nyckel |
+| `ANTHROPIC_MODEL` | Valfri modell-override |
+
+## Redigering och publicering
+
+Studio (`../kycklingbladet-studio`) är det enda sättet att avpublicera eller redigera ett alarm. Att köra om daily-jobbet skriver **inte** över ett befintligt alarm för samma datum.
