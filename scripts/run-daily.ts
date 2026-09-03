@@ -1,4 +1,4 @@
-import { stockholmToday } from '../src/lib/select/stockholm-date'
+import { isIsoDateString, stockholmToday } from '../src/lib/select/stockholm-date'
 import { selectWinner } from '../src/lib/select/select-winner'
 import { shouldCreateAlarm } from '../src/lib/select/alarm-id'
 import { fetchScoredHeadlines } from '../src/lib/alarmindex/queries'
@@ -25,7 +25,11 @@ async function headlinesWithRetry(date: string) {
 }
 
 export async function runDaily(now = new Date()) {
-  const date = process.env.FORCE_DATE?.trim() || stockholmToday(now)
+  const forced = process.env.FORCE_DATE?.trim()
+  if (forced && !isIsoDateString(forced)) {
+    throw new Error(`Ogiltigt FORCE_DATE "${forced}" — förväntat YYYY-MM-DD`)
+  }
+  const date = forced || stockholmToday(now)
   const existing = await findExistingAlarmId(date)
   if (!shouldCreateAlarm(existing)) {
     console.log(`Hoppar över ${date}: larm finns redan (${existing})`)

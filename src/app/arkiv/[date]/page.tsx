@@ -2,10 +2,9 @@ import Link from 'next/link'
 import {notFound} from 'next/navigation'
 import {AlarmArticle} from '@/components/AlarmArticle'
 import {getAdjacentDates, getAlarmByDate} from '@/lib/sanity/queries'
+import {isIsoDateString} from '@/lib/select/stockholm-date'
 
 export const revalidate = 60
-
-const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
 
 type ArchiveDatePageProps = {
   params: Promise<{date: string}>
@@ -14,7 +13,7 @@ type ArchiveDatePageProps = {
 export default async function ArchiveDatePage({params}: ArchiveDatePageProps) {
   const {date} = await params
 
-  if (!DATE_RE.test(date)) {
+  if (!isIsoDateString(date)) {
     notFound()
   }
 

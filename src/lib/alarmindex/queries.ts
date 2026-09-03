@@ -1,5 +1,5 @@
 import type {ScoredHeadline} from '@/lib/select/select-winner'
-import {getAlarmindexClient, isAlarmindexConfigured} from './client'
+import {getAlarmindexClient} from './client'
 import type {AlarmindexHeadlineScoreRow} from './types'
 
 const SCORED_HEADLINES_QUERY = `*[_type == "headlineScore"
@@ -19,10 +19,6 @@ const SCORED_HEADLINES_QUERY = `*[_type == "headlineScore"
 }`
 
 export async function fetchScoredHeadlines(date: string): Promise<ScoredHeadline[]> {
-  if (!isAlarmindexConfigured()) {
-    return []
-  }
-
   const rows = await getAlarmindexClient().fetch<AlarmindexHeadlineScoreRow[]>(
     SCORED_HEADLINES_QUERY,
     {date},
