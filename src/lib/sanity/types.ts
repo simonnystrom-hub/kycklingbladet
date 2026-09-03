@@ -14,6 +14,13 @@ export type Alarm = {
   modelVersion: string
 }
 
+export type AlarmTeaser = {
+  _id: string
+  date: string
+  kicker: string
+  headline: string
+}
+
 export type SiteSettings = {
   title: string
   tagline: string

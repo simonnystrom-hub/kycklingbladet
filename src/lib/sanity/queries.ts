@@ -1,5 +1,5 @@
 import {getSanityClient, isKycklingbladetConfigured} from './client'
-import type {Alarm, SiteSettings} from './types'
+import type {Alarm, AlarmTeaser, SiteSettings} from './types'
 
 const alarmFields = `{
   _id,
@@ -55,7 +55,7 @@ export async function getAlarmByDate(date: string): Promise<Alarm | null> {
   return safeFetchOne(`*[_type == "alarm" && date == $date][0]${alarmFields}`, {date})
 }
 
-export async function getAlarmArchive(): Promise<Alarm[]> {
+export async function getAlarmArchive(): Promise<AlarmTeaser[]> {
   return safeFetchMany(
     `*[_type == "alarm"] | order(date desc){ _id, date, kicker, headline }`,
   )

@@ -37,6 +37,7 @@ export function getAlarmindexClient(): SanityClient {
       dataset,
       apiVersion,
       useCdn: false,
+      perspective: 'published',
       ...(token ? {token} : {}),
     })
   }

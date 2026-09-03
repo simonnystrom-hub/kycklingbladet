@@ -32,6 +32,7 @@ export function getSanityClient(): SanityClient {
       dataset,
       apiVersion,
       useCdn: process.env.NODE_ENV === 'production',
+      perspective: 'published',
     })
   }
   return cachedClient
