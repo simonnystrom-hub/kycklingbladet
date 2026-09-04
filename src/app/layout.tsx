@@ -2,8 +2,10 @@ import type {Metadata, Viewport} from 'next'
 import {Source_Serif_4} from 'next/font/google'
 import {Masthead} from '@/components/Masthead'
 import {SiteFooter} from '@/components/SiteFooter'
+import {RSS_FEED_PATH} from '@/lib/rss'
 import {getSiteSettings} from '@/lib/sanity/queries'
 import {SHELL} from '@/lib/shell'
+import {getSiteUrl} from '@/lib/site-url'
 import './globals.css'
 
 const sourceSerif = Source_Serif_4({
@@ -20,9 +22,15 @@ export const viewport: Viewport = {
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings()
   return {
+    metadataBase: new URL(getSiteUrl()),
     title: {
       default: settings?.title?.trim() || 'Kycklingbladet',
       template: '%s — Kycklingbladet',
+    },
+    alternates: {
+      types: {
+        'application/rss+xml': RSS_FEED_PATH,
+      },
     },
   }
 }

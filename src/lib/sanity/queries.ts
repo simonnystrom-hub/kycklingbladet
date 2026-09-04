@@ -1,4 +1,5 @@
 import {ARCHIVE_PAGE_SIZE, archivePageWindow} from '@/lib/nav'
+import {RSS_ITEM_LIMIT} from '@/lib/rss'
 import {getSanityClient, isKycklingbladetConfigured} from './client'
 import type {Alarm, AlarmTeaser, SiteSettings} from './types'
 
@@ -61,6 +62,12 @@ export async function getAlarmByDate(date: string): Promise<Alarm | null> {
 export async function getAlarmArchive(): Promise<AlarmTeaser[]> {
   return safeFetchMany(
     `*[_type == "alarm"] | order(date desc){ _id, date, kicker, headline }`,
+  )
+}
+
+export async function getAlarmsForFeed(): Promise<Alarm[]> {
+  return safeFetchMany(
+    `*[_type == "alarm"] | order(date desc)[0...${RSS_ITEM_LIMIT}]${alarmFields}`,
   )
 }
 

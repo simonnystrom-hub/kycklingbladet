@@ -1,12 +1,7 @@
+import {ABOUT} from '@/lib/copy'
 import {getSiteSettings} from '@/lib/sanity/queries'
 
 export const revalidate = 60
-
-const FALLBACK_ABOUT =
-  'Kycklingbladet tar dagens mest uppblåsta rubrik och behandlar den som bokstavlig sanning.'
-
-const FALLBACK_ALARMINDEX_MENTION =
-  'Vilken rubrik som vinner dagen avgörs av siffror från Alarmindex. Kycklingbladet läser löpsedeln. Alarmindex mäter den.'
 
 function splitParagraphs(text: string): string[] {
   return text.split('\n\n').filter(Boolean)
@@ -14,9 +9,8 @@ function splitParagraphs(text: string): string[] {
 
 export default async function AboutPage() {
   const settings = await getSiteSettings()
-  const about = settings?.about?.trim() || FALLBACK_ABOUT
-  const alarmindexMention =
-    settings?.alarmindexMention?.trim() || FALLBACK_ALARMINDEX_MENTION
+  const about = settings?.about?.trim() || ABOUT
+  const alarmindexMention = settings?.alarmindexMention?.trim() ?? ''
 
   return (
     <article>

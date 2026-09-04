@@ -3,3 +3,8 @@ export const TAGLINE =
 export const EMPTY_HOME =
   'Hönan ruvar. Första numret landar vid middag.'
 export const EMPTY_ARCHIVE = 'Inga larm i arkivet ännu. Hönan samlar sig.'
+export const ABOUT = `Det började som en seriös tanke. Alarmindex rankar dagens löpsedlar efter hur mycket panik de skriker ut. Tanken är att få upp ögonen för vad det gör med våra hjärnor.
+
+Kycklingbladet uppstod som ett sätt att göra något kreativt och lättsmält av projektet. Varje kycklingrubrik bygger på tidningarnas mest alarmerande löpsedel. Det är i många fall brutal och mörk humor, men givetvis skrattas det aldrig åt olyckorna.
+
+Allt genereras automatiskt. Tanken är att livet inte ska tas så jäkla allvarligt hela tiden. Skratt är trots allt bättre än ständig alarmism och skrämsel.`

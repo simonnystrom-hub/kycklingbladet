@@ -18,6 +18,11 @@ export function SiteFooter() {
                 </Link>
               </li>
             ))}
+            <li>
+              <a href="/rss.xml" className="inline-block py-1.5 text-[var(--brass)] lg:py-2">
+                RSS
+              </a>
+            </li>
           </ul>
         </nav>
       </div>
