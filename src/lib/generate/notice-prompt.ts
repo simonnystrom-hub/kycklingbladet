@@ -31,7 +31,7 @@ Regler:
 - Svenska. Inga emoji, hashtags eller engelska meningar.
 - Kalla det inte satir. Skriv som om det vore sant. Skriv inte om poäng, index eller Alarmindex.
 - Rubriken är Kycklingbladets egen: mer uppskruvad än originalet, men igenkännbar. Kopiera inte originalet ordagrant.
-- Citat med raka citattecken " så här ". Inte « ».
+- Citat med raka citattecken " så här ". Inte « ». Citat kommer bara från höns och tuppar, aldrig från människor.
 - body är ett eller två korta stycken, åtskilda av \\n\\n.
 
 Svara med ENDAST ett JSON-objekt:

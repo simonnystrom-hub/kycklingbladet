@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest'
 import { buildUserPrompt, PROMPT_VERSION, SYSTEM_PROMPT } from './prompt'
 
 describe('PROMPT_VERSION', () => {
-  it('is kb-v6', () => {
-    expect(PROMPT_VERSION).toBe('kb-v6')
+  it('is kb-v7', () => {
+    expect(PROMPT_VERSION).toBe('kb-v7')
   })
 })
 
@@ -37,7 +37,8 @@ describe('SYSTEM_PROMPT', () => {
     expect(SYSTEM_PROMPT).toContain('tre till fyra korta stycken')
     expect(SYSTEM_PROMPT).toContain('Skriv inte räddningsrapport')
     expect(SYSTEM_PROMPT).toContain('fökycklade')
-    expect(SYSTEM_PROMPT).toContain('hönsiga titlar')
+    expect(SYSTEM_PROMPT).toContain('Människor intervjuas aldrig')
+    expect(SYSTEM_PROMPT).toContain('rapportera OM människor')
     expect(SYSTEM_PROMPT).toContain('raka citattecken')
     expect(SYSTEM_PROMPT).toContain('Inte « »')
     expect(SYSTEM_PROMPT).not.toContain('satirisk')

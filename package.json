@@ -11,7 +11,8 @@
     "daily": "tsx --env-file=.env.local scripts/run-daily.ts",
     "score-humor": "tsx --env-file=.env.local scripts/score-humor.ts",
     "fill-notices": "tsx --env-file=.env.local scripts/fill-notices.ts",
-    "rewrite-leads": "tsx --env-file=.env.local scripts/rewrite-leads.ts"
+    "rewrite-leads": "tsx --env-file=.env.local scripts/rewrite-leads.ts",
+    "restore-leads": "tsx --env-file=.env.local scripts/restore-leads.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.110.0",
