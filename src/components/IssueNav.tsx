@@ -10,8 +10,7 @@ export function IssueNav({previous, next}: IssueNavProps) {
 
   return (
     <nav
-      className="mt-10 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 sm:mt-12"
-      style={{borderTop: '1px solid var(--rule)', paddingTop: '1.25rem'}}
+      className="mt-10 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-t border-[var(--rule)] pt-5 sm:mt-12 lg:mt-16 lg:pt-6"
     >
       {previous ? (
         <Link href={`/arkiv/${previous}`} className="inline-block py-1.5 text-[var(--brass)]">

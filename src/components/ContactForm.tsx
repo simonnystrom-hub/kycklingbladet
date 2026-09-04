@@ -49,7 +49,7 @@ export function ContactForm() {
   }
 
   return (
-    <form className="relative mt-8 flex flex-col gap-5" onSubmit={onSubmit}>
+    <form className="relative mt-8 flex flex-col gap-5 lg:mt-10 lg:max-w-xl lg:gap-6" onSubmit={onSubmit}>
       <label className="block text-sm text-[var(--ink-muted)]">
         Namn
         <input

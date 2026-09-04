@@ -3,6 +3,7 @@ import {Source_Serif_4} from 'next/font/google'
 import {Masthead} from '@/components/Masthead'
 import {SiteFooter} from '@/components/SiteFooter'
 import {getSiteSettings} from '@/lib/sanity/queries'
+import {SHELL} from '@/lib/shell'
 import './globals.css'
 
 const sourceSerif = Source_Serif_4({
@@ -33,7 +34,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
         className={`${sourceSerif.className} flex min-h-full flex-col bg-[var(--bg)] text-[var(--ink)]`}
       >
         <Masthead />
-        <main className="mx-auto w-full max-w-[42rem] flex-1 px-4 py-6 sm:px-5 sm:py-10">
+        <main className={`${SHELL} flex-1 py-6 sm:py-10 lg:py-14`}>
           {children}
         </main>
         <SiteFooter />

@@ -16,14 +16,13 @@ export default async function ArchivePage({searchParams}: ArchivePageProps) {
 
   return (
     <div>
-      <h1 className="mb-8 font-serif text-[1.65rem] leading-tight text-[var(--ink)] sm:mb-10 sm:text-[2rem]">
+      <h1 className="mb-8 font-serif text-[1.65rem] leading-tight text-[var(--ink)] sm:mb-10 sm:text-[2rem] lg:mb-12 lg:text-[2.5rem]">
         Arkiv
       </h1>
       <ArchiveList items={items} />
       {pageCount > 1 ? (
         <nav
-          className="mt-10 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 sm:mt-12"
-          style={{borderTop: '1px solid var(--rule)', paddingTop: '1.25rem'}}
+          className="mt-10 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-t border-[var(--rule)] pt-5 sm:mt-12 lg:mt-16 lg:pt-6"
         >
           {current > 1 ? (
             <Link href={`/arkiv?sida=${current - 1}`} className="inline-block py-1.5 text-[var(--brass)]">

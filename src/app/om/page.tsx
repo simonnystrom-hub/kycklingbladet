@@ -20,14 +20,14 @@ export default async function AboutPage() {
 
   return (
     <article>
-      <h1 className="font-serif text-[1.65rem] leading-tight text-[var(--ink)] sm:text-[2rem]">
+      <h1 className="font-serif text-[1.65rem] leading-tight text-[var(--ink)] sm:text-[2rem] lg:text-[2.5rem]">
         Om Kycklingbladet
       </h1>
 
       {splitParagraphs(about).map((paragraph, index) => (
         <p
           key={`about-${index}`}
-          className="mt-4 leading-relaxed text-[var(--ink-muted)]"
+          className="mt-4 leading-relaxed text-[var(--ink-muted)] lg:mt-5 lg:text-[1.125rem] lg:leading-8"
         >
           {paragraph}
         </p>
@@ -36,7 +36,7 @@ export default async function AboutPage() {
       {splitParagraphs(alarmindexMention).map((paragraph, index) => (
         <p
           key={`mention-${index}`}
-          className="mt-4 leading-relaxed text-[var(--ink-muted)]"
+          className="mt-4 leading-relaxed text-[var(--ink-muted)] lg:mt-5 lg:text-[1.125rem] lg:leading-8"
         >
           {paragraph}
         </p>

@@ -22,7 +22,7 @@ export function DoomsdayClock() {
     <div aria-hidden className="flex shrink-0 flex-col items-center">
       <svg
         viewBox="0 0 64 64"
-        className="h-9 w-9 text-[var(--brass)] sm:h-[58px] sm:w-[58px]"
+        className="h-9 w-9 text-[var(--brass)] sm:h-[58px] sm:w-[58px] lg:h-[72px] lg:w-[72px]"
       >
         <circle
           cx="32"
@@ -74,10 +74,7 @@ export function DoomsdayClock() {
         <circle cx="32" cy="32" r="2.1" fill="currentColor" />
         <circle cx="32" cy="32" r="0.7" fill="var(--bg)" />
       </svg>
-      <span
-        className="mt-1 font-serif italic text-[var(--brass)]"
-        style={{fontSize: 10, letterSpacing: '0.22em', lineHeight: 1}}
-      >
+      <span className="mt-1 font-serif text-[10px] italic leading-none tracking-[0.22em] text-[var(--brass)] lg:text-[11px]">
         nästan
       </span>
     </div>
