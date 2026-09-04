@@ -13,5 +13,6 @@ describe('notice prompts', () => {
     expect(NOTICE_WRITE_SYSTEM).toContain('barn = kyckling')
     expect(NOTICE_WRITE_SYSTEM).toContain('Ingen expertruta')
     expect(NOTICE_WRITE_SYSTEM).toContain('Kalla det inte satir')
+    expect(NOTICE_WRITE_SYSTEM).toContain('raka citattecken')
   })
 })

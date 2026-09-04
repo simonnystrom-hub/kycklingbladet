@@ -58,14 +58,14 @@ export function AlarmArticle({alarm, showDate = false}: AlarmArticleProps) {
 
       <p className="mt-6 text-sm leading-relaxed text-[var(--ink-muted)] lg:mt-8">
         Ursprungligen {alarm.sourceNewspaper}, {formatSwedishDateShort(alarm.date)}
-        {' · «'}
+        {' · "'}
         <a
           href={alarm.sourceAlarmindexUrl}
           rel="noreferrer"
           target="_blank"
           className="text-[var(--brass)] underline decoration-[var(--brass)]/40 underline-offset-2 hover:text-[var(--ink)]"
         >{alarm.sourceHeadline}</a>
-        {'»'}
+        {'"'}
       </p>
     </article>
   )

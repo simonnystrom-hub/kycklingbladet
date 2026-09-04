@@ -1,3 +1,5 @@
+import {normalizeQuotes} from './quotes'
+
 export function validateNoticePickIds(input: unknown): string[] | null {
   if (!input || typeof input !== 'object') return null
   const raw = (input as Record<string, unknown>).headlineIds
@@ -12,5 +14,5 @@ export function validateGeneratedNotice(input: unknown): {headline: string; body
   const headline = typeof record.headline === 'string' ? record.headline.trim() : ''
   const body = typeof record.body === 'string' ? record.body.trim() : ''
   if (!headline || !body) return null
-  return {headline, body}
+  return {headline: normalizeQuotes(headline), body: normalizeQuotes(body)}
 }

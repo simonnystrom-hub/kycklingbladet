@@ -5,7 +5,7 @@ function NoticeSource({notice, date}: {notice: AlarmNotice; date: string}) {
   return (
     <p className="mt-3 text-sm leading-relaxed text-[var(--ink-muted)]">
       Ursprungligen {notice.sourceNewspaper}, {formatSwedishDateShort(date)}
-      {' · «'}
+      {' · "'}
       <a
         href={notice.sourceAlarmindexUrl}
         rel="noreferrer"
@@ -14,7 +14,7 @@ function NoticeSource({notice, date}: {notice: AlarmNotice; date: string}) {
       >
         {notice.sourceHeadline}
       </a>
-      {'»'}
+      {'"'}
     </p>
   )
 }

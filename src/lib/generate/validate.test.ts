@@ -46,6 +46,14 @@ describe('validateGeneratedAlarm', () => {
     })
     expect(result?.kicker).toBe('Extra kackel')
   })
+
+  it('turns guillemets into straight quotes', () => {
+    const result = validateGeneratedAlarm({
+      ...good,
+      body: 'Hon sa «det bär».',
+    })
+    expect(result?.body).toBe('Hon sa "det bär".')
+  })
 })
 
 describe('parseGeneratedAlarm', () => {

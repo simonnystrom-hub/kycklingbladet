@@ -1,4 +1,5 @@
 import {isExpertVoice, type ExpertVoice} from './experts'
+import {normalizeQuotes} from './quotes'
 
 export type GeneratedAlarm = {
   kicker: string
@@ -28,5 +29,12 @@ export function validateGeneratedAlarm(input: unknown): GeneratedAlarm | null {
     return null
   }
   if (!isExpertVoice(expertVoice)) return null
-  return {kicker, headline, body, expertVoice, expertHeadline, expertText}
+  return {
+    kicker: normalizeQuotes(kicker),
+    headline: normalizeQuotes(headline),
+    body: normalizeQuotes(body),
+    expertVoice,
+    expertHeadline: normalizeQuotes(expertHeadline),
+    expertText: normalizeQuotes(expertText),
+  }
 }

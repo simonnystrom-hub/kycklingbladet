@@ -17,5 +17,9 @@ describe('validateGeneratedNotice', () => {
     })
     expect(validateGeneratedNotice({headline: '', body: 'x'})).toBeNull()
     expect(validateGeneratedNotice({headline: 'x'})).toBeNull()
+    expect(validateGeneratedNotice({headline: 'Luckan', body: 'Hon sa «nu».'})).toEqual({
+      headline: 'Luckan',
+      body: 'Hon sa "nu".',
+    })
   })
 })

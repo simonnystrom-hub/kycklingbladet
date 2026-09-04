@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest'
 import { buildUserPrompt, PROMPT_VERSION, SYSTEM_PROMPT } from './prompt'
 
 describe('PROMPT_VERSION', () => {
-  it('is kb-v4', () => {
-    expect(PROMPT_VERSION).toBe('kb-v4')
+  it('is kb-v5', () => {
+    expect(PROMPT_VERSION).toBe('kb-v5')
   })
 })
 
@@ -33,11 +33,14 @@ describe('SYSTEM_PROMPT', () => {
     expect(SYSTEM_PROMPT).toContain('Göran')
   })
 
-  it('asks for unique structure, quotes, and no satire label', () => {
-    expect(SYSTEM_PROMPT).toContain('Uppbyggnaden ska vara unik')
-    expect(SYSTEM_PROMPT).toContain('Citera någon när det bär')
+  it('asks for notice-like prose, straight quotes, and no satire label', () => {
+    expect(SYSTEM_PROMPT).toContain('samma raka, lättlästa språk som en notis')
+    expect(SYSTEM_PROMPT).toContain('tre till fyra korta stycken')
+    expect(SYSTEM_PROMPT).toContain('raka citattecken')
+    expect(SYSTEM_PROMPT).toContain('Inte « »')
     expect(SYSTEM_PROMPT).not.toContain('satirisk')
     expect(SYSTEM_PROMPT).toContain('Kalla det inte satir')
+    expect(SYSTEM_PROMPT).toContain('Skratta inte åt olyckan')
   })
 })
 
