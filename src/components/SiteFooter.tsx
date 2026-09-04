@@ -9,17 +9,17 @@ export function SiteFooter() {
       style={{borderTop: '1px solid var(--rule)'}}
     >
       <div className={SHELL}>
-        <nav className="text-[10px] tracking-[0.12em] uppercase lg:text-[11px] lg:tracking-[0.16em]">
-          <ul className="flex flex-wrap items-center gap-x-4 gap-y-2 sm:gap-x-6 lg:gap-x-8">
+        <nav className="text-[11px] tracking-[0.12em] uppercase lg:tracking-[0.16em]">
+          <ul className="flex flex-wrap items-center gap-x-3 sm:gap-x-6 lg:gap-x-8">
             {NAV_LINKS.map(({href, label}) => (
               <li key={href}>
-                <Link href={href} className="inline-block py-1.5 text-[var(--brass)] lg:py-2">
+                <Link href={href} className="inline-flex min-h-11 items-center text-[var(--brass)]">
                   {label}
                 </Link>
               </li>
             ))}
             <li>
-              <a href="/rss.xml" className="inline-block py-1.5 text-[var(--brass)] lg:py-2">
+              <a href="/rss.xml" className="inline-flex min-h-11 items-center text-[var(--brass)]">
                 RSS
               </a>
             </li>

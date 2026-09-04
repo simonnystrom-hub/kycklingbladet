@@ -4,11 +4,11 @@ import {WEEK_LEADS_HEADING} from '@/lib/copy'
 import {formatSwedishDate} from '@/lib/select/stockholm-date'
 import {SectionHead} from '@/components/SectionHead'
 
-export function WeekLeads({items}: {items: AlarmTeaser[]}) {
+export function WeekLeads({items, className}: {items: AlarmTeaser[]; className?: string}) {
   if (items.length === 0) return null
 
   return (
-    <section className="mb-8 sm:mb-10 lg:mb-12">
+    <section className={className ?? 'mb-8 sm:mb-10 lg:mb-12'}>
       <SectionHead>{WEEK_LEADS_HEADING}</SectionHead>
       <ul className="grid gap-6 sm:grid-cols-2 sm:gap-0">
         {items.map((item, index) => (
@@ -22,7 +22,7 @@ export function WeekLeads({items}: {items: AlarmTeaser[]}) {
                   : 'sm:pl-8'
             }
           >
-            <Link href={`/arkiv/${item.date}`} className="group block py-1">
+            <Link href={`/arkiv/${item.date}`} className="group block py-2">
               <p
                 className="text-[var(--brass)]"
                 style={{

@@ -22,10 +22,10 @@ export default async function ArchivePage({searchParams}: ArchivePageProps) {
       <ArchiveList items={items} />
       {pageCount > 1 ? (
         <nav
-          className="mt-10 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-t border-[var(--rule)] pt-5 sm:mt-12 lg:mt-16 lg:pt-6"
+          className="mt-10 flex items-center justify-between gap-x-4 border-t border-[var(--rule)] pt-3 sm:mt-12 lg:mt-16 lg:pt-6"
         >
           {current > 1 ? (
-            <Link href={`/arkiv?sida=${current - 1}`} className="inline-block py-1.5 text-[var(--brass)]">
+            <Link href={`/arkiv?sida=${current - 1}`} className="inline-flex min-h-11 items-center text-[var(--brass)]">
               « Nyare
             </Link>
           ) : (
@@ -38,7 +38,7 @@ export default async function ArchivePage({searchParams}: ArchivePageProps) {
             Sida {current} av {pageCount}
           </span>
           {current < pageCount ? (
-            <Link href={`/arkiv?sida=${current + 1}`} className="inline-block py-1.5 text-[var(--brass)]">
+            <Link href={`/arkiv?sida=${current + 1}`} className="inline-flex min-h-11 items-center text-[var(--brass)]">
               Äldre »
             </Link>
           ) : (

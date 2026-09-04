@@ -12,13 +12,13 @@ export async function Masthead() {
 
   return (
     <header className="w-full">
-      <div className={`${SHELL} pt-5 sm:pt-6 lg:pt-8`}>
-        <SiteNav className="mb-5 text-center sm:mb-6 lg:mb-8" />
+      <div className={`${SHELL} pt-[max(1.25rem,env(safe-area-inset-top))] sm:pt-6 lg:pt-8`}>
+        <SiteNav className="mb-4 text-center sm:mb-6 lg:mb-8" />
         <div className="pb-4 lg:pb-5" style={{borderBottom: '1px solid var(--brass)'}}>
-          <div className="flex items-end justify-between gap-2 sm:gap-4 lg:gap-6">
+          <div className="flex items-center justify-between gap-3 sm:items-end sm:gap-4 lg:gap-6">
             <Link
               href="/"
-              className="flex min-w-0 items-end gap-2 text-[var(--ink)] hover:text-[var(--brass)] sm:gap-3 lg:gap-4"
+              className="flex min-w-0 items-center gap-2.5 text-[var(--ink)] hover:text-[var(--brass)] sm:items-end sm:gap-3 lg:gap-4"
             >
               <Image
                 src="/logo.png"
@@ -26,10 +26,10 @@ export async function Masthead() {
                 width={88}
                 height={88}
                 priority
-                className="size-10 shrink-0 rounded-sm sm:size-[4.5rem] lg:size-[5.5rem]"
+                className="size-12 shrink-0 rounded-sm sm:size-[4.5rem] lg:size-[5.5rem]"
               />
               <span className="min-w-0">
-                <span className="block whitespace-nowrap font-serif text-[1.35rem] italic leading-none min-[360px]:text-[1.5rem] sm:text-[2rem] lg:text-[2.75rem]">
+                <span className="block font-serif text-[1.5rem] italic leading-none sm:whitespace-nowrap sm:text-[2rem] lg:text-[2.75rem]">
                   Kycklingbladet
                 </span>
                 <p
@@ -43,7 +43,7 @@ export async function Masthead() {
             <DoomsdayClock />
           </div>
           <p
-            className="mt-2 text-[11px] leading-snug tracking-[0.06em] text-[var(--ink-muted)] sm:hidden"
+            className="mt-2.5 line-clamp-2 text-[10px] leading-snug tracking-[0.04em] text-[var(--ink-muted)] sm:hidden"
             style={{fontVariant: 'small-caps'}}
           >
             {tagline}

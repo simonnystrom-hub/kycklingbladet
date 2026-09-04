@@ -42,7 +42,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
         className={`${sourceSerif.className} flex min-h-full flex-col bg-[var(--bg)] text-[var(--ink)]`}
       >
         <Masthead />
-        <main className={`${SHELL} flex-1 py-6 sm:py-10 lg:py-14`}>
+        <main className={`${SHELL} flex-1 py-5 sm:py-10 lg:py-14`}>
           {children}
         </main>
         <SiteFooter />

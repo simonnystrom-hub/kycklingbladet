@@ -16,7 +16,7 @@ export function ArchiveList({items}: ArchiveListProps) {
     <ul className="flex flex-col gap-6 sm:gap-8 lg:gap-10">
       {items.map((item) => (
         <li key={item._id}>
-          <Link href={`/arkiv/${item.date}`} className="group block py-1">
+          <Link href={`/arkiv/${item.date}`} className="group block py-2">
             <p
               className="text-[var(--brass)]"
               style={{

@@ -3,9 +3,11 @@ import {formatSwedishDateShort} from '@/lib/select/stockholm-date'
 
 function NoticeSource({notice, date}: {notice: AlarmNotice; date: string}) {
   return (
-    <p className="mt-3 text-sm leading-relaxed text-[var(--ink-muted)]">
-      Ursprungligen {notice.sourceNewspaper}, {formatSwedishDateShort(date)}
-      {' · "'}
+    <p className="mt-3 text-xs leading-relaxed text-[var(--ink-muted)] lg:text-sm">
+      <span className="block">
+        Ursprungligen {notice.sourceNewspaper}, {formatSwedishDateShort(date)}
+      </span>
+      {'"'}
       <a
         href={notice.sourceAlarmindexUrl}
         rel="noreferrer"
@@ -54,7 +56,7 @@ export function IssueNotices({
               {paragraphs.map((paragraph, index) => (
                 <p
                   key={index}
-                  className="mt-3 leading-relaxed text-[var(--ink-muted)] lg:text-[1.0625rem] lg:leading-7"
+                  className="mt-3 leading-[1.7] text-[var(--ink-muted)] lg:text-[1.0625rem] lg:leading-7"
                 >
                   {paragraph}
                 </p>

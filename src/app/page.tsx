@@ -37,9 +37,8 @@ export default async function HomePage() {
   ])
 
   return (
-    <div>
-      <WeekLeads items={weekLeads} />
-      <section>
+    <div className="flex flex-col">
+      <section className="sm:order-2">
         <SectionHead>{TODAY_ISSUE_HEADING}</SectionHead>
         <p
           className="text-[var(--brass)]"
@@ -63,6 +62,10 @@ export default async function HomePage() {
           </div>
         )}
       </section>
+      <WeekLeads
+        items={weekLeads}
+        className="mt-10 sm:order-1 sm:mt-0 sm:mb-10 lg:mb-12"
+      />
     </div>
   )
 }

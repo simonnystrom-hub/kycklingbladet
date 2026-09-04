@@ -6,8 +6,8 @@ function handPoint(degreesFromTwelve: number, length: number) {
   }
 }
 
-const HOUR = handPoint(338, 11)
-const MINUTE = handPoint(354, 16)
+const HOUR = handPoint(354, 11)
+const MINUTE = handPoint(338, 16)
 
 const TICKS = Array.from({length: 12}, (_, index) => {
   const degrees = index * 30
@@ -22,7 +22,7 @@ export function DoomsdayClock() {
     <div aria-hidden className="flex shrink-0 flex-col items-center">
       <svg
         viewBox="0 0 64 64"
-        className="h-9 w-9 text-[var(--brass)] sm:h-[58px] sm:w-[58px] lg:h-[72px] lg:w-[72px]"
+        className="h-11 w-11 text-[var(--brass)] sm:h-[58px] sm:w-[58px] lg:h-[72px] lg:w-[72px]"
       >
         <circle
           cx="32"

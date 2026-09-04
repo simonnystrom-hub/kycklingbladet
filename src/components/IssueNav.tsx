@@ -10,17 +10,17 @@ export function IssueNav({previous, next}: IssueNavProps) {
 
   return (
     <nav
-      className="mt-10 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-t border-[var(--rule)] pt-5 sm:mt-12 lg:mt-16 lg:pt-6"
+      className="mt-10 flex items-center justify-between gap-x-4 border-t border-[var(--rule)] pt-3 sm:mt-12 lg:mt-16 lg:pt-6"
     >
       {previous ? (
-        <Link href={`/arkiv/${previous}`} className="inline-block py-1.5 text-[var(--brass)]">
+        <Link href={`/arkiv/${previous}`} className="inline-flex min-h-11 items-center text-[var(--brass)]">
           « Föregående dag
         </Link>
       ) : (
         <span />
       )}
       {next ? (
-        <Link href={`/arkiv/${next}`} className="inline-block py-1.5 text-[var(--brass)]">
+        <Link href={`/arkiv/${next}`} className="inline-flex min-h-11 items-center text-[var(--brass)]">
           Nästa dag »
         </Link>
       ) : null}

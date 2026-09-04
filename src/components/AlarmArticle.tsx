@@ -31,40 +31,44 @@ export function AlarmArticle({alarm, showDate = false}: AlarmArticleProps) {
         {alarm.kicker}
       </p>
 
-      <h1 className="mt-3 font-serif text-[1.65rem] leading-tight text-[var(--ink)] sm:text-[2rem] lg:mt-4 lg:text-[2.5rem]">
+      <h1 className="mt-3 font-serif text-[1.55rem] leading-[1.2] text-[var(--ink)] sm:text-[2rem] lg:mt-4 lg:text-[2.5rem]">
         {alarm.headline}
       </h1>
 
       {paragraphs.map((paragraph, index) => (
         <p
           key={index}
-          className="mt-4 leading-relaxed text-[var(--ink-muted)] lg:mt-5 lg:text-[1.125rem] lg:leading-8"
+          className="mt-4 leading-[1.7] text-[var(--ink-muted)] lg:mt-5 lg:text-[1.125rem] lg:leading-8"
         >
           {paragraph}
         </p>
       ))}
 
-      <aside className="mt-8 border-t border-[var(--rule)] pt-5 lg:mt-12 lg:pt-6">
+      <aside className="mt-8 border-l-2 border-[var(--brass)] pl-4 lg:mt-12 lg:pl-5">
         <p
           className="uppercase tracking-[0.16em] text-[var(--brass)]"
           style={{fontSize: 11}}
         >
           {alarm.expertVoice} {alarm.expertHeadline}
         </p>
-        <p className="mt-3 italic leading-relaxed text-[var(--brass)] lg:text-[1.125rem] lg:leading-8">
+        <p className="mt-3 italic leading-[1.7] text-[var(--brass)] lg:text-[1.125rem] lg:leading-8">
           {alarm.expertText}
         </p>
       </aside>
 
-      <p className="mt-6 text-sm leading-relaxed text-[var(--ink-muted)] lg:mt-8">
-        Ursprungligen {alarm.sourceNewspaper}, {formatSwedishDateShort(alarm.date)}
-        {' · "'}
+      <p className="mt-6 text-xs leading-relaxed text-[var(--ink-muted)] lg:mt-8 lg:text-sm">
+        <span className="block">
+          Ursprungligen {alarm.sourceNewspaper}, {formatSwedishDateShort(alarm.date)}
+        </span>
+        {'"'}
         <a
           href={alarm.sourceAlarmindexUrl}
           rel="noreferrer"
           target="_blank"
           className="text-[var(--brass)] underline decoration-[var(--brass)]/40 underline-offset-2 hover:text-[var(--ink)]"
-        >{alarm.sourceHeadline}</a>
+        >
+          {alarm.sourceHeadline}
+        </a>
         {'"'}
       </p>
     </article>
