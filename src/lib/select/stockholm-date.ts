@@ -19,6 +19,12 @@ export function parseIsoDateAtNoonUtc(date: string): Date {
   return new Date(Date.UTC(year, month - 1, day, 12, 0, 0))
 }
 
+export function addIsoDays(date: string, days: number): string {
+  const utc = parseIsoDateAtNoonUtc(date)
+  utc.setUTCDate(utc.getUTCDate() + days)
+  return utc.toISOString().slice(0, 10)
+}
+
 export function formatSwedishDate(date: string): string {
   const formatted = new Intl.DateTimeFormat('sv-SE', {
     weekday: 'long',

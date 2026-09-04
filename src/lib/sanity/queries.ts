@@ -1,5 +1,6 @@
 import {ARCHIVE_PAGE_SIZE, archivePageWindow} from '@/lib/nav'
 import {RSS_ITEM_LIMIT} from '@/lib/rss'
+import {WEEK_LEAD_COUNT, weekLeadStart} from '@/lib/week-leads'
 import {getSanityClient, isKycklingbladetConfigured} from './client'
 import type {Alarm, AlarmTeaser, SiteSettings} from './types'
 
@@ -18,7 +19,8 @@ const alarmFields = `{
   sourceAlarmindexUrl,
   sourceScore,
   promptVersion,
-  modelVersion
+  modelVersion,
+  humorScore
 }`
 
 async function safeFetchOne<T>(
@@ -105,5 +107,15 @@ export async function getAdjacentDates(
 export async function getSiteSettings(): Promise<SiteSettings | null> {
   return safeFetchOne(
     `*[_id == "siteSettings"][0]{ title, tagline, about, alarmindexMention }`,
+  )
+}
+
+export async function getWeekLeads(
+  today: string,
+  shownDate: string | null,
+): Promise<AlarmTeaser[]> {
+  return safeFetchMany(
+    `*[_type == "alarm" && date >= $start && date < $today && date != $shownDate && defined(humorScore)] | order(humorScore desc, date desc)[0...${WEEK_LEAD_COUNT}]{ _id, date, kicker, headline }`,
+    {start: weekLeadStart(today), today, shownDate: shownDate ?? today},
   )
 }

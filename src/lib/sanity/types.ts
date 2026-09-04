@@ -14,6 +14,7 @@ export type Alarm = {
   sourceScore: number
   promptVersion: string
   modelVersion: string
+  humorScore?: number
 }
 
 export type AlarmTeaser = {
