@@ -2,6 +2,22 @@
 
 Daglig satirisk alarmtext baserad på dagens högst scorade rubrik från Alarmindex.
 
+**Studio (admin):** https://kycklingbladet.sanity.studio  
+**Kod:** https://github.com/simonnystrom-hub/kycklingbladet
+
+## Live (Vercel)
+
+Importera GitHub-repot på [vercel.com/new](https://vercel.com/new/import?s=https://github.com/simonnystrom-hub/kycklingbladet) och sätt:
+
+- `NEXT_PUBLIC_SANITY_PROJECT_ID` = `go9a4gjd`
+- `NEXT_PUBLIC_SANITY_DATASET` = `production`
+- `NEXT_PUBLIC_SANITY_API_VERSION` = `2025-01-01`
+- `NEXT_PUBLIC_SITE_URL` = den URL Vercel ger (uppdatera efter första deploy)
+
+Frontend läser publicerat innehåll utan token. Write-token och Anthropic behövs bara för daily-jobbet (GitHub Actions), inte för att sajten ska synas.
+
+Egen domän: Vercel → Project → Settings → Domains.
+
 ## Kom igång
 
 1. Skapa ett Sanity-projekt för Kycklingbladet och sätt samma project id i båda repos’ `.env`: frontend `NEXT_PUBLIC_SANITY_PROJECT_ID` (kopiera från `.env.example`) och Studio `SANITY_STUDIO_PROJECT_ID` plus `SANITY_STUDIO_DATASET` i `../kycklingbladet-studio` (se Studio `.env.example`).
