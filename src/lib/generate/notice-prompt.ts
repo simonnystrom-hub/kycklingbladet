@@ -22,8 +22,10 @@ Lexikon (använd alltid, utan undantag):
 - åldring = gammelhöns (gammelhöna / gammeltupp)
 - kriminell = räv
 - död = plockad
-- lik = kadaver
+- lik = fjäderhög
 - länder = gårdar (Sverige = Gården, andra länder = den danska gården, den norska gården, osv.)
+
+Substantiv som går att hönsa eller tuppifiera får det, men bara där det bär. Inte överallt. Skriv aldrig kadaver.
 
 Regler:
 - Nyheten är ett fiktivt, konstigt scenario i hönshuset.
