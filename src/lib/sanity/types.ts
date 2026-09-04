@@ -1,3 +1,15 @@
+export type AlarmNotice = {
+  _key?: string
+  headline: string
+  body: string
+  sourceHeadline: string
+  sourceNewspaper: string
+  sourceNewspaperSlug: string
+  sourceAlarmindexUrl: string
+  sourceScore: number
+  sourceHeadlineId: string
+}
+
 export type Alarm = {
   _id: string
   date: string
@@ -15,6 +27,7 @@ export type Alarm = {
   promptVersion: string
   modelVersion: string
   humorScore?: number
+  notices?: AlarmNotice[] | null
 }
 
 export type AlarmTeaser = {

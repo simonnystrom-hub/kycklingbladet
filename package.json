@@ -9,7 +9,8 @@
     "lint": "eslint",
     "test": "vitest run",
     "daily": "tsx --env-file=.env.local scripts/run-daily.ts",
-    "score-humor": "tsx --env-file=.env.local scripts/score-humor.ts"
+    "score-humor": "tsx --env-file=.env.local scripts/score-humor.ts",
+    "fill-notices": "tsx --env-file=.env.local scripts/fill-notices.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.110.0",

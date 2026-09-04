@@ -1,5 +1,5 @@
 export const NAV_LINKS = [
-  {href: '/', label: 'Dagens nummer'},
+  {href: '/', label: 'Dagens nyheter'},
   {href: '/arkiv', label: 'Arkiv'},
   {href: '/om', label: 'Om'},
   {href: '/kontakt', label: 'Kontakt'},

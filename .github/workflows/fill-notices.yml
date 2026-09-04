@@ -1,0 +1,32 @@
+name: Fill notices
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: fill-notices
+  cancel-in-progress: false
+
+jobs:
+  fill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      TZ: Europe/Stockholm
+      NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_SANITY_PROJECT_ID }}
+      NEXT_PUBLIC_SANITY_DATASET: production
+      SANITY_API_WRITE_TOKEN: ${{ secrets.SANITY_API_WRITE_TOKEN }}
+      ALARMINDEX_SANITY_PROJECT_ID: ${{ secrets.ALARMINDEX_SANITY_PROJECT_ID }}
+      ALARMINDEX_SANITY_DATASET: production
+      ALARMINDEX_SANITY_READ_TOKEN: ${{ secrets.ALARMINDEX_SANITY_READ_TOKEN }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      ANTHROPIC_MODEL: ${{ secrets.ANTHROPIC_MODEL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npx tsx scripts/fill-notices.ts

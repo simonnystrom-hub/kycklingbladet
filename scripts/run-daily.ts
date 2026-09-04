@@ -5,6 +5,7 @@ import { fetchScoredHeadlines } from '../src/lib/alarmindex/queries'
 import { findExistingAlarmId, publishAlarm } from '../src/lib/sanity/publish'
 import { generateAlarm } from '../src/lib/generate/claude'
 import { scoreAlarmIfMissing } from '../src/lib/sanity/score-published'
+import { fillNoticesForDate } from '../src/lib/sanity/fill-notices'
 
 const RETRIES = 3
 const WAIT_MS = 10 * 60 * 1000
@@ -20,6 +21,16 @@ async function scoreDate(date: string, existingId?: string | null) {
     if (humorScore != null) console.log(`Humorpoäng ${humorScore} för ${date}`)
   } catch (error) {
     console.error(`Kunde inte sätta humorpoäng för ${date}`, error)
+  }
+}
+
+async function fillNoticesSafe(date: string) {
+  try {
+    const result = await fillNoticesForDate(date)
+    if (result === 'filled') console.log(`Notiser ifyllda för ${date}`)
+    if (result === 'empty') console.log(`Inga övriga rubriker att göra notiser av för ${date}`)
+  } catch (error) {
+    console.error(`Kunde inte fylla notiser för ${date}`, error)
   }
 }
 
@@ -45,6 +56,7 @@ export async function runDaily(now = new Date()) {
   if (!shouldCreateAlarm(existing)) {
     console.log(`Hoppar över ${date}: larm finns redan (${existing})`)
     await scoreDate(date, existing)
+    await fillNoticesSafe(date)
     return
   }
   const headlines = await headlinesWithRetry(date)
@@ -63,6 +75,7 @@ export async function runDaily(now = new Date()) {
   })
   console.log(result === 'skipped' ? `Hoppar över ${date}` : `Publicerat ${date}: ${generated.headline}`)
   await scoreDate(date)
+  await fillNoticesSafe(date)
 }
 
 runDaily().catch((error) => {

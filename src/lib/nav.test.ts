@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { ARCHIVE_PAGE_SIZE, archivePageWindow } from './nav'
+import { ARCHIVE_PAGE_SIZE, archivePageWindow, NAV_LINKS } from './nav'
+
+describe('NAV_LINKS', () => {
+  it('labels the home link Dagens nyheter', () => {
+    expect(NAV_LINKS[0]).toEqual({ href: '/', label: 'Dagens nyheter' })
+  })
+})
 
 describe('archivePageWindow', () => {
   it('clamps to a single page when the archive is empty', () => {

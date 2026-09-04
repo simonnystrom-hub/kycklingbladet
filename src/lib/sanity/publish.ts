@@ -35,6 +35,7 @@ export async function publishAlarm(input: {
     expertHeadline: input.generated.expertHeadline,
     expertText: input.generated.expertText,
     sourceHeadline: input.source.text,
+    sourceHeadlineId: input.source.headlineId,
     sourceNewspaper: input.source.newspaperName,
     sourceNewspaperSlug: input.source.newspaperSlug,
     sourceAlarmindexUrl: alarmindexDayUrl(input.date, input.source.newspaperSlug),

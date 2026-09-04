@@ -20,7 +20,17 @@ const alarmFields = `{
   sourceScore,
   promptVersion,
   modelVersion,
-  humorScore
+  humorScore,
+  notices[]{
+    headline,
+    body,
+    sourceHeadline,
+    sourceNewspaper,
+    sourceNewspaperSlug,
+    sourceAlarmindexUrl,
+    sourceScore,
+    sourceHeadlineId
+  }
 }`
 
 async function safeFetchOne<T>(

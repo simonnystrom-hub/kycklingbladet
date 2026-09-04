@@ -1,8 +1,10 @@
 import {AlarmArticle} from '@/components/AlarmArticle'
 import {EmptyIssue} from '@/components/EmptyIssue'
 import {IssueNav} from '@/components/IssueNav'
+import {IssueNotices} from '@/components/IssueNotices'
+import {SectionHead} from '@/components/SectionHead'
 import {WeekLeads} from '@/components/WeekLeads'
-import {TAGLINE} from '@/lib/copy'
+import {TAGLINE, TODAY_ISSUE_HEADING} from '@/lib/copy'
 import {getAdjacentDates, getAlarmByDate, getLatestAlarm, getSiteSettings, getWeekLeads} from '@/lib/sanity/queries'
 import {formatSwedishDate, stockholmToday} from '@/lib/select/stockholm-date'
 import type {Metadata} from 'next'
@@ -37,26 +39,30 @@ export default async function HomePage() {
   return (
     <div>
       <WeekLeads items={weekLeads} />
-      <p
-        className="text-[var(--brass)]"
-        style={{
-          fontSize: 11,
-          letterSpacing: '0.12em',
-          fontVariant: 'small-caps',
-        }}
-      >
-        {formatSwedishDate(today)}
-      </p>
-      {alarm ? (
-        <>
-          <AlarmArticle alarm={alarm} />
-          <IssueNav previous={adjacent.previous} next={adjacent.next} />
-        </>
-      ) : (
-        <div className="mt-6">
-          <EmptyIssue />
-        </div>
-      )}
+      <section>
+        <SectionHead>{TODAY_ISSUE_HEADING}</SectionHead>
+        <p
+          className="text-[var(--brass)]"
+          style={{
+            fontSize: 11,
+            letterSpacing: '0.12em',
+            fontVariant: 'small-caps',
+          }}
+        >
+          {formatSwedishDate(today)}
+        </p>
+        {alarm ? (
+          <>
+            <AlarmArticle alarm={alarm} />
+            <IssueNotices notices={alarm.notices} date={alarm.date} />
+            <IssueNav previous={adjacent.previous} next={adjacent.next} />
+          </>
+        ) : (
+          <div className="mt-6">
+            <EmptyIssue />
+          </div>
+        )}
+      </section>
     </div>
   )
 }
