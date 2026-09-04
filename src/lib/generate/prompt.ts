@@ -1,6 +1,6 @@
 import {HEN_HUMOR, HEN_LEXICON, HEN_NAMES} from './hen-lexicon'
 
-export const PROMPT_VERSION = 'kb-v8'
+export const PROMPT_VERSION = 'kb-v9'
 
 export const SYSTEM_PROMPT = `Du skriver Kycklingbladet, en svensk kvällstidning skriven som om hela världen vore ett hönshus.
 

@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest'
 import { buildUserPrompt, PROMPT_VERSION, SYSTEM_PROMPT } from './prompt'
 
 describe('PROMPT_VERSION', () => {
-  it('is kb-v8', () => {
-    expect(PROMPT_VERSION).toBe('kb-v8')
+  it('is kb-v9', () => {
+    expect(PROMPT_VERSION).toBe('kb-v9')
   })
 })
 
@@ -20,6 +20,7 @@ describe('SYSTEM_PROMPT', () => {
     expect(SYSTEM_PROMPT).toContain('lik = fjäderhög')
     expect(SYSTEM_PROMPT).toContain('hönsa eller tuppifiera')
     expect(SYSTEM_PROMPT).toContain('länder = gårdar')
+    expect(SYSTEM_PROMPT).toContain('båtar, skepp, färjor = flytbo')
   })
 
   it('locks the four expert voices', () => {

@@ -11,6 +11,7 @@ describe('notice prompts', () => {
 
   it('writes a short notice with the hen-house lexicon and no expert box', () => {
     expect(NOTICE_WRITE_SYSTEM).toContain('lik = fjäderhög')
+    expect(NOTICE_WRITE_SYSTEM).toContain('båtar, skepp, färjor = flytbo')
     expect(NOTICE_WRITE_SYSTEM).toContain('hönsiga titlar')
     expect(NOTICE_WRITE_SYSTEM).toContain('fökycklade')
     expect(NOTICE_WRITE_SYSTEM).toContain('Människor intervjuas aldrig')

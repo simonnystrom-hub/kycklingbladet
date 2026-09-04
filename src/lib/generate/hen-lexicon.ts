@@ -19,6 +19,7 @@ export const HEN_LEXICON = `Lexikon (använd alltid, utan undantag). Byt ut allt
 - pengar = korn / fodersäck
 - fotboll och matcher = maskkamp / pinnkamp
 - bilar, plan, hus, skolor, sjukhus, fängelser = rullbo, hönsplan, rede, kläckhus, vårdbur, rävsax
+- båtar, skepp, färjor = flytbo. Aldrig rullbo.
 - Andra substantiv: hönsa eller tuppifiera där det bär (olycka, utredning, räddning, möte). Inte överallt. Inte där det blir krystat. Skriv aldrig kadaver.`
 
 export const HEN_NAMES = `Namn och röster:
