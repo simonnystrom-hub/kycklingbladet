@@ -11,7 +11,10 @@ describe('notice prompts', () => {
 
   it('writes a short notice with the hen-house lexicon and no expert box', () => {
     expect(NOTICE_WRITE_SYSTEM).toContain('lik = fjäderhög')
-    expect(NOTICE_WRITE_SYSTEM).toContain('Skriv aldrig kadaver')
+    expect(NOTICE_WRITE_SYSTEM).toContain('hönsiga titlar')
+    expect(NOTICE_WRITE_SYSTEM).toContain('fökycklade')
+    expect(NOTICE_WRITE_SYSTEM).toContain('Människor intervjuas aldrig')
+    expect(NOTICE_WRITE_SYSTEM).toContain('Ju mörkare originalet är, desto lustigare')
     expect(NOTICE_WRITE_SYSTEM).toContain('Ingen expertruta')
     expect(NOTICE_WRITE_SYSTEM).toContain('Kalla det inte satir')
     expect(NOTICE_WRITE_SYSTEM).toContain('raka citattecken')

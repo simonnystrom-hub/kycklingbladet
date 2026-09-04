@@ -57,6 +57,46 @@ async function fetchAlarmForFill(date: string): Promise<StoredAlarm | null> {
   )
 }
 
+export async function fetchAlarmsWithNotices(): Promise<StoredAlarm[]> {
+  return getWriteClient().fetch(
+    `*[_type == "alarm" && count(notices) > 0] | order(date asc){
+      _id, date, sourceHeadline, sourceNewspaperSlug, sourceHeadlineId,
+      notices[]{_key, headline, body, sourceHeadline, sourceNewspaper, sourceNewspaperSlug, sourceAlarmindexUrl, sourceScore, sourceHeadlineId}
+    }`,
+  )
+}
+
+export async function rewriteNoticesForDate(date: string): Promise<number> {
+  const alarm = await fetchAlarmForFill(date)
+  if (!alarm) throw new Error(`Inget larm för ${date}`)
+  const existing = alarm.notices ?? []
+  if (existing.length === 0) return 0
+
+  const rewritten: AlarmNotice[] = []
+  for (const notice of existing) {
+    try {
+      const generated = await generateNotice({
+        text: notice.sourceHeadline,
+        newspaperName: notice.sourceNewspaper,
+      })
+      rewritten.push({
+        ...notice,
+        headline: generated.headline,
+        body: generated.body,
+      })
+    } catch (error) {
+      console.error(`Kunde inte skriva om notis för ${date}`, error)
+      rewritten.push(notice)
+    }
+  }
+
+  await getWriteClient()
+    .patch(alarm._id.replace(/^drafts\./, ''))
+    .set({notices: rewritten.map((notice, index) => asNoticeDoc(notice, index))})
+    .commit()
+  return rewritten.length
+}
+
 export async function fillNoticesForDate(date: string): Promise<FillNoticesResult> {
   const alarm = await fetchAlarmForFill(date)
   if (!alarm) throw new Error(`Inget larm för ${date}`)

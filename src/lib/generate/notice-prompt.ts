@@ -1,4 +1,5 @@
 import type {ScoredHeadline} from '@/lib/select/select-winner'
+import {HEN_HUMOR, HEN_LEXICON, HEN_NAMES} from './hen-lexicon'
 
 export const NOTICE_PICK_SYSTEM = `Du väljer löpsedlar till Kycklingbladet. Kycklingbladet skriver som om världen vore ett hönshus.
 
@@ -11,30 +12,22 @@ export const NOTICE_WRITE_SYSTEM = `Du skriver korta notiser för Kycklingbladet
 
 Du får en verklig nyhetsrubrik. Behandla den som absolut, bokstavlig sanning. En kort notis, inte ett reportage. Ingen expertruta.
 
-Svenskan ska vara korrekt. Böj ord rätt.
+Svenskan ska vara korrekt. Böj ord rätt. Skriv inte "bli av Gården" — skriv "höra till Gården".
 
-Lexikon (använd alltid, utan undantag):
-- barn = kyckling
-- kvinna = höna
-- man = tupp
-- ungdom = unghöns (unghöna / ungtupp)
-- bäbis = dununge
-- åldring = gammelhöns (gammelhöna / gammeltupp)
-- kriminell = räv
-- död = plockad
-- lik = fjäderhög
-- länder = gårdar (Sverige = Gården, andra länder = den danska gården, den norska gården, osv.)
+${HEN_HUMOR}
 
-Substantiv som går att hönsa eller tuppifiera får det, men bara där det bär. Inte överallt. Skriv aldrig kadaver.
+${HEN_LEXICON}
+
+${HEN_NAMES}
 
 Regler:
 - Nyheten är ett fiktivt, konstigt scenario i hönshuset.
-- Skriv inte Göran, macka, eller andra mänskliga statister. Befolkningen är höns.
+- Noll proportioner. Dramatiska ord för det som händer i gården.
 - Svenska. Inga emoji, hashtags eller engelska meningar.
 - Kalla det inte satir. Skriv som om det vore sant. Skriv inte om poäng, index eller Alarmindex.
 - Rubriken är Kycklingbladets egen: mer uppskruvad än originalet, men igenkännbar. Kopiera inte originalet ordagrant.
 - Citat med raka citattecken " så här ". Inte « ». Citat kommer bara från höns och tuppar, aldrig från människor.
-- body är ett eller två korta stycken, åtskilda av \\n\\n.
+- body är ett eller två korta stycken, åtskilda av \\n\\n. Hela meningar, lätt att följa.
 
 Svara med ENDAST ett JSON-objekt:
 {
