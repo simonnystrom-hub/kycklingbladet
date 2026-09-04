@@ -1,3 +1,4 @@
+import {ARCHIVE_PAGE_SIZE, archivePageWindow} from '@/lib/nav'
 import {getSanityClient, isKycklingbladetConfigured} from './client'
 import type {Alarm, AlarmTeaser, SiteSettings} from './types'
 
@@ -7,7 +8,9 @@ const alarmFields = `{
   kicker,
   headline,
   body,
-  survivalTip,
+  expertVoice,
+  expertHeadline,
+  expertText,
   sourceHeadline,
   sourceNewspaper,
   sourceNewspaperSlug,
@@ -59,6 +62,20 @@ export async function getAlarmArchive(): Promise<AlarmTeaser[]> {
   return safeFetchMany(
     `*[_type == "alarm"] | order(date desc){ _id, date, kicker, headline }`,
   )
+}
+
+export async function getAlarmArchivePage(page: number): Promise<{
+  items: AlarmTeaser[]
+  page: number
+  pageCount: number
+}> {
+  const archive = await getAlarmArchive()
+  const {current, pageCount, start} = archivePageWindow(archive.length, page)
+  return {
+    items: archive.slice(start, start + ARCHIVE_PAGE_SIZE),
+    page: current,
+    pageCount,
+  }
 }
 
 export async function getAdjacentDates(

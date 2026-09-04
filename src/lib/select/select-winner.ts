@@ -4,14 +4,18 @@ export type ScoredHeadline = {
   newspaperName: string
   newspaperSlug: string
   displayScore: number
+  newspaperDailyScore: number
 }
 
 export function selectWinner(headlines: ScoredHeadline[]): ScoredHeadline | null {
   if (headlines.length === 0) return null
-  return [...headlines].sort((a, b) => {
-    if (b.displayScore !== a.displayScore) return b.displayScore - a.displayScore
-    const slug = a.newspaperSlug.localeCompare(b.newspaperSlug)
-    if (slug !== 0) return slug
-    return a.headlineId.localeCompare(b.headlineId)
-  })[0]
+  const maxDaily = Math.max(...headlines.map((headline) => headline.newspaperDailyScore))
+  return headlines
+    .filter((headline) => headline.newspaperDailyScore === maxDaily)
+    .sort((a, b) => {
+      if (b.displayScore !== a.displayScore) return b.displayScore - a.displayScore
+      const slug = a.newspaperSlug.localeCompare(b.newspaperSlug)
+      if (slug !== 0) return slug
+      return a.headlineId.localeCompare(b.headlineId)
+    })[0]
 }

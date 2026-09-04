@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { alarmIdForDate, shouldCreateAlarm } from './alarm-id'
-import { isIsoDateString, stockholmToday } from './stockholm-date'
+import { formatSwedishDateShort, isIsoDateString, stockholmToday } from './stockholm-date'
 
 describe('alarmIdForDate', () => {
   it('prefixes the ISO date', () => {
@@ -33,5 +33,11 @@ describe('isIsoDateString', () => {
     expect(isIsoDateString('2026-9-3')).toBe(false)
     expect(isIsoDateString('2026/09/03')).toBe(false)
     expect(isIsoDateString('')).toBe(false)
+  })
+})
+
+describe('formatSwedishDateShort', () => {
+  it('renders the calendar day without a weekday', () => {
+    expect(formatSwedishDateShort('2026-09-02')).toBe('2 september 2026')
   })
 })

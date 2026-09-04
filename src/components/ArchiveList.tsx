@@ -13,10 +13,10 @@ export function ArchiveList({items}: ArchiveListProps) {
   }
 
   return (
-    <ul className="flex flex-col gap-8">
+    <ul className="flex flex-col gap-6 sm:gap-8">
       {items.map((item) => (
         <li key={item._id}>
-          <Link href={`/arkiv/${item.date}`} className="group block">
+          <Link href={`/arkiv/${item.date}`} className="group block py-1">
             <p
               className="text-[var(--brass)]"
               style={{
@@ -33,7 +33,7 @@ export function ArchiveList({items}: ArchiveListProps) {
             >
               {item.kicker}
             </p>
-            <p className="mt-2 font-serif text-xl leading-snug text-[var(--ink)] group-hover:text-[var(--brass)]">
+            <p className="mt-2 font-serif text-[1.2rem] leading-snug text-[var(--ink)] group-hover:text-[var(--brass)] sm:text-xl">
               {item.headline}
             </p>
           </Link>

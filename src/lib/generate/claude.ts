@@ -28,7 +28,7 @@ export async function generateAlarm(source: {
       .join('\n')
     const parsed = parseGeneratedAlarm(text)
     const generated = validateGeneratedAlarm(parsed)
-    if (!generated) throw new Error('Claude-svaret saknade kicker, rubrik, brödtext eller tips')
+    if (!generated) throw new Error('Claude-svaret saknade kicker, rubrik, brödtext eller expertruta')
     return generated
   }
 

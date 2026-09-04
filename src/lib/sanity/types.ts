@@ -4,7 +4,9 @@ export type Alarm = {
   kicker: string
   headline: string
   body: string
-  survivalTip: string
+  expertVoice: string
+  expertHeadline: string
+  expertText: string
   sourceHeadline: string
   sourceNewspaper: string
   sourceNewspaperSlug: string

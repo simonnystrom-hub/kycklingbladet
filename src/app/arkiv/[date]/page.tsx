@@ -1,8 +1,8 @@
-import Link from 'next/link'
-import {notFound} from 'next/navigation'
 import {AlarmArticle} from '@/components/AlarmArticle'
+import {IssueNav} from '@/components/IssueNav'
 import {getAdjacentDates, getAlarmByDate} from '@/lib/sanity/queries'
 import {isIsoDateString} from '@/lib/select/stockholm-date'
+import {notFound} from 'next/navigation'
 
 export const revalidate = 60
 
@@ -27,28 +27,7 @@ export default async function ArchiveDatePage({params}: ArchiveDatePageProps) {
   return (
     <div>
       <AlarmArticle alarm={alarm} showDate />
-      {(previous || next) && (
-        <nav
-          className="mt-12 flex flex-wrap items-center justify-between gap-4"
-          style={{borderTop: '1px solid var(--rule)', paddingTop: '1.25rem'}}
-        >
-          {previous ? (
-            <Link
-              href={`/arkiv/${previous}`}
-              className="text-[var(--brass)]"
-            >
-              « Föregående dag
-            </Link>
-          ) : (
-            <span />
-          )}
-          {next ? (
-            <Link href={`/arkiv/${next}`} className="text-[var(--brass)]">
-              Nästa dag »
-            </Link>
-          ) : null}
-        </nav>
-      )}
+      <IssueNav previous={previous} next={next} />
     </div>
   )
 }

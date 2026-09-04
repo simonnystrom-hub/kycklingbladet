@@ -12,10 +12,11 @@
   --rule: #3d3426;
 }
 
-html { background: var(--bg); color: var(--ink); }
+html { background: var(--bg); color: var(--ink); overflow-x: clip; }
 body {
   font-family: var(--font-serif), Georgia, serif;
   background: var(--bg);
   color: var(--ink);
+  overflow-wrap: break-word;
 }
 a:hover { color: var(--brass); }

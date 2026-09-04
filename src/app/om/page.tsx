@@ -3,10 +3,10 @@ import {getSiteSettings} from '@/lib/sanity/queries'
 export const revalidate = 60
 
 const FALLBACK_ABOUT =
-  'Kycklingbladet är en satirisk kvällstidning. Vi tar dagens mest uppblåsta rubrik och behandlar den som bokstavlig sanning. Inget av det som står här är nyhetsjournalistik.'
+  'Kycklingbladet tar dagens mest uppblåsta rubrik och behandlar den som bokstavlig sanning.'
 
 const FALLBACK_ALARMINDEX_MENTION =
-  'Vilken rubrik som vinner dagen avgörs av siffror från Alarmindex, som mäter alarmistiskt formspråk i svenska löpsedlar. Kycklingbladet är inte Alarmindex. Vi är hönan som tar siffran på orden.'
+  'Vilken rubrik som vinner dagen avgörs av siffror från Alarmindex. Kycklingbladet läser löpsedeln. Alarmindex mäter den.'
 
 function splitParagraphs(text: string): string[] {
   return text.split('\n\n').filter(Boolean)
@@ -20,7 +20,7 @@ export default async function AboutPage() {
 
   return (
     <article>
-      <h1 className="font-serif text-[2rem] leading-tight text-[var(--ink)]">
+      <h1 className="font-serif text-[1.65rem] leading-tight text-[var(--ink)] sm:text-[2rem]">
         Om Kycklingbladet
       </h1>
 

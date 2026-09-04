@@ -9,6 +9,7 @@ const SCORED_HEADLINES_QUERY = `*[_type == "headlineScore"
   && headline->snapshot->publicationStatus == "published"
 ]{
   displayScore,
+  "newspaperDailyScore": headline->snapshot->dailyScore,
   "headlineId": headline->_id,
   "text": headline->text,
   "newspaperName": headline->snapshot->newspaper->name,
@@ -31,6 +32,7 @@ export async function fetchScoredHeadlines(date: string): Promise<ScoredHeadline
       typeof row.newspaperSlug !== 'string' ||
       !row.newspaperSlug ||
       typeof row.displayScore !== 'number' ||
+      typeof row.newspaperDailyScore !== 'number' ||
       typeof row.headlineId !== 'string' ||
       !row.headlineId
     ) {
@@ -44,6 +46,7 @@ export async function fetchScoredHeadlines(date: string): Promise<ScoredHeadline
         newspaperName: typeof row.newspaperName === 'string' ? row.newspaperName : '',
         newspaperSlug: row.newspaperSlug,
         displayScore: row.displayScore,
+        newspaperDailyScore: row.newspaperDailyScore,
       },
     ]
   })

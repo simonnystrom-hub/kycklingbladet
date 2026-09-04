@@ -29,3 +29,13 @@ export function formatSwedishDate(date: string): string {
   }).format(parseIsoDateAtNoonUtc(date))
   return formatted.charAt(0).toUpperCase() + formatted.slice(1)
 }
+
+/** Calendar day without weekday, for the Alarmindex source line. */
+export function formatSwedishDateShort(date: string): string {
+  return new Intl.DateTimeFormat('sv-SE', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'Europe/Stockholm',
+  }).format(parseIsoDateAtNoonUtc(date))
+}

@@ -2,12 +2,7 @@
 
 import Link from 'next/link'
 import {usePathname} from 'next/navigation'
-
-const LINKS = [
-  {href: '/', label: 'Dagens nummer'},
-  {href: '/arkiv', label: 'Arkiv'},
-  {href: '/om', label: 'Om'},
-] as const
+import {NAV_LINKS} from '@/lib/nav'
 
 function isActive(pathname: string, href: string) {
   if (href === '/') return pathname === '/'
@@ -22,18 +17,18 @@ export function SiteNav({className}: {className?: string}) {
       className={className}
       style={{
         fontSize: 10,
-        letterSpacing: '0.16em',
+        letterSpacing: '0.12em',
         textTransform: 'uppercase',
       }}
     >
-      <ul className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1">
-        {LINKS.map(({href, label}) => {
+      <ul className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 sm:gap-x-5">
+        {NAV_LINKS.map(({href, label}) => {
           const active = isActive(pathname, href)
           return (
             <li key={href}>
               <Link
                 href={href}
-                className={active ? 'text-[var(--ink)]' : 'text-[var(--brass)]'}
+                className={`inline-block py-1.5 ${active ? 'text-[var(--ink)]' : 'text-[var(--brass)]'}`}
               >
                 {label}
               </Link>

@@ -1,8 +1,12 @@
+import {isExpertVoice, type ExpertVoice} from './experts'
+
 export type GeneratedAlarm = {
   kicker: string
   headline: string
   body: string
-  survivalTip: string
+  expertVoice: ExpertVoice
+  expertHeadline: string
+  expertText: string
 }
 
 function asNonEmpty(value: unknown): string | null {
@@ -17,7 +21,12 @@ export function validateGeneratedAlarm(input: unknown): GeneratedAlarm | null {
   const kicker = asNonEmpty(record.kicker)
   const headline = asNonEmpty(record.headline)
   const body = asNonEmpty(record.body)
-  const survivalTip = asNonEmpty(record.survivalTip)
-  if (!kicker || !headline || !body || !survivalTip) return null
-  return { kicker, headline, body, survivalTip }
+  const expertVoice = asNonEmpty(record.expertVoice)
+  const expertHeadline = asNonEmpty(record.expertHeadline)
+  const expertText = asNonEmpty(record.expertText)
+  if (!kicker || !headline || !body || !expertVoice || !expertHeadline || !expertText) {
+    return null
+  }
+  if (!isExpertVoice(expertVoice)) return null
+  return {kicker, headline, body, expertVoice, expertHeadline, expertText}
 }

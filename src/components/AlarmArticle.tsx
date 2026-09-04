@@ -1,5 +1,5 @@
 import type {Alarm} from '@/lib/sanity/types'
-import {formatSwedishDate} from '@/lib/select/stockholm-date'
+import {formatSwedishDate, formatSwedishDateShort} from '@/lib/select/stockholm-date'
 
 type AlarmArticleProps = {
   alarm: Alarm
@@ -31,7 +31,7 @@ export function AlarmArticle({alarm, showDate = false}: AlarmArticleProps) {
         {alarm.kicker}
       </p>
 
-      <h1 className="mt-3 font-serif text-[2rem] leading-tight text-[var(--ink)]">
+      <h1 className="mt-3 font-serif text-[1.65rem] leading-tight text-[var(--ink)] sm:text-[2rem]">
         {alarm.headline}
       </h1>
 
@@ -44,23 +44,31 @@ export function AlarmArticle({alarm, showDate = false}: AlarmArticleProps) {
         </p>
       ))}
 
-      <p
-        className="mt-8 italic text-[var(--brass)]"
+      <aside
+        className="mt-8"
         style={{borderTop: '1px solid var(--rule)', paddingTop: '1.25rem'}}
       >
-        Överlevnadstips: {alarm.survivalTip}
-      </p>
+        <p
+          className="uppercase tracking-[0.16em] text-[var(--brass)]"
+          style={{fontSize: 11}}
+        >
+          {alarm.expertVoice} {alarm.expertHeadline}
+        </p>
+        <p className="mt-3 italic leading-relaxed text-[var(--brass)]">
+          {alarm.expertText}
+        </p>
+      </aside>
 
-      <p className="mt-6 text-sm text-[var(--ink-muted)]">
-        Ursprungligen {alarm.sourceNewspaper} · «{alarm.sourceHeadline}» ·{' '}
+      <p className="mt-6 text-sm leading-relaxed text-[var(--ink-muted)]">
+        Ursprungligen {alarm.sourceNewspaper}, {formatSwedishDateShort(alarm.date)}
+        {' · «'}
         <a
           href={alarm.sourceAlarmindexUrl}
           rel="noreferrer"
           target="_blank"
-          className="text-[var(--ink-muted)] underline decoration-[var(--rule)] underline-offset-2 hover:text-[var(--brass)]"
-        >
-          Alarmindex
-        </a>
+          className="text-[var(--brass)] underline decoration-[var(--brass)]/40 underline-offset-2 hover:text-[var(--ink)]"
+        >{alarm.sourceHeadline}</a>
+        {'»'}
       </p>
     </article>
   )
