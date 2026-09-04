@@ -14,7 +14,7 @@ export type HumorPiece = {
 
 const SYSTEM_PROMPT = `Du bedömer Kycklingbladet-nummer. Ge ett heltal humorScore 1–100 för hur träffsäker och rolig hönshusomskrivningen är.
 
-Bedöm hantverket: vridningen, lexikonet, tempot, om reportaget bär. Inte den verkliga händelsen. Skratta inte åt olyckan. Billig grymhet mot offer ger lågt. Mörk humor som är väl gjord ger högt.
+Bedöm hantverket: vridningen, lexikonet, namnleken, tempot, om reportaget bär. Inte den verkliga händelsen. Skratta inte åt olyckan. Billig grymhet mot offer ger lågt. Torr nyhetsprosa utan skev humor ger lågt. Mörk händelse som blivit lustig i hönshuset utan att håna offret ger högt.
 
 Kalibreringsnumren är ankare. Har de redan en poäng, håll samma skala. Har de ingen, använd dem bara som jämförelse.
 
