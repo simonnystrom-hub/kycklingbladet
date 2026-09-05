@@ -30,6 +30,18 @@ const alarmFields = `{
     sourceAlarmindexUrl,
     sourceScore,
     sourceHeadlineId
+  },
+  extraExtra{
+    kicker,
+    headline,
+    body,
+    sourceUrl,
+    sourceHeadline,
+    sourceNewspaper,
+    sourceNewspaperSlug,
+    promptVersion,
+    modelVersion,
+    createdAt
   }
 }`
 

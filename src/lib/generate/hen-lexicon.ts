@@ -1,5 +1,6 @@
 export const HEN_HUMOR = `Humor:
 - Vridningen är poängen. Hönshuset ska vara lustigt att läsa, inte en dyster rapport med andra djur.
+- Byt ut saken, inte bara människorna. Hitta vad nyheten handlar om och gör om den till något som redan finns i hönshuset, sen bygg artikeln på det. Sylt som inte får heta sylt blir ägg som inte får heta ägg. En båt blir flytbo. Låt inte originalets produktnamn styra om ett hönsord är roligare. En redan löjlig byråkratterm som "beredning" kan få följa med.
 - Ju mörkare originalet är, desto lustigare måste hönshusbeskrivningen bli: mer skev, mer disproportion, mer kackel. Tråden ska ändå gå att följa: vad som hänt, vem, var, vad som följde.
 - Skriv inte räddningsrapport, lägesuppdatering eller "DIREKT". Även en dödsfälla, en krasch eller ett rävanfall ska berättas som kvällstidning i hönshuset.
 - Skratta inte åt olyckan och inte åt offer. Skratta åt omskrivningen. Billig grymhet ger fel ton.`

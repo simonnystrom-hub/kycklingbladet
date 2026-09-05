@@ -1,5 +1,27 @@
 import {describe, expect, it} from 'vitest'
-import {buildRss, escapeXml, rssPubDate} from './rss'
+import type {Alarm} from './sanity/types'
+import {buildRss, escapeXml, rssItemsFromAlarms, rssPubDate} from './rss'
+
+function alarm(overrides: Partial<Alarm> = {}): Alarm {
+  return {
+    _id: 'alarm-2026-09-03',
+    date: '2026-09-03',
+    kicker: 'Nationellt hönslarm',
+    headline: 'Luckan & fällan',
+    body: 'Första stycket.\n\nAndra stycket.',
+    expertVoice: 'Expert',
+    expertHeadline: 'Expertens analys',
+    expertText: 'Analys.',
+    sourceHeadline: 'Källrubrik',
+    sourceNewspaper: 'Tidningen',
+    sourceNewspaperSlug: 'tidningen',
+    sourceAlarmindexUrl: 'https://example.com/alarm',
+    sourceScore: 10,
+    promptVersion: 'prompt-v1',
+    modelVersion: 'model-v1',
+    ...overrides,
+  }
+}
 
 describe('escapeXml', () => {
   it('escapes markup and quotes', () => {
@@ -36,5 +58,79 @@ describe('buildRss', () => {
     expect(xml).toContain(
       '<atom:link href="https://kycklingbladet.vercel.app/rss.xml" rel="self" type="application/rss+xml"/>',
     )
+  })
+
+  it('uses an item path suffix for its link and guid', () => {
+    const xml = buildRss({
+      title: 'Kycklingbladet',
+      description: 'Beskrivning',
+      siteUrl: 'https://kycklingbladet.vercel.app',
+      feedUrl: 'https://kycklingbladet.vercel.app/rss.xml',
+      items: [
+        {
+          date: '2026-09-03',
+          kicker: 'EXTRA EXTRA',
+          headline: 'Räven gripen',
+          body: 'Faran är över.',
+          pathSuffix: '#extra-extra',
+        },
+      ],
+    })
+
+    const extraUrl =
+      'https://kycklingbladet.vercel.app/arkiv/2026-09-03#extra-extra'
+    expect(xml).toContain(`<link>${extraUrl}</link>`)
+    expect(xml).toContain(`<guid isPermaLink="true">${extraUrl}</guid>`)
+    expect(xml).toContain('<title>Räven gripen</title>')
+    expect(xml).toContain('<![CDATA[EXTRA EXTRA\n\nFaran är över.]]>')
+  })
+})
+
+describe('rssItemsFromAlarms', () => {
+  it('adds an EXTRA EXTRA item after the lead for an alarm with a flash', () => {
+    const items = rssItemsFromAlarms([
+      alarm({
+        extraExtra: {
+          kicker: 'EXTRA EXTRA',
+          headline: 'Räven gripen',
+          body: 'Faran är över.',
+          sourceUrl: 'https://example.com/extra',
+          sourceHeadline: 'Räven gripen efter dramat',
+          sourceNewspaper: 'Tidningen',
+          sourceNewspaperSlug: 'tidningen',
+          promptVersion: 'extra-v1',
+          modelVersion: 'model-v1',
+          createdAt: '2026-09-03T12:00:00.000Z',
+        },
+      }),
+      alarm({
+        _id: 'alarm-2026-09-02',
+        date: '2026-09-02',
+        headline: 'Nästa dags larm',
+        extraExtra: null,
+      }),
+    ])
+
+    expect(items).toEqual([
+      {
+        date: '2026-09-03',
+        kicker: 'Nationellt hönslarm',
+        headline: 'Luckan & fällan',
+        body: 'Första stycket.\n\nAndra stycket.',
+      },
+      {
+        date: '2026-09-03',
+        kicker: 'EXTRA EXTRA',
+        headline: 'Räven gripen',
+        body: 'Faran är över.',
+        pathSuffix: '#extra-extra',
+      },
+      {
+        date: '2026-09-02',
+        kicker: 'Nationellt hönslarm',
+        headline: 'Nästa dags larm',
+        body: 'Första stycket.\n\nAndra stycket.',
+      },
+    ])
   })
 })

@@ -1,3 +1,5 @@
+import {hasExtraExtra} from '@/lib/extra-extra/has-extra'
+import type {Alarm} from '@/lib/sanity/types'
 import {parseIsoDateAtNoonUtc} from '@/lib/select/stockholm-date'
 
 export const RSS_FEED_PATH = '/rss.xml'
@@ -8,6 +10,31 @@ export type RssItem = {
   kicker: string
   headline: string
   body: string
+  pathSuffix?: string
+}
+
+export function rssItemsFromAlarms(alarms: Alarm[]): RssItem[] {
+  return alarms.flatMap((alarm) => {
+    const lead: RssItem = {
+      date: alarm.date,
+      kicker: alarm.kicker,
+      headline: alarm.headline,
+      body: alarm.body,
+    }
+
+    if (!hasExtraExtra(alarm)) return [lead]
+
+    return [
+      lead,
+      {
+        date: alarm.date,
+        kicker: alarm.extraExtra.kicker,
+        headline: alarm.extraExtra.headline,
+        body: alarm.extraExtra.body,
+        pathSuffix: '#extra-extra',
+      },
+    ]
+  })
 }
 
 export function escapeXml(value: string): string {
@@ -41,7 +68,7 @@ export function buildRss(input: {
 }): string {
   const items = input.items
     .map((item) => {
-      const link = `${input.siteUrl}/arkiv/${item.date}`
+      const link = `${input.siteUrl}/arkiv/${item.date}${item.pathSuffix ?? ''}`
       return `    <item>
       <title>${escapeXml(item.headline)}</title>
       <link>${escapeXml(link)}</link>
