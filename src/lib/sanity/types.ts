@@ -45,6 +45,8 @@ export type Alarm = {
   modelVersion: string
   humorScore?: number
   notices?: AlarmNotice[] | null
+  imageUrl?: string | null
+  imageCaption?: string | null
 }
 
 export type AlarmTeaser = {

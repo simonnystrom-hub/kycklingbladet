@@ -30,7 +30,9 @@ const alarmFields = `{
     sourceAlarmindexUrl,
     sourceScore,
     sourceHeadlineId
-  }
+  },
+  "imageUrl": image.asset->url,
+  imageCaption
 }`
 
 const extraExtraFields = `{
