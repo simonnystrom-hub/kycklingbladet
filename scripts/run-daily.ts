@@ -4,6 +4,7 @@ import { alarmIdForDate, shouldCreateAlarm } from '../src/lib/select/alarm-id'
 import { fetchScoredHeadlines } from '../src/lib/alarmindex/queries'
 import { findExistingAlarmId, publishAlarm } from '../src/lib/sanity/publish'
 import { generateAlarm } from '../src/lib/generate/claude'
+import { attachLeadImage } from '../src/lib/lead/attach-image'
 import { scoreAlarmIfMissing } from '../src/lib/sanity/score-published'
 import { fillNoticesForDate } from '../src/lib/sanity/fill-notices'
 
@@ -74,6 +75,18 @@ export async function runDaily(now = new Date()) {
     modelVersion,
   })
   console.log(result === 'skipped' ? `Hoppar över ${date}` : `Publicerat ${date}: ${generated.headline}`)
+  if (result === 'created') {
+    try {
+      const image = await attachLeadImage({
+        id: alarmIdForDate(date),
+        date,
+        brief: generated.imageBrief,
+      })
+      if (image.imageError) console.error(`Kunde inte rita larmbilden för ${date}: ${image.imageError}`)
+    } catch (error) {
+      console.error(`Kunde inte rita larmbilden för ${date}`, error)
+    }
+  }
   await scoreDate(date)
   await fillNoticesSafe(date)
 }
