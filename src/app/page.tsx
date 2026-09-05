@@ -1,6 +1,6 @@
 import {AlarmArticle} from '@/components/AlarmArticle'
 import {EmptyIssue} from '@/components/EmptyIssue'
-import {IssueExtra} from '@/components/IssueExtra'
+import {IssueExtraTeaser} from '@/components/IssueExtraTeaser'
 import {IssueNav} from '@/components/IssueNav'
 import {IssueNotices} from '@/components/IssueNotices'
 import {SectionHead} from '@/components/SectionHead'
@@ -41,7 +41,7 @@ export default async function HomePage() {
   return (
     <div className="flex flex-col">
       <section className="sm:order-2">
-        <IssueExtra extra={extra} date={today} />
+        <IssueExtraTeaser extra={extra} date={today} />
         <SectionHead>{TODAY_ISSUE_HEADING}</SectionHead>
         <p
           className="text-[var(--brass)]"

@@ -56,6 +56,11 @@ export type AlarmTeaser = {
   headline: string
 }
 
+export type ArchiveItem = AlarmTeaser & {
+  href: string
+  kind: 'alarm' | 'extraExtra'
+}
+
 export type SiteSettings = {
   title: string
   tagline: string

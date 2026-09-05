@@ -1,4 +1,5 @@
 import {hasExtraExtra} from '@/lib/extra-extra/has-extra'
+import {extraExtraPath} from '@/lib/extra-extra/path'
 import type {Alarm, ExtraExtra} from '@/lib/sanity/types'
 import {parseIsoDateAtNoonUtc} from '@/lib/select/stockholm-date'
 
@@ -10,7 +11,7 @@ export type RssItem = {
   kicker: string
   headline: string
   body: string
-  pathSuffix?: string
+  path?: string
 }
 
 export function rssItemsFromAlarms(alarms: Alarm[], extras: ExtraExtra[] = []): RssItem[] {
@@ -39,7 +40,7 @@ export function rssItemsFromAlarms(alarms: Alarm[], extras: ExtraExtra[] = []): 
         kicker: extra.kicker,
         headline: extra.headline,
         body: extra.body,
-        pathSuffix: '#extra-extra',
+        path: extraExtraPath(extra.date),
       })
     }
 
@@ -78,7 +79,8 @@ export function buildRss(input: {
 }): string {
   const items = input.items
     .map((item) => {
-      const link = `${input.siteUrl}/arkiv/${item.date}${item.pathSuffix ?? ''}`
+      const path = item.path ?? `/arkiv/${item.date}`
+      const link = `${input.siteUrl}${path}`
       return `    <item>
       <title>${escapeXml(item.headline)}</title>
       <link>${escapeXml(link)}</link>

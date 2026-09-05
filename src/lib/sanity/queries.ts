@@ -1,8 +1,9 @@
 import {ARCHIVE_PAGE_SIZE, archivePageWindow} from '@/lib/nav'
+import {mixArchiveItems} from '@/lib/archive-items'
 import {RSS_ITEM_LIMIT} from '@/lib/rss'
 import {WEEK_LEAD_COUNT, weekLeadStart} from '@/lib/week-leads'
 import {getSanityClient, isKycklingbladetConfigured} from './client'
-import type {Alarm, AlarmTeaser, ExtraExtra, SiteSettings} from './types'
+import type {Alarm, AlarmTeaser, ArchiveItem, ExtraExtra, SiteSettings} from './types'
 
 const alarmFields = `{
   _id,
@@ -111,12 +112,21 @@ export async function getExtrasByDates(dates: string[]): Promise<ExtraExtra[]> {
   return safeFetchMany(`*[_type == "extraExtra" && date in $dates]${extraExtraFields}`, {dates})
 }
 
-export async function getAlarmArchivePage(page: number): Promise<{
-  items: AlarmTeaser[]
+export async function getExtraArchive(): Promise<
+  {_id: string; date: string; headline: string; body: string}[]
+> {
+  return safeFetchMany(
+    `*[_type == "extraExtra"] | order(date desc){ _id, date, headline, body }`,
+  )
+}
+
+export async function getArchivePage(page: number): Promise<{
+  items: ArchiveItem[]
   page: number
   pageCount: number
 }> {
-  const archive = await getAlarmArchive()
+  const [alarms, extras] = await Promise.all([getAlarmArchive(), getExtraArchive()])
+  const archive = mixArchiveItems(alarms, extras)
   const {current, pageCount, start} = archivePageWindow(archive.length, page)
   return {
     items: archive.slice(start, start + ARCHIVE_PAGE_SIZE),

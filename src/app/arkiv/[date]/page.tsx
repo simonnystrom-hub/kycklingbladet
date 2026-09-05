@@ -1,5 +1,5 @@
 import {AlarmArticle} from '@/components/AlarmArticle'
-import {IssueExtra} from '@/components/IssueExtra'
+import {IssueExtraTeaser} from '@/components/IssueExtraTeaser'
 import {IssueNav} from '@/components/IssueNav'
 import {IssueNotices} from '@/components/IssueNotices'
 import {hasExtraExtra} from '@/lib/extra-extra/has-extra'
@@ -32,7 +32,7 @@ export default async function ArchiveDatePage({params}: ArchiveDatePageProps) {
 
   return (
     <div>
-      <IssueExtra extra={extra} date={date} />
+      <IssueExtraTeaser extra={extra} date={date} />
       {alarm ? <AlarmArticle alarm={alarm} showDate /> : null}
       {alarm ? <IssueNotices notices={alarm.notices} date={alarm.date} /> : null}
       <IssueNav previous={previous} next={next} />

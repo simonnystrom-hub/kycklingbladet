@@ -60,7 +60,7 @@ describe('buildRss', () => {
     )
   })
 
-  it('uses an item path suffix for its link and guid', () => {
+  it('uses an Extra Extra path for its link and guid', () => {
     const xml = buildRss({
       title: 'Kycklingbladet',
       description: 'Beskrivning',
@@ -72,13 +72,12 @@ describe('buildRss', () => {
           kicker: 'EXTRA EXTRA',
           headline: 'Räven gripen',
           body: 'Faran är över.',
-          pathSuffix: '#extra-extra',
+          path: '/extra-extra/2026-09-03',
         },
       ],
     })
 
-    const extraUrl =
-      'https://kycklingbladet.vercel.app/arkiv/2026-09-03#extra-extra'
+    const extraUrl = 'https://kycklingbladet.vercel.app/extra-extra/2026-09-03'
     expect(xml).toContain(`<link>${extraUrl}</link>`)
     expect(xml).toContain(`<guid isPermaLink="true">${extraUrl}</guid>`)
     expect(xml).toContain('<title>Räven gripen</title>')
@@ -127,7 +126,7 @@ describe('rssItemsFromAlarms', () => {
         kicker: 'EXTRA EXTRA',
         headline: 'Räven gripen',
         body: 'Faran är över.',
-        pathSuffix: '#extra-extra',
+        path: '/extra-extra/2026-09-03',
       },
       {
         date: '2026-09-02',
@@ -160,7 +159,7 @@ describe('rssItemsFromAlarms', () => {
         kicker: 'EXTRA EXTRA',
         headline: 'Räven gripen',
         body: 'Faran är över.',
-        pathSuffix: '#extra-extra',
+        path: '/extra-extra/2026-09-05',
       },
       {
         date: '2026-09-03',

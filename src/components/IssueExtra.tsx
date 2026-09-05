@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import {EXTRA_EXTRA_STAMP} from '@/lib/copy'
 import {hasExtraExtra} from '@/lib/extra-extra/has-extra'
 import {extraIllustration} from '@/lib/extra-extra/illustration'
 import type {ExtraExtra} from '@/lib/sanity/types'
@@ -42,10 +43,7 @@ export function IssueExtra({
   )
 
   return (
-    <section
-      className="mt-10 border-t border-[var(--rule)] pt-8 lg:mt-14 lg:pt-10"
-      id="extra-extra"
-    >
+    <section className="mt-10 border-t border-[var(--rule)] pt-8 lg:mt-14 lg:pt-10">
       <p
         className="text-[var(--brass)]"
         style={{
@@ -54,7 +52,7 @@ export function IssueExtra({
           fontVariant: 'small-caps',
         }}
       >
-        EXTRA EXTRA
+        {EXTRA_EXTRA_STAMP}
       </p>
       <h2 className="mt-3 font-serif text-[1.35rem] leading-snug text-[var(--ink)] sm:text-[1.5rem] lg:text-[1.7rem]">
         {extra.headline}

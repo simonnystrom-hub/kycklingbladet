@@ -1,5 +1,5 @@
 import {ArchiveList} from '@/components/ArchiveList'
-import {getAlarmArchivePage} from '@/lib/sanity/queries'
+import {getArchivePage} from '@/lib/sanity/queries'
 import Link from 'next/link'
 
 export const revalidate = 60
@@ -12,7 +12,7 @@ export default async function ArchivePage({searchParams}: ArchivePageProps) {
   const params = await searchParams
   const requested = Number.parseInt(params.sida ?? '1', 10)
   const page = Number.isFinite(requested) && requested > 0 ? requested : 1
-  const {items, page: current, pageCount} = await getAlarmArchivePage(page)
+  const {items, page: current, pageCount} = await getArchivePage(page)
 
   return (
     <div>
