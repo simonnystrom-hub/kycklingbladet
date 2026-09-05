@@ -6,6 +6,7 @@ export async function attachLeadImage(input: {
   id: string
   date: string
   brief: ExtraImageBrief | null
+  filename?: string
 }): Promise<{image: ExtraPreviewImage | null; imageError: string | null}> {
   if (!input.brief) return {image: null, imageError: null}
   const draw = await drawExtraImage(input.brief)
@@ -14,7 +15,10 @@ export async function attachLeadImage(input: {
   const uploaded = await client.assets.upload(
     'image',
     Buffer.from(draw.image.base64, 'base64'),
-    {filename: `lead-${input.date}.jpg`, contentType: draw.image.mimeType},
+    {
+      filename: input.filename ?? `lead-${input.date}.jpg`,
+      contentType: draw.image.mimeType,
+    },
   )
   const id = input.id.replace(/^drafts\./, '')
   await client

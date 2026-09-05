@@ -14,7 +14,8 @@
     "rewrite-leads": "tsx --env-file=.env.local scripts/rewrite-leads.ts",
     "restore-leads": "tsx --env-file=.env.local scripts/restore-leads.ts",
     "rewrite-notices": "tsx --env-file=.env.local scripts/rewrite-notices.ts",
-    "share-facebook-archive": "tsx --env-file=.env.local scripts/share-archive-to-facebook.ts"
+    "share-facebook-archive": "tsx --env-file=.env.local scripts/share-archive-to-facebook.ts",
+    "backfill-images": "tsx --env-file=.env.local scripts/backfill-images.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.110.0",
