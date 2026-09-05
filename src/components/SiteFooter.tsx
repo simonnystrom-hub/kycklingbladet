@@ -24,8 +24,18 @@ export function SiteFooter() {
               </a>
             </li>
             <li>
+              <Link href="/villkor" className="inline-flex min-h-11 items-center text-[var(--brass)]">
+                Villkor
+              </Link>
+            </li>
+            <li>
               <Link href="/integritet" className="inline-flex min-h-11 items-center text-[var(--brass)]">
                 Integritet
+              </Link>
+            </li>
+            <li>
+              <Link href="/radering" className="inline-flex min-h-11 items-center text-[var(--brass)]">
+                Radering
               </Link>
             </li>
           </ul>

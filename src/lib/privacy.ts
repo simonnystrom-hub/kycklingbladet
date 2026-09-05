@@ -58,7 +58,7 @@ export const PRIVACY_SECTIONS: {heading: string; paragraphs: string[]}[] = [
     heading: 'Dina rättigheter',
     paragraphs: [
       'Du har rätt att begära tillgång till de personuppgifter vi behandlar om dig, rättelse av felaktiga uppgifter, radering, begränsning av behandling, invändning mot behandling som grundas på berättigat intresse, och i tillämpliga fall dataportabilitet. Du kan återkalla ett samtycke om vi skulle be om ett sådant; det påverkar inte behandling som redan skett lagligt.',
-      'För att utöva rättigheterna: använd kontaktsidan och beskriv vad du begär. Vi kan behöva säkerställa din identitet innan vi lämnar ut uppgifter. Vi svarar utan onödigt dröjsmål, senast inom en månad, med möjlighet till förlängning enligt GDPR vid komplicerade ärenden.',
+      'För att utöva rättigheterna: använd kontaktsidan och beskriv vad du begär. Steg för radering finns också på sidan om radering av personuppgifter. Vi kan behöva säkerställa din identitet innan vi lämnar ut eller raderar uppgifter. Vi svarar utan onödigt dröjsmål, senast inom en månad, med möjlighet till förlängning enligt GDPR vid komplicerade ärenden.',
     ],
   },
   {
