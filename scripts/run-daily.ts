@@ -2,7 +2,7 @@ import { isIsoDateString, stockholmToday } from '../src/lib/select/stockholm-dat
 import { selectWinner } from '../src/lib/select/select-winner'
 import { alarmIdForDate, shouldCreateAlarm } from '../src/lib/select/alarm-id'
 import { fetchScoredHeadlines } from '../src/lib/alarmindex/queries'
-import { findExistingAlarmId, publishAlarm } from '../src/lib/sanity/publish'
+import { findExistingAlarmId, fetchRecentLeadSources, publishAlarm } from '../src/lib/sanity/publish'
 import { generateAlarm } from '../src/lib/generate/claude'
 import { attachLeadImage } from '../src/lib/lead/attach-image'
 import { scoreAlarmIfMissing } from '../src/lib/sanity/score-published'
@@ -61,8 +61,9 @@ export async function runDaily(now = new Date()) {
     return
   }
   const headlines = await headlinesWithRetry(date)
-  const winner = selectWinner(headlines)
-  if (!winner) throw new Error('selectWinner returnerade null')
+  const used = await fetchRecentLeadSources(date)
+  const winner = selectWinner(headlines, used)
+  if (!winner) throw new Error(`Inga obrukade Alarmindex-rubriker för ${date}`)
   const { generated, modelVersion, promptVersion } = await generateAlarm({
     text: winner.text,
     newspaperName: winner.newspaperName,

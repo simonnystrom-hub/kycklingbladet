@@ -1,6 +1,10 @@
 import {alarmIdForDate, shouldCreateAlarm} from '@/lib/select/alarm-id'
 import type {GeneratedAlarm} from '@/lib/generate/validate'
-import type {ScoredHeadline} from '@/lib/select/select-winner'
+import {
+  recentLeadWindow,
+  type ScoredHeadline,
+  type UsedLeadSource,
+} from '@/lib/select/select-winner'
 import {alarmindexDayUrl} from '@/lib/alarmindex/url'
 import {getWriteClient} from './write-client'
 
@@ -12,6 +16,32 @@ export async function findExistingAlarmId(date: string): Promise<string | null> 
     {id, draftId: `drafts.${id}`},
   )
   return found
+}
+
+export async function fetchRecentLeadSources(beforeDate: string): Promise<UsedLeadSource[]> {
+  const {start, before} = recentLeadWindow(beforeDate)
+  const rows = await getWriteClient().fetch<
+    {
+      sourceHeadline?: string | null
+      sourceNewspaperSlug?: string | null
+      sourceHeadlineId?: string | null
+    }[]
+  >(
+    `*[_type == "alarm" && date >= $start && date < $before]{sourceHeadline, sourceNewspaperSlug, sourceHeadlineId}`,
+    {start, before},
+  )
+  return rows.flatMap((row) => {
+    if (typeof row.sourceHeadline !== 'string' || typeof row.sourceNewspaperSlug !== 'string') {
+      return []
+    }
+    return [
+      {
+        sourceHeadline: row.sourceHeadline,
+        sourceNewspaperSlug: row.sourceNewspaperSlug,
+        sourceHeadlineId: typeof row.sourceHeadlineId === 'string' ? row.sourceHeadlineId : null,
+      },
+    ]
+  })
 }
 
 export async function publishAlarm(input: {
