@@ -50,3 +50,7 @@ export function formatFacebookBody(body: string): string {
     .filter((paragraph) => paragraph.length > 0)
     .join('\n\n')
 }
+
+export function stripLeadingExtraExtra(body: string): string {
+  return body.replace(/^\s*EXTRA\s+EXTRA\s*[:.\u2013\u2014\u2212-]*\s*/i, '')
+}

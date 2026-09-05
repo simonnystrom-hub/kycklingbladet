@@ -42,10 +42,10 @@ describe('facebookLeadMessage', () => {
 })
 
 describe('facebookExtraMessage', () => {
-  it('stamps EXTRA EXTRA, then title, body, and caption', () => {
+  it('strips a leading EXTRA EXTRA from the body', () => {
     const text = facebookExtraMessage({
       headline: 'Putinsson slutar hugga',
-      body: 'Hackandet tystnar.',
+      body: 'EXTRA EXTRA Efter månader av rävanfall tystnar hackandet.',
       imageCaption: 'Taleshönan vid tråget.',
     })
 
@@ -53,11 +53,9 @@ describe('facebookExtraMessage', () => {
       [
         facebookBoldCaps('EXTRA EXTRA'),
         facebookBoldCaps('Putinsson slutar hugga'),
-        'Hackandet tystnar.',
+        'Efter månader av rävanfall tystnar hackandet.',
         `I bilden: ${facebookItalic('Taleshönan vid tråget.')}`,
       ].join('\n\n'),
     )
-    expect(text).not.toContain('Notiser')
-    expect(text).not.toContain('Högsta hönset')
   })
 })

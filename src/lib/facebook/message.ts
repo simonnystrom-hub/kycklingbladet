@@ -1,5 +1,5 @@
 import {EXTRA_EXTRA_STAMP} from '@/lib/copy'
-import {facebookBoldCaps, facebookItalic, formatFacebookBody} from './style-text'
+import {facebookBoldCaps, facebookItalic, formatFacebookBody, stripLeadingExtraExtra} from './style-text'
 
 export const FACEBOOK_LINK_HINT = 'Se länk i kommentar'
 
@@ -49,7 +49,7 @@ export function facebookExtraMessage(extra: FacebookExtraCopy): string {
   return joinBlocks([
     facebookBoldCaps(EXTRA_EXTRA_STAMP),
     facebookBoldCaps(extra.headline),
-    formatFacebookBody(extra.body),
+    formatFacebookBody(stripLeadingExtraExtra(extra.body)),
     captionBlock(extra.imageCaption),
   ])
 }
