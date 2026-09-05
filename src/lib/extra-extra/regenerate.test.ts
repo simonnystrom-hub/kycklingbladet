@@ -27,6 +27,20 @@ describe('briefFromPreview', () => {
     expect(briefFromPreview(flashPreview, undefined)).toBeNull()
   })
 
+  it('returns null when image fields are empty strings', () => {
+    expect(
+      briefFromPreview(
+        {
+          ...flashPreview,
+          imageShotType: '',
+          imageCaption: '',
+          imagePrompt: '',
+        },
+        undefined,
+      ),
+    ).toBeNull()
+  })
+
   it('builds a brief from preview image fields', () => {
     expect(briefFromPreview(imagePreview, undefined)).toEqual({
       shotType: 'incident',
