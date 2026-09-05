@@ -1,8 +1,8 @@
 import {NextResponse} from 'next/server'
 import {corsHeaders, extraExtraSecretOk} from '@/lib/extra-extra/auth'
 import {extraExtraId} from '@/lib/extra-extra/id'
-import {parseExtraPreview} from '@/lib/extra-extra/payload'
-import {EXTRA_KICKER} from '@/lib/generate/extra-prompt'
+import {parseExtraPreview, parseExtraPreviewImage} from '@/lib/extra-extra/payload'
+import {extraCreateDocument, type ExtraPublishAsset} from '@/lib/extra-extra/publish-doc'
 import {getWriteClient} from '@/lib/sanity/write-client'
 import {stockholmToday} from '@/lib/select/stockholm-date'
 
@@ -38,21 +38,26 @@ export async function POST(request: Request) {
       return json({error: 'Ta bort den befintliga EXTRA EXTRA först'}, 409)
     }
 
-    await client.create({
-      _id: id,
-      _type: 'extraExtra',
-      date,
-      kicker: EXTRA_KICKER,
-      headline: preview.headline,
-      body: preview.body,
-      sourceUrl: preview.sourceUrl,
-      sourceHeadline: preview.sourceHeadline,
-      sourceNewspaper: preview.sourceNewspaper,
-      sourceNewspaperSlug: preview.sourceNewspaperSlug,
-      promptVersion: preview.promptVersion,
-      modelVersion: preview.modelVersion,
-      createdAt: new Date().toISOString(),
-    })
+    const image = parseExtraPreviewImage(payload.image)
+    let asset: ExtraPublishAsset | null = null
+    if (image) {
+      const uploaded = await client.assets.upload(
+        'image',
+        Buffer.from(image.base64, 'base64'),
+        {filename: `extra-extra-${date}.jpg`, contentType: image.mimeType},
+      )
+      asset = {_id: uploaded._id}
+    }
+
+    await client.create(
+      extraCreateDocument({
+        id,
+        date,
+        preview,
+        asset,
+        createdAt: new Date().toISOString(),
+      }),
+    )
 
     return json({ok: true})
   } catch (error) {
