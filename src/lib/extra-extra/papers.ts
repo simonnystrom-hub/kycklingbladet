@@ -15,5 +15,8 @@ export function resolveNewspaper(articleUrl: string): ExtraPaper | null {
   } catch {
     return null
   }
-  return PAPERS[host] ?? null
+  if (!Object.hasOwn(PAPERS, host)) {
+    return null
+  }
+  return PAPERS[host]
 }

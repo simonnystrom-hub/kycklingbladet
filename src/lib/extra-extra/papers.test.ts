@@ -23,5 +23,6 @@ describe('resolveNewspaper', () => {
     expect(resolveNewspaper('https://example.com/nyhet')).toBeNull()
     expect(resolveNewspaper('https://alarmindex.com/dag/2026-09-03/expressen')).toBeNull()
     expect(resolveNewspaper('not-a-url')).toBeNull()
+    expect(resolveNewspaper('https://constructor/')).toBeNull()
   })
 })
