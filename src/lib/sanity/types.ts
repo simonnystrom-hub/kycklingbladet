@@ -10,7 +10,9 @@ export type AlarmNotice = {
   sourceHeadlineId: string
 }
 
-export type AlarmExtra = {
+export type ExtraExtra = {
+  _id: string
+  date: string
   kicker: string
   headline: string
   body: string
@@ -21,6 +23,8 @@ export type AlarmExtra = {
   promptVersion: string
   modelVersion: string
   createdAt: string
+  imageUrl?: string | null
+  imageCaption?: string | null
 }
 
 export type Alarm = {
@@ -41,7 +45,8 @@ export type Alarm = {
   modelVersion: string
   humorScore?: number
   notices?: AlarmNotice[] | null
-  extraExtra?: AlarmExtra | null
+  imageUrl?: string | null
+  imageCaption?: string | null
 }
 
 export type AlarmTeaser = {

@@ -14,7 +14,7 @@ const good = {
 
 describe('validateGeneratedAlarm', () => {
   it('accepts a complete payload', () => {
-    expect(validateGeneratedAlarm(good)).toEqual(good)
+    expect(validateGeneratedAlarm(good)).toEqual({...good, imageBrief: null})
   })
 
   it('rejects missing kicker, headline, body, or expert fields', () => {
@@ -53,6 +53,25 @@ describe('validateGeneratedAlarm', () => {
       body: 'Hon sa «det bär».',
     })
     expect(result?.body).toBe('Hon sa "det bär".')
+  })
+
+  it('attaches a valid image brief and ignores a partial one', () => {
+    expect(
+      validateGeneratedAlarm({
+        ...good,
+        imageShotType: 'incident',
+        imageCaption: 'Tuppen Gösta vid luckan i går kväll.',
+        imagePrompt: 'A rooster by a henhouse hatch at night.',
+      })?.imageBrief,
+    ).toEqual({
+      shotType: 'incident',
+      caption: 'Tuppen Gösta vid luckan i går kväll.',
+      scenePrompt: 'A rooster by a henhouse hatch at night.',
+    })
+    expect(validateGeneratedAlarm(good)?.imageBrief).toBeNull()
+    expect(
+      validateGeneratedAlarm({...good, imageCaption: 'bara text'})?.imageBrief,
+    ).toBeNull()
   })
 })
 

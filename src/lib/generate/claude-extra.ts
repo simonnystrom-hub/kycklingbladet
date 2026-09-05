@@ -15,7 +15,7 @@ export async function generateExtra(source: {
   const call = async () => {
     const message = await anthropic.messages.create({
       model,
-      max_tokens: 700,
+      max_tokens: 1200,
       temperature: 0.9,
       system: EXTRA_WRITE_SYSTEM,
       messages: [{role: 'user', content: buildExtraWriteUserPrompt(source)}],

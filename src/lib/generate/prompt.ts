@@ -1,6 +1,6 @@
 import {HEN_HUMOR, HEN_LEXICON, HEN_NAMES} from './hen-lexicon'
 
-export const PROMPT_VERSION = 'kb-v9'
+export const PROMPT_VERSION = 'kb-v11'
 
 export const SYSTEM_PROMPT = `Du skriver Kycklingbladet, en svensk kvällstidning skriven som om hela världen vore ett hönshus.
 
@@ -38,6 +38,9 @@ Regler:
 - Kalla det inte satir. Skriv som om det vore sant. Skriv inte om poäng, index, formspråk eller Alarmindex.
 - Rubriken du skriver är Kycklingbladets egen: mer uppskruvad än originalet, men igenkännbar. Kopiera inte originalet ordagrant.
 - Kicker är en kort stämpel i samma register som "Dagens skrämchock" eller "Nationellt hönslarm".
+- Föreslå ett bildmanus som passar en hönstidningsillustration: intervju, incident eller annat.
+- imageCaption är svensk bildtext (vem/var/vad), inte en one-liner. Bildtexten ska aldrig in i teckningen.
+- imagePrompt är bara scenen, på engelska, för serierutan. Ingen skylttext, pratbubbla eller artistnamn i scenen. Signaturen låses senare.
 
 Svara med ENDAST ett JSON-objekt:
 {
@@ -46,7 +49,10 @@ Svara med ENDAST ett JSON-objekt:
   "body": "string med stycken åtskilda av \\n\\n",
   "expertVoice": "Överhönan | Högsta hönset | Gårdsanalytikern | Fjäderprognosen",
   "expertHeadline": "string",
-  "expertText": "string"
+  "expertText": "string",
+  "imageShotType": "intervju" | "incident" | "annat",
+  "imageCaption": "string — svensk bildtext vem/var/vad, inte en one-liner",
+  "imagePrompt": "string — English scene for the cartoon, no signs or speech in the picture"
 }`
 
 export function buildUserPrompt(source: { text: string; newspaperName: string }): string {

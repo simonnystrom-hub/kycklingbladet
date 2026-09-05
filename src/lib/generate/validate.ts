@@ -1,4 +1,5 @@
 import {isExpertVoice, type ExpertVoice} from './experts'
+import {validateExtraImageBrief, type ExtraImageBrief} from './extra-image'
 import {normalizeQuotes} from './quotes'
 
 export type GeneratedAlarm = {
@@ -8,6 +9,7 @@ export type GeneratedAlarm = {
   expertVoice: ExpertVoice
   expertHeadline: string
   expertText: string
+  imageBrief: ExtraImageBrief | null
 }
 
 function asNonEmpty(value: unknown): string | null {
@@ -36,5 +38,6 @@ export function validateGeneratedAlarm(input: unknown): GeneratedAlarm | null {
     expertVoice,
     expertHeadline: normalizeQuotes(expertHeadline),
     expertText: normalizeQuotes(expertText),
+    imageBrief: validateExtraImageBrief(record),
   }
 }

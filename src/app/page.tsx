@@ -6,7 +6,7 @@ import {IssueNotices} from '@/components/IssueNotices'
 import {SectionHead} from '@/components/SectionHead'
 import {WeekLeads} from '@/components/WeekLeads'
 import {TAGLINE, TODAY_ISSUE_HEADING} from '@/lib/copy'
-import {getAdjacentDates, getAlarmByDate, getLatestAlarm, getSiteSettings, getWeekLeads} from '@/lib/sanity/queries'
+import {getAdjacentDates, getAlarmByDate, getLatestAlarm, getSiteSettings, getWeekLeads, getExtraByDate} from '@/lib/sanity/queries'
 import {formatSwedishDate, stockholmToday} from '@/lib/select/stockholm-date'
 import type {Metadata} from 'next'
 
@@ -27,9 +27,10 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function HomePage() {
   const today = stockholmToday()
-  const [todayAlarm, latest] = await Promise.all([
+  const [todayAlarm, latest, extra] = await Promise.all([
     getAlarmByDate(today),
     getLatestAlarm(),
+    getExtraByDate(today),
   ])
   const alarm = todayAlarm ?? latest
   const [adjacent, weekLeads] = await Promise.all([
@@ -40,6 +41,7 @@ export default async function HomePage() {
   return (
     <div className="flex flex-col">
       <section className="sm:order-2">
+        <IssueExtra extra={extra} date={today} />
         <SectionHead>{TODAY_ISSUE_HEADING}</SectionHead>
         <p
           className="text-[var(--brass)]"
@@ -54,7 +56,6 @@ export default async function HomePage() {
         {alarm ? (
           <>
             <AlarmArticle alarm={alarm} />
-            <IssueExtra extra={alarm.extraExtra} date={alarm.date} />
             <IssueNotices notices={alarm.notices} date={alarm.date} />
             <IssueNav previous={adjacent.previous} next={adjacent.next} />
           </>

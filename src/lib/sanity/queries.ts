@@ -2,7 +2,7 @@ import {ARCHIVE_PAGE_SIZE, archivePageWindow} from '@/lib/nav'
 import {RSS_ITEM_LIMIT} from '@/lib/rss'
 import {WEEK_LEAD_COUNT, weekLeadStart} from '@/lib/week-leads'
 import {getSanityClient, isKycklingbladetConfigured} from './client'
-import type {Alarm, AlarmTeaser, SiteSettings} from './types'
+import type {Alarm, AlarmTeaser, ExtraExtra, SiteSettings} from './types'
 
 const alarmFields = `{
   _id,
@@ -31,18 +31,25 @@ const alarmFields = `{
     sourceScore,
     sourceHeadlineId
   },
-  extraExtra{
-    kicker,
-    headline,
-    body,
-    sourceUrl,
-    sourceHeadline,
-    sourceNewspaper,
-    sourceNewspaperSlug,
-    promptVersion,
-    modelVersion,
-    createdAt
-  }
+  "imageUrl": image.asset->url,
+  imageCaption
+}`
+
+const extraExtraFields = `{
+  _id,
+  date,
+  kicker,
+  headline,
+  body,
+  sourceUrl,
+  sourceHeadline,
+  sourceNewspaper,
+  sourceNewspaperSlug,
+  promptVersion,
+  modelVersion,
+  createdAt,
+  "imageUrl": image.asset->url,
+  imageCaption
 }`
 
 async function safeFetchOne<T>(
@@ -93,6 +100,15 @@ export async function getAlarmsForFeed(): Promise<Alarm[]> {
   return safeFetchMany(
     `*[_type == "alarm"] | order(date desc)[0...${RSS_ITEM_LIMIT}]${alarmFields}`,
   )
+}
+
+export async function getExtraByDate(date: string): Promise<ExtraExtra | null> {
+  return safeFetchOne(`*[_type == "extraExtra" && date == $date][0]${extraExtraFields}`, {date})
+}
+
+export async function getExtrasByDates(dates: string[]): Promise<ExtraExtra[]> {
+  if (dates.length === 0) return []
+  return safeFetchMany(`*[_type == "extraExtra" && date in $dates]${extraExtraFields}`, {dates})
 }
 
 export async function getAlarmArchivePage(page: number): Promise<{

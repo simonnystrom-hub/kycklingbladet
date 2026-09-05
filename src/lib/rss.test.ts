@@ -1,5 +1,5 @@
 import {describe, expect, it} from 'vitest'
-import type {Alarm} from './sanity/types'
+import type {Alarm, ExtraExtra} from './sanity/types'
 import {buildRss, escapeXml, rssItemsFromAlarms, rssPubDate} from './rss'
 
 function alarm(overrides: Partial<Alarm> = {}): Alarm {
@@ -87,29 +87,33 @@ describe('buildRss', () => {
 })
 
 describe('rssItemsFromAlarms', () => {
-  it('adds an EXTRA EXTRA item after the lead for an alarm with a flash', () => {
-    const items = rssItemsFromAlarms([
-      alarm({
-        extraExtra: {
-          kicker: 'EXTRA EXTRA',
-          headline: 'Räven gripen',
-          body: 'Faran är över.',
-          sourceUrl: 'https://example.com/extra',
-          sourceHeadline: 'Räven gripen efter dramat',
-          sourceNewspaper: 'Tidningen',
-          sourceNewspaperSlug: 'tidningen',
-          promptVersion: 'extra-v1',
-          modelVersion: 'model-v1',
-          createdAt: '2026-09-03T12:00:00.000Z',
-        },
-      }),
-      alarm({
-        _id: 'alarm-2026-09-02',
-        date: '2026-09-02',
-        headline: 'Nästa dags larm',
-        extraExtra: null,
-      }),
-    ])
+  it('adds an EXTRA EXTRA item after the lead for a matching date', () => {
+    const extra: ExtraExtra = {
+      _id: 'extra-extra-2026-09-03',
+      date: '2026-09-03',
+      kicker: 'EXTRA EXTRA',
+      headline: 'Räven gripen',
+      body: 'Faran är över.',
+      sourceUrl: 'https://example.com/extra',
+      sourceHeadline: 'Räven gripen efter dramat',
+      sourceNewspaper: 'Tidningen',
+      sourceNewspaperSlug: 'tidningen',
+      promptVersion: 'extra-v1',
+      modelVersion: 'model-v1',
+      createdAt: '2026-09-03T12:00:00.000Z',
+    }
+
+    const items = rssItemsFromAlarms(
+      [
+        alarm(),
+        alarm({
+          _id: 'alarm-2026-09-02',
+          date: '2026-09-02',
+          headline: 'Nästa dags larm',
+        }),
+      ],
+      [extra],
+    )
 
     expect(items).toEqual([
       {
@@ -129,6 +133,39 @@ describe('rssItemsFromAlarms', () => {
         date: '2026-09-02',
         kicker: 'Nationellt hönslarm',
         headline: 'Nästa dags larm',
+        body: 'Första stycket.\n\nAndra stycket.',
+      },
+    ])
+  })
+
+  it('emits EXTRA EXTRA without a lead for that date', () => {
+    const extra: ExtraExtra = {
+      _id: 'extra-extra-2026-09-05',
+      date: '2026-09-05',
+      kicker: 'EXTRA EXTRA',
+      headline: 'Räven gripen',
+      body: 'Faran är över.',
+      sourceUrl: 'https://example.com/extra',
+      sourceHeadline: 'Räven gripen efter dramat',
+      sourceNewspaper: 'Tidningen',
+      sourceNewspaperSlug: 'tidningen',
+      promptVersion: 'extra-v1',
+      modelVersion: 'model-v1',
+      createdAt: '2026-09-05T08:00:00.000Z',
+    }
+
+    expect(rssItemsFromAlarms([alarm()], [extra])).toEqual([
+      {
+        date: '2026-09-05',
+        kicker: 'EXTRA EXTRA',
+        headline: 'Räven gripen',
+        body: 'Faran är över.',
+        pathSuffix: '#extra-extra',
+      },
+      {
+        date: '2026-09-03',
+        kicker: 'Nationellt hönslarm',
+        headline: 'Luckan & fällan',
         body: 'Första stycket.\n\nAndra stycket.',
       },
     ])

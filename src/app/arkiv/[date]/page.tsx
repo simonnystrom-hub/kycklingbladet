@@ -2,7 +2,8 @@ import {AlarmArticle} from '@/components/AlarmArticle'
 import {IssueExtra} from '@/components/IssueExtra'
 import {IssueNav} from '@/components/IssueNav'
 import {IssueNotices} from '@/components/IssueNotices'
-import {getAdjacentDates, getAlarmByDate} from '@/lib/sanity/queries'
+import {hasExtraExtra} from '@/lib/extra-extra/has-extra'
+import {getAdjacentDates, getAlarmByDate, getExtraByDate} from '@/lib/sanity/queries'
 import {isIsoDateString} from '@/lib/select/stockholm-date'
 import {notFound} from 'next/navigation'
 
@@ -19,8 +20,11 @@ export default async function ArchiveDatePage({params}: ArchiveDatePageProps) {
     notFound()
   }
 
-  const alarm = await getAlarmByDate(date)
-  if (!alarm) {
+  const [alarm, extra] = await Promise.all([
+    getAlarmByDate(date),
+    getExtraByDate(date),
+  ])
+  if (!alarm && !hasExtraExtra(extra)) {
     notFound()
   }
 
@@ -28,9 +32,9 @@ export default async function ArchiveDatePage({params}: ArchiveDatePageProps) {
 
   return (
     <div>
-      <AlarmArticle alarm={alarm} showDate />
-      <IssueExtra extra={alarm.extraExtra} date={alarm.date} />
-      <IssueNotices notices={alarm.notices} date={alarm.date} />
+      <IssueExtra extra={extra} date={date} />
+      {alarm ? <AlarmArticle alarm={alarm} showDate /> : null}
+      {alarm ? <IssueNotices notices={alarm.notices} date={alarm.date} /> : null}
       <IssueNav previous={previous} next={next} />
     </div>
   )

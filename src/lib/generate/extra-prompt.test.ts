@@ -4,7 +4,7 @@ import {HEN_LEXICON, HEN_HUMOR} from './hen-lexicon'
 
 describe('EXTRA_WRITE_SYSTEM', () => {
   it('is a flash: EXTRA EXTRA stamp, shared lexicon, no expert box', () => {
-    expect(EXTRA_PROMPT_VERSION).toBe('kb-extra-v1')
+    expect(EXTRA_PROMPT_VERSION).toBe('kb-extra-v2')
     expect(EXTRA_WRITE_SYSTEM).toContain(HEN_LEXICON)
     expect(EXTRA_WRITE_SYSTEM).toContain(HEN_HUMOR)
     expect(EXTRA_WRITE_SYSTEM).toContain('EXTRA EXTRA')
@@ -12,6 +12,11 @@ describe('EXTRA_WRITE_SYSTEM', () => {
     expect(EXTRA_WRITE_SYSTEM).toContain('Ingen expertruta')
     expect(EXTRA_WRITE_SYSTEM).toContain('Byt ut saken, inte bara människorna')
     expect(EXTRA_WRITE_SYSTEM).not.toContain('Överhönan — analys')
+    expect(EXTRA_WRITE_SYSTEM).toContain('imageShotType')
+    expect(EXTRA_WRITE_SYSTEM).toContain('imageCaption')
+    expect(EXTRA_WRITE_SYSTEM).toContain('intervju')
+    expect(EXTRA_WRITE_SYSTEM).toContain('Bildtexten ska aldrig in i teckningen')
+    expect(EXTRA_WRITE_SYSTEM).toContain('artistnamn')
   })
 })
 
