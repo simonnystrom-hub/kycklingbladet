@@ -133,7 +133,7 @@ Do not add alarm create/preview-from-URL. The daily job remains the only creator
 
 `schemaTypes/alarm.ts`: image fields as on `extraExtra` (Teckning, Bildtext visible readOnly; shot/prompt hidden readOnly).
 
-On the alarm document editor, a small widget (document view or custom input): current drawing, shot `<select>`, **Generera om bild**. Disabled while busy. Does not rewrite kicker, headline, body, or expert box.
+On the alarm document, a custom input on `image`: current drawing, shot `<select>`, **Generera om bild**. Disabled while busy. Does not rewrite kicker, headline, body, or expert box.
 
 Published extras: still no generate-on-document; extras are replaced by delete + Skapa dagens.
 
