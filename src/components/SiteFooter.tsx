@@ -23,6 +23,11 @@ export function SiteFooter() {
                 RSS
               </a>
             </li>
+            <li>
+              <Link href="/integritet" className="inline-flex min-h-11 items-center text-[var(--brass)]">
+                Integritet
+              </Link>
+            </li>
           </ul>
         </nav>
       </div>
