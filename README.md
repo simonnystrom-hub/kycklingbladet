@@ -2,6 +2,7 @@
 
 Daglig satirisk alarmtext baserad på dagens högst scorade rubrik från Alarmindex.
 
+**Sajt:** https://www.kycklingbladet.com  
 **Studio (admin):** https://kycklingbladet.sanity.studio  
 **Kod:** https://github.com/simonnystrom-hub/kycklingbladet
 
@@ -12,7 +13,7 @@ Importera GitHub-repot på [vercel.com/new](https://vercel.com/new/import?s=http
 - `NEXT_PUBLIC_SANITY_PROJECT_ID` = `go9a4gjd`
 - `NEXT_PUBLIC_SANITY_DATASET` = `production`
 - `NEXT_PUBLIC_SANITY_API_VERSION` = `2025-01-01`
-- `NEXT_PUBLIC_SITE_URL` = den URL Vercel ger (uppdatera efter första deploy)
+- `NEXT_PUBLIC_SITE_URL` = `https://www.kycklingbladet.com`
 
 Frontend läser publicerat innehåll utan token. Write-token och Anthropic behövs bara för daily-jobbet (GitHub Actions), inte för att sajten ska synas.
 
@@ -54,7 +55,7 @@ npm run daily
 | `SANITY_STUDIO_PROJECT_ID` | Samma Sanity project id i Studio (`../kycklingbladet-studio`) |
 | `SANITY_STUDIO_DATASET` | Studio-dataset (default `production`) |
 | `NEXT_PUBLIC_SANITY_API_VERSION` | Sanity API-version (default `2025-01-01`) |
-| `NEXT_PUBLIC_SITE_URL` | Publik site-URL (default `http://localhost:3000`) |
+| `NEXT_PUBLIC_SITE_URL` | Publik site-URL. Kod och canonical pekar alltid på `https://www.kycklingbladet.com`. |
 | `SANITY_API_WRITE_TOKEN` | Token för att skapa alarm-dokument |
 | `ALARMINDEX_SANITY_PROJECT_ID` | Alarmindex Sanity project id (läs scored headlines) |
 | `ALARMINDEX_SANITY_DATASET` | Alarmindex-dataset (default `production`) |

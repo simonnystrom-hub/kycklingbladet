@@ -1,6 +1,8 @@
 import type {Metadata} from 'next'
 import {IssueExtra} from '@/components/IssueExtra'
 import {canShowExtraExtraPage} from '@/lib/extra-extra/page-guard'
+import {extraExtraPath} from '@/lib/extra-extra/path'
+import {cartoonImageUrl, shareImages} from '@/lib/og'
 import {getExtraByDate} from '@/lib/sanity/queries'
 import {formatSwedishDate} from '@/lib/select/stockholm-date'
 import {notFound} from 'next/navigation'
@@ -17,7 +19,23 @@ export async function generateMetadata({
   const {date} = await params
   const extra = await getExtraByDate(date)
   if (!canShowExtraExtraPage(date, extra)) return {}
-  return {title: extra.headline, description: extra.headline}
+  const canonical = extraExtraPath(date)
+  const images = shareImages(cartoonImageUrl(extra))
+  return {
+    title: extra.headline,
+    description: extra.headline,
+    alternates: {canonical},
+    openGraph: {
+      title: extra.headline,
+      description: extra.headline,
+      url: canonical,
+      images,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      images,
+    },
+  }
 }
 
 export default async function ExtraExtraPage({params}: ExtraExtraPageProps) {

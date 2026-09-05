@@ -1,5 +1,11 @@
+import type {Metadata} from 'next'
 import {ABOUT} from '@/lib/copy'
 import {getSiteSettings} from '@/lib/sanity/queries'
+
+export const metadata: Metadata = {
+  title: 'Om',
+  alternates: {canonical: '/om'},
+}
 
 export const revalidate = 60
 

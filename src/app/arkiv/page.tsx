@@ -1,6 +1,12 @@
+import type {Metadata} from 'next'
 import {ArchiveList} from '@/components/ArchiveList'
 import {getArchivePage} from '@/lib/sanity/queries'
 import Link from 'next/link'
+
+export const metadata: Metadata = {
+  title: 'Arkiv',
+  alternates: {canonical: '/arkiv'},
+}
 
 export const revalidate = 60
 

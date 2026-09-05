@@ -35,9 +35,9 @@ describe('buildRss', () => {
   it('emits a readable RSS 2.0 channel with archive links', () => {
     const xml = buildRss({
       title: 'Kycklingbladet',
-      description: 'Nyheter för dig som vet att räven alltid står utanför dörren.',
-      siteUrl: 'https://kycklingbladet.vercel.app',
-      feedUrl: 'https://kycklingbladet.vercel.app/rss.xml',
+      description: 'Nyheter för dig som vet att räven alltid står utanför luckan.',
+      siteUrl: 'https://www.kycklingbladet.com',
+      feedUrl: 'https://www.kycklingbladet.com/rss.xml',
       items: [
         {
           date: '2026-09-03',
@@ -51,12 +51,12 @@ describe('buildRss', () => {
     expect(xml).toContain('<?xml version="1.0" encoding="UTF-8"?>')
     expect(xml).toContain('<rss version="2.0"')
     expect(xml).toContain('<title>Luckan &amp; fällan</title>')
-    expect(xml).toContain('https://kycklingbladet.vercel.app/arkiv/2026-09-03')
+    expect(xml).toContain('https://www.kycklingbladet.com/arkiv/2026-09-03')
     expect(xml).toContain('Nationellt hönslarm')
     expect(xml).toContain('Första stycket.')
     expect(xml).toContain(rssPubDate('2026-09-03'))
     expect(xml).toContain(
-      '<atom:link href="https://kycklingbladet.vercel.app/rss.xml" rel="self" type="application/rss+xml"/>',
+      '<atom:link href="https://www.kycklingbladet.com/rss.xml" rel="self" type="application/rss+xml"/>',
     )
   })
 
@@ -64,8 +64,8 @@ describe('buildRss', () => {
     const xml = buildRss({
       title: 'Kycklingbladet',
       description: 'Beskrivning',
-      siteUrl: 'https://kycklingbladet.vercel.app',
-      feedUrl: 'https://kycklingbladet.vercel.app/rss.xml',
+      siteUrl: 'https://www.kycklingbladet.com',
+      feedUrl: 'https://www.kycklingbladet.com/rss.xml',
       items: [
         {
           date: '2026-09-03',
@@ -77,7 +77,7 @@ describe('buildRss', () => {
       ],
     })
 
-    const extraUrl = 'https://kycklingbladet.vercel.app/extra-extra/2026-09-03'
+    const extraUrl = 'https://www.kycklingbladet.com/extra-extra/2026-09-03'
     expect(xml).toContain(`<link>${extraUrl}</link>`)
     expect(xml).toContain(`<guid isPermaLink="true">${extraUrl}</guid>`)
     expect(xml).toContain('<title>Räven gripen</title>')
