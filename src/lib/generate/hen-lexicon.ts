@@ -21,7 +21,7 @@ export const HEN_LEXICON = `Lexikon (använd alltid, utan undantag). Byt ut allt
 - fotboll och matcher = maskkamp / pinnkamp
 - bilar, plan, hus, skolor, sjukhus, fängelser = rullbo, hönsplan, rede, kläckhus, vårdbur, rävsax
 - båtar, skepp, färjor = flytbo. Aldrig rullbo.
-- Andra substantiv: hönsa eller tuppifiera där det bär (olycka, utredning, räddning, möte). Inte överallt. Inte där det blir krystat. Skriv aldrig kadaver.`
+- Andra substantiv: hönsa eller tuppifiera där det bär (olycka, utredning, räddning, möte). Saken i nyheten ska bytas till hönshuset — inte hängas kvar som människornas burk, lag eller varumärke. Inte där ett extra påhittat ord blir krystat ovanpå. Skriv aldrig kadaver.`
 
 export const HEN_NAMES = `Namn och röster:
 - Lämna inga mänskliga egennamn orörda. Lek med dem så att de blir fökycklade, hönsiga eller tuppiga, men fortfarande igenkännliga. Ulf Kristersson kan bli Ulf Kackelsson, Magdalena Andersson Magda Andhönan, Trump Tuppen Trump, Zelenskyj Zelenskycklingen.
