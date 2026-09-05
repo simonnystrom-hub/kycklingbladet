@@ -45,7 +45,9 @@ const extraExtraFields = `{
   sourceNewspaperSlug,
   promptVersion,
   modelVersion,
-  createdAt
+  createdAt,
+  "imageUrl": image.asset->url,
+  imageCaption
 }`
 
 async function safeFetchOne<T>(

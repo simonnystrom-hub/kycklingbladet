@@ -23,6 +23,8 @@ export type ExtraExtra = {
   promptVersion: string
   modelVersion: string
   createdAt: string
+  imageUrl?: string | null
+  imageCaption?: string | null
 }
 
 export type Alarm = {
