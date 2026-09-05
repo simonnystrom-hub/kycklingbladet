@@ -1,5 +1,6 @@
 import {EXTRA_EXTRA_STAMP} from '@/lib/copy'
 import {extraExtraPath} from '@/lib/extra-extra/path'
+import {alarmPath, alarmSlugOrFallback} from '@/lib/select/alarm-path'
 import type {AlarmTeaser, ArchiveItem} from '@/lib/sanity/types'
 
 export type ExtraArchiveRow = {
@@ -27,12 +28,15 @@ export function mixArchiveItems(
     }))
   const alarmRows: ArchiveItem[] = alarms.map((alarm) => ({
     ...alarm,
-    href: `/arkiv/${alarm.date}`,
+    href: alarmPath(alarm.date, alarmSlugOrFallback(alarm.headline, alarm.slug)),
     kind: 'alarm',
   }))
   return [...extraRows, ...alarmRows].sort((a, b) => {
     if (a.date !== b.date) return b.date.localeCompare(a.date)
     if (a.kind !== b.kind) return a.kind === 'extraExtra' ? -1 : 1
+    const slotA = a.kind === 'alarm' ? (a.slot ?? 1) : 0
+    const slotB = b.kind === 'alarm' ? (b.slot ?? 1) : 0
+    if (slotA !== slotB) return slotA - slotB
     return a._id.localeCompare(b._id)
   })
 }

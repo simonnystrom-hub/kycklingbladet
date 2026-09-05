@@ -8,12 +8,14 @@ import {
 import {facebookConfig, probeFacebookPage, shareToFacebook} from '../src/lib/facebook/share'
 import {getSanityClient} from '../src/lib/sanity/client'
 import type {ExtraExtra} from '../src/lib/sanity/types'
+import {alarmPath, alarmSlugOrFallback} from '../src/lib/select/alarm-path'
 import {absoluteUrl} from '../src/lib/site-url'
 
 const GAP_MS = 4000
 
 type LeadRow = FacebookLeadCopy & {
   date: string
+  slug?: string | null
   imageUrl?: string | null
 }
 
@@ -30,9 +32,8 @@ async function loadQueue(): Promise<QueueItem[]> {
   const [leads, extras] = await Promise.all([
     client.fetch<LeadRow[]>(
       `*[_type == "alarm" && defined(headline) && defined(body)] | order(date asc){
-        date, headline, body, expertVoice, expertHeadline, expertText, imageCaption,
-        "imageUrl": image.asset->url,
-        notices[]{headline, body}
+        date, slug, headline, body, expertVoice, expertHeadline, expertText, imageCaption,
+        "imageUrl": image.asset->url
       }`,
     ),
     client.fetch<ExtraExtra[]>(
@@ -74,7 +75,9 @@ async function postItem(item: QueueItem) {
     return shareToFacebook({
       message: facebookLeadMessage(item.lead),
       imageUrl: item.lead.imageUrl,
-      articleUrl: absoluteUrl(`/arkiv/${item.date}`),
+      articleUrl: absoluteUrl(
+        alarmPath(item.date, alarmSlugOrFallback(item.lead.headline, item.lead.slug)),
+      ),
     })
   }
   return shareToFacebook({

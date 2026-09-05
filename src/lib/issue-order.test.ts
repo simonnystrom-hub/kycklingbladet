@@ -10,8 +10,20 @@ describe('issue order', () => {
     )
   })
 
-  it('puts IssueExtra before AlarmArticle on archive', () => {
-    const src = readFileSync('src/app/arkiv/[date]/page.tsx', 'utf8')
-    expect(src.indexOf('<IssueExtraTeaser')).toBeLessThan(src.indexOf('<AlarmArticle'))
+  it('redirects the archive date page and keeps Extra Extra off larm pages', () => {
+    const datePage = readFileSync('src/app/arkiv/[date]/page.tsx', 'utf8')
+    const larmPage = readFileSync('src/app/arkiv/[date]/[slug]/page.tsx', 'utf8')
+    expect(datePage).toContain('permanentRedirect')
+    expect(datePage).not.toContain('IssueExtraTeaser')
+    expect(larmPage).toContain('<AlarmArticle')
+    expect(larmPage).not.toContain('IssueExtra')
+    expect(larmPage).not.toContain('IssueNotices')
+  })
+
+  it('lists three larm on home without notices', () => {
+    const src = readFileSync('src/app/page.tsx', 'utf8')
+    expect(src).toContain('getAlarmsByDate')
+    expect(src).toContain('<AlarmArticle')
+    expect(src).not.toContain('IssueNotices')
   })
 })

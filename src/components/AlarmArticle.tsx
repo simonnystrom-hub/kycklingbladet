@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import {leadIllustration} from '@/lib/extra-extra/illustration'
 import type {Alarm} from '@/lib/sanity/types'
 import {formatSwedishDate, formatSwedishDateShort} from '@/lib/select/stockholm-date'
@@ -6,9 +7,10 @@ import {formatSwedishDate, formatSwedishDateShort} from '@/lib/select/stockholm-
 type AlarmArticleProps = {
   alarm: Alarm
   showDate?: boolean
+  href?: string
 }
 
-export function AlarmArticle({alarm, showDate = false}: AlarmArticleProps) {
+export function AlarmArticle({alarm, showDate = false, href}: AlarmArticleProps) {
   const illustration = leadIllustration(alarm)
   const paragraphs = alarm.body.split('\n\n').filter(Boolean).map((paragraph, index) => (
     <p
@@ -74,7 +76,13 @@ export function AlarmArticle({alarm, showDate = false}: AlarmArticleProps) {
       </p>
 
       <h1 className="mt-3 font-serif text-[1.55rem] leading-[1.2] text-[var(--ink)] sm:text-[2rem] lg:mt-4 lg:text-[2.5rem]">
-        {alarm.headline}
+        {href ? (
+          <Link href={href} className="hover:text-[var(--brass)]">
+            {alarm.headline}
+          </Link>
+        ) : (
+          alarm.headline
+        )}
       </h1>
 
       {illustration ? (

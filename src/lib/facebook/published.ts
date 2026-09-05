@@ -1,5 +1,5 @@
 import {extraExtraPath} from '@/lib/extra-extra/path'
-import {alarmIdForDate} from '@/lib/select/alarm-id'
+import {alarmPath, alarmSlugOrFallback} from '@/lib/select/alarm-path'
 import {getWriteClient} from '@/lib/sanity/write-client'
 import {absoluteUrl} from '@/lib/site-url'
 import {
@@ -10,29 +10,34 @@ import {
 } from './message'
 import {shareToFacebook} from './share'
 
-type StoredLead = FacebookLeadCopy & {imageUrl?: string | null}
+type StoredLead = FacebookLeadCopy & {
+  date: string
+  slug?: string | null
+  imageUrl?: string | null
+}
 
-export async function sharePublishedLead(date: string): Promise<void> {
+export async function sharePublishedLead(id: string): Promise<void> {
   try {
     const alarm = await getWriteClient().fetch<StoredLead | null>(
       `*[_id == $id][0]{
-        headline, body, expertVoice, expertHeadline, expertText, imageCaption,
-        "imageUrl": image.asset->url,
-        notices[]{headline, body}
+        date, slug, headline, body, expertVoice, expertHeadline, expertText, imageCaption,
+        "imageUrl": image.asset->url
       }`,
-      {id: alarmIdForDate(date)},
+      {id},
     )
-    if (!alarm?.headline?.trim() || !alarm.body?.trim()) {
-      console.error(`Hoppar över Facebook: larm ${date} saknar text`)
+    if (!alarm?.headline?.trim() || !alarm.body?.trim() || !alarm.date) {
+      console.error(`Hoppar över Facebook: larm ${id} saknar text`)
       return
     }
     await shareToFacebook({
       message: facebookLeadMessage(alarm),
       imageUrl: alarm.imageUrl,
-      articleUrl: absoluteUrl(`/arkiv/${date}`),
+      articleUrl: absoluteUrl(
+        alarmPath(alarm.date, alarmSlugOrFallback(alarm.headline, alarm.slug)),
+      ),
     })
   } catch (error) {
-    console.error(`Kunde inte posta larm ${date} till Facebook`, error)
+    console.error(`Kunde inte posta larm ${id} till Facebook`, error)
   }
 }
 

@@ -117,22 +117,24 @@ describe('rssItemsFromAlarms', () => {
     expect(items).toEqual([
       {
         date: '2026-09-03',
-        kicker: 'Nationellt hönslarm',
-        headline: 'Luckan & fällan',
-        body: 'Första stycket.\n\nAndra stycket.',
-      },
-      {
-        date: '2026-09-03',
         kicker: 'EXTRA EXTRA',
         headline: 'Räven gripen',
         body: 'Faran är över.',
         path: '/extra-extra/2026-09-03',
       },
       {
+        date: '2026-09-03',
+        kicker: 'Nationellt hönslarm',
+        headline: 'Luckan & fällan',
+        body: 'Första stycket.\n\nAndra stycket.',
+        path: '/arkiv/2026-09-03/luckan-fällan',
+      },
+      {
         date: '2026-09-02',
         kicker: 'Nationellt hönslarm',
         headline: 'Nästa dags larm',
         body: 'Första stycket.\n\nAndra stycket.',
+        path: '/arkiv/2026-09-02/nästa-dags-larm',
       },
     ])
   })
@@ -166,7 +168,21 @@ describe('rssItemsFromAlarms', () => {
         kicker: 'Nationellt hönslarm',
         headline: 'Luckan & fällan',
         body: 'Första stycket.\n\nAndra stycket.',
+        path: '/arkiv/2026-09-03/luckan-fällan',
       },
+    ])
+  })
+
+  it('emits one item per larm on the same date', () => {
+    const items = rssItemsFromAlarms([
+      alarm({slot: 2, slug: 'andra', headline: 'Andra', _id: 'alarm-2026-09-03-2'}),
+      alarm({slot: 1, slug: 'forsta', headline: 'Första'}),
+      alarm({slot: 3, slug: 'tredje', headline: 'Tredje', _id: 'alarm-2026-09-03-3'}),
+    ])
+    expect(items.map((item) => item.path)).toEqual([
+      '/arkiv/2026-09-03/forsta',
+      '/arkiv/2026-09-03/andra',
+      '/arkiv/2026-09-03/tredje',
     ])
   })
 })

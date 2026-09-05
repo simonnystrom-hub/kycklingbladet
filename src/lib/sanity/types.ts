@@ -44,6 +44,8 @@ export type Alarm = {
   promptVersion: string
   modelVersion: string
   humorScore?: number
+  slot?: number | null
+  slug?: string | null
   notices?: AlarmNotice[] | null
   imageUrl?: string | null
   imageCaption?: string | null
@@ -54,6 +56,8 @@ export type AlarmTeaser = {
   date: string
   kicker: string
   headline: string
+  slug?: string | null
+  slot?: number | null
 }
 
 export type ArchiveItem = AlarmTeaser & {

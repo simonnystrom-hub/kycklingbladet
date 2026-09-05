@@ -1,10 +1,15 @@
 import { describe, expect, it } from 'vitest'
-import { alarmIdForDate, shouldCreateAlarm } from './alarm-id'
+import { alarmIdForDate, parseAlarmSlot, shouldCreateAlarm } from './alarm-id'
 import { formatSwedishDateShort, isIsoDateString, stockholmToday } from './stockholm-date'
 
 describe('alarmIdForDate', () => {
   it('prefixes the ISO date', () => {
     expect(alarmIdForDate('2026-09-03')).toBe('alarm-2026-09-03')
+  })
+
+  it('suffixes slot 2 and 3', () => {
+    expect(alarmIdForDate('2026-09-03', 2)).toBe('alarm-2026-09-03-2')
+    expect(alarmIdForDate('2026-09-03', 3)).toBe('alarm-2026-09-03-3')
   })
 })
 
@@ -16,6 +21,13 @@ describe('shouldCreateAlarm', () => {
   it('skips when a document id is already present', () => {
     expect(shouldCreateAlarm('alarm-2026-09-03')).toBe(false)
     expect(shouldCreateAlarm('drafts.alarm-2026-09-03')).toBe(false)
+  })
+})
+
+describe('parseAlarmSlot', () => {
+  it('treats missing slot as 1', () => {
+    expect(parseAlarmSlot(undefined)).toBe(1)
+    expect(parseAlarmSlot(2)).toBe(2)
   })
 })
 

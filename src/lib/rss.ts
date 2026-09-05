@@ -1,6 +1,7 @@
 import {hasExtraExtra} from '@/lib/extra-extra/has-extra'
 import {extraExtraPath} from '@/lib/extra-extra/path'
 import type {Alarm, ExtraExtra} from '@/lib/sanity/types'
+import {alarmPath, alarmSlugOrFallback} from '@/lib/select/alarm-path'
 import {parseIsoDateAtNoonUtc} from '@/lib/select/stockholm-date'
 
 export const RSS_FEED_PATH = '/rss.xml'
@@ -15,24 +16,15 @@ export type RssItem = {
 }
 
 export function rssItemsFromAlarms(alarms: Alarm[], extras: ExtraExtra[] = []): RssItem[] {
-  const alarmByDate = new Map(alarms.map((alarm) => [alarm.date, alarm]))
   const extraByDate = new Map(
     extras.filter(hasExtraExtra).map((extra) => [extra.date, extra]),
   )
-  const dates = [...new Set([...alarmByDate.keys(), ...extraByDate.keys()])].sort().reverse()
+  const dates = [...new Set([...alarms.map((alarm) => alarm.date), ...extraByDate.keys()])]
+    .sort()
+    .reverse()
 
   return dates.flatMap((date) => {
     const items: RssItem[] = []
-    const alarm = alarmByDate.get(date)
-    if (alarm) {
-      items.push({
-        date: alarm.date,
-        kicker: alarm.kicker,
-        headline: alarm.headline,
-        body: alarm.body,
-      })
-    }
-
     const extra = extraByDate.get(date)
     if (extra) {
       items.push({
@@ -41,6 +33,19 @@ export function rssItemsFromAlarms(alarms: Alarm[], extras: ExtraExtra[] = []): 
         headline: extra.headline,
         body: extra.body,
         path: extraExtraPath(extra.date),
+      })
+    }
+
+    const dayAlarms = alarms
+      .filter((alarm) => alarm.date === date)
+      .sort((a, b) => (a.slot ?? 1) - (b.slot ?? 1))
+    for (const alarm of dayAlarms) {
+      items.push({
+        date: alarm.date,
+        kicker: alarm.kicker,
+        headline: alarm.headline,
+        body: alarm.body,
+        path: alarmPath(alarm.date, alarmSlugOrFallback(alarm.headline, alarm.slug)),
       })
     }
 

@@ -18,8 +18,10 @@ describe('sharePublishedLead', () => {
     vi.mocked(shareToFacebook).mockReset()
   })
 
-  it('shares the fetched lead to the archive URL', async () => {
+  it('shares the fetched lead to the canonical slug URL', async () => {
     const alarm = {
+      date: '2026-09-05',
+      slug: 'luckan',
       headline: 'Larmrubrik',
       body: 'Brödtext.',
       expertVoice: 'Högsta hönset',
@@ -27,19 +29,18 @@ describe('sharePublishedLead', () => {
       expertText: 'Trygghet.',
       imageCaption: 'Hönan.',
       imageUrl: 'https://cdn.sanity.io/lead.jpg',
-      notices: [{headline: 'Notis', body: 'Kort.'}],
     }
     vi.mocked(getWriteClient).mockReturnValue({
       fetch: vi.fn().mockResolvedValue(alarm),
     } as never)
-    vi.mocked(shareToFacebook).mockResolvedValue()
+    vi.mocked(shareToFacebook).mockResolvedValue('shared')
 
-    await sharePublishedLead('2026-09-05')
+    await sharePublishedLead('alarm-2026-09-05')
 
     expect(shareToFacebook).toHaveBeenCalledWith({
       message: facebookLeadMessage(alarm),
       imageUrl: 'https://cdn.sanity.io/lead.jpg',
-      articleUrl: 'https://www.kycklingbladet.com/arkiv/2026-09-05',
+      articleUrl: 'https://www.kycklingbladet.com/arkiv/2026-09-05/luckan',
     })
   })
 
@@ -49,7 +50,7 @@ describe('sharePublishedLead', () => {
     } as never)
     vi.spyOn(console, 'error').mockImplementation(() => {})
 
-    await sharePublishedLead('2026-09-05')
+    await sharePublishedLead('alarm-2026-09-05')
 
     expect(shareToFacebook).not.toHaveBeenCalled()
   })
@@ -67,7 +68,7 @@ describe('sharePublishedExtra', () => {
       imageCaption: 'Tuppen.',
       imageUrl: 'https://cdn.sanity.io/extra.jpg',
     }
-    vi.mocked(shareToFacebook).mockResolvedValue()
+    vi.mocked(shareToFacebook).mockResolvedValue('shared')
 
     await sharePublishedExtra('2026-09-05', extra)
 
