@@ -79,7 +79,12 @@ export function AlarmArticle({alarm, showDate = false}: AlarmArticleProps) {
 
       {illustration ? (
         <div className="lg:grid lg:grid-cols-[1fr_minmax(12rem,38%)] lg:gap-10 lg:items-start">
-          <figure className="mt-5 lg:mt-0 lg:col-start-2 lg:row-span-2">
+          <div className="lg:col-start-1 lg:row-start-1">
+            {paragraphs}
+            {expert}
+            {source}
+          </div>
+          <figure className="mt-5 lg:mt-0 lg:col-start-2 lg:row-start-1 lg:row-span-2">
             <div className="border border-[var(--rule)] bg-[#f3ead6] p-2">
               <Image
                 src={illustration.url}
@@ -94,11 +99,6 @@ export function AlarmArticle({alarm, showDate = false}: AlarmArticleProps) {
               {illustration.caption}
             </figcaption>
           </figure>
-          <div className="lg:col-start-1 lg:row-start-1">
-            {paragraphs}
-            {expert}
-            {source}
-          </div>
         </div>
       ) : (
         <>
