@@ -17,6 +17,21 @@ describe('shareToFacebook', () => {
     vi.restoreAllMocks()
   })
 
+  it('unwraps quoted page id and token', async () => {
+    vi.stubEnv('FACEBOOK_PAGE_ID', '"page-1"')
+    vi.stubEnv('FACEBOOK_PAGE_ACCESS_TOKEN', "'token-1'")
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(jsonResponse(200, {id: 'page-1_post'}))
+      .mockResolvedValueOnce(jsonResponse(200, {id: 'comment-1'}))
+    vi.stubGlobal('fetch', fetchMock)
+
+    await expect(shareToFacebook({message: 'Rubrik', articleUrl})).resolves.toBe('shared')
+
+    expect(String(fetchMock.mock.calls[0][1].body)).toContain('access_token=token-1')
+    expect(fetchMock.mock.calls[0][0]).toBe(`${FACEBOOK_GRAPH_BASE}/page-1/feed`)
+  })
+
   it('does not fetch when env is missing', async () => {
     vi.stubEnv('FACEBOOK_PAGE_ID', '')
     vi.stubEnv('FACEBOOK_PAGE_ACCESS_TOKEN', '')

@@ -9,16 +9,63 @@ export type ShareToFacebookInput = {
   imageUrl?: string | null
 }
 
-type FacebookConfig = {
+export type FacebookConfig = {
   pageId: string
   token: string
 }
 
+function unwrapSecret(value: string): string {
+  const trimmed = value.trim()
+  if (trimmed.length >= 2) {
+    const quote = trimmed[0]
+    if ((quote === '"' || quote === "'") && trimmed.endsWith(quote)) {
+      return trimmed.slice(1, -1).trim()
+    }
+  }
+  return trimmed
+}
+
 export function facebookConfig(): FacebookConfig | null {
-  const pageId = process.env.FACEBOOK_PAGE_ID?.trim()
-  const token = process.env.FACEBOOK_PAGE_ACCESS_TOKEN?.trim()
+  const pageId = unwrapSecret(process.env.FACEBOOK_PAGE_ID ?? '')
+  const token = unwrapSecret(process.env.FACEBOOK_PAGE_ACCESS_TOKEN ?? '')
   if (!pageId || !token) return null
   return {pageId, token}
+}
+
+/** Logs length/shape only — never the token itself. */
+export function logFacebookConfigShape(config: FacebookConfig): void {
+  const quoted =
+    (process.env.FACEBOOK_PAGE_ACCESS_TOKEN ?? '').trim().startsWith('"') ||
+    (process.env.FACEBOOK_PAGE_ACCESS_TOKEN ?? '').trim().startsWith("'")
+  console.log(
+    `Facebook-konfig: pageId längd=${config.pageId.length} siffror=${/^\d+$/.test(config.pageId)} token längd=${config.token.length} EAA=${config.token.startsWith('EAA')} citat-i-secret=${quoted}`,
+  )
+}
+
+export async function probeFacebookPage(): Promise<boolean> {
+  const config = facebookConfig()
+  if (!config) return false
+  logFacebookConfigShape(config)
+  const url = new URL(`${FACEBOOK_GRAPH_BASE}/${config.pageId}`)
+  url.searchParams.set('fields', 'id,name')
+  url.searchParams.set('access_token', config.token)
+  const response = await fetch(url, {signal: AbortSignal.timeout(15_000)})
+  let json: Record<string, unknown> = {}
+  try {
+    const parsed: unknown = await response.json()
+    if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+      json = parsed as Record<string, unknown>
+    }
+  } catch {
+    json = {}
+  }
+  if (!response.ok) {
+    console.error(`Facebook-token ogiltigt (${response.status}): ${graphErrorText(json)}`)
+    return false
+  }
+  const name = typeof json.name === 'string' ? json.name : ''
+  console.log(`Facebook-sida OK${name ? `: ${name}` : ''}`)
+  return true
 }
 
 function graphUrl(path: string): string {

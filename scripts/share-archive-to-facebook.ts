@@ -5,7 +5,7 @@ import {
   facebookLeadMessage,
   type FacebookLeadCopy,
 } from '../src/lib/facebook/message'
-import {facebookConfig, shareToFacebook} from '../src/lib/facebook/share'
+import {facebookConfig, probeFacebookPage, shareToFacebook} from '../src/lib/facebook/share'
 import {getSanityClient} from '../src/lib/sanity/client'
 import type {ExtraExtra} from '../src/lib/sanity/types'
 import {absoluteUrl} from '../src/lib/site-url'
@@ -93,6 +93,12 @@ async function main() {
     throw new Error('FACEBOOK_PAGE_ID eller FACEBOOK_PAGE_ACCESS_TOKEN saknas')
   }
 
+  if (!(await probeFacebookPage())) {
+    throw new Error(
+      'Facebook-tokenet går inte att använda. Sätt GitHub-secret FACEBOOK_PAGE_ACCESS_TOKEN till ett Page Access Token (EAA… från GET /me/accounts), inte app-secret.',
+    )
+  }
+
   let shared = 0
   let failed = 0
   let skipped = 0
@@ -104,6 +110,9 @@ async function main() {
     else if (result === 'failed') failed += 1
     else skipped += 1
     console.log(`${index + 1}/${queue.length} ${item.date} ${label}: ${result}`)
+    if (result === 'failed') {
+      throw new Error('Avbryter arkivdelning efter första Facebook-felet')
+    }
     if (index < queue.length - 1) await sleep(GAP_MS)
   }
 
