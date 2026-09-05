@@ -1,4 +1,5 @@
 import {AlarmArticle} from '@/components/AlarmArticle'
+import {IssueExtra} from '@/components/IssueExtra'
 import {IssueNav} from '@/components/IssueNav'
 import {IssueNotices} from '@/components/IssueNotices'
 import {getAdjacentDates, getAlarmByDate} from '@/lib/sanity/queries'
@@ -28,6 +29,7 @@ export default async function ArchiveDatePage({params}: ArchiveDatePageProps) {
   return (
     <div>
       <AlarmArticle alarm={alarm} showDate />
+      <IssueExtra extra={alarm.extraExtra} date={alarm.date} />
       <IssueNotices notices={alarm.notices} date={alarm.date} />
       <IssueNav previous={previous} next={next} />
     </div>

@@ -1,5 +1,6 @@
 import {AlarmArticle} from '@/components/AlarmArticle'
 import {EmptyIssue} from '@/components/EmptyIssue'
+import {IssueExtra} from '@/components/IssueExtra'
 import {IssueNav} from '@/components/IssueNav'
 import {IssueNotices} from '@/components/IssueNotices'
 import {SectionHead} from '@/components/SectionHead'
@@ -53,6 +54,7 @@ export default async function HomePage() {
         {alarm ? (
           <>
             <AlarmArticle alarm={alarm} />
+            <IssueExtra extra={alarm.extraExtra} date={alarm.date} />
             <IssueNotices notices={alarm.notices} date={alarm.date} />
             <IssueNav previous={adjacent.previous} next={adjacent.next} />
           </>
