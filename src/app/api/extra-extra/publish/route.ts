@@ -3,6 +3,7 @@ import {corsHeaders, extraExtraSecretOk} from '@/lib/extra-extra/auth'
 import {extraExtraId} from '@/lib/extra-extra/id'
 import {parseExtraPreview, parseExtraPreviewImage} from '@/lib/extra-extra/payload'
 import {extraCreateDocument, type ExtraPublishAsset} from '@/lib/extra-extra/publish-doc'
+import {sharePublishedExtra} from '@/lib/facebook/published'
 import {getWriteClient} from '@/lib/sanity/write-client'
 import {stockholmToday} from '@/lib/select/stockholm-date'
 
@@ -40,6 +41,7 @@ export async function POST(request: Request) {
 
     const image = parseExtraPreviewImage(payload.image)
     let asset: ExtraPublishAsset | null = null
+    let imageUrl: string | null = null
     if (image) {
       const uploaded = await client.assets.upload(
         'image',
@@ -47,6 +49,7 @@ export async function POST(request: Request) {
         {filename: `extra-extra-${date}.jpg`, contentType: image.mimeType},
       )
       asset = {_id: uploaded._id}
+      imageUrl = typeof uploaded.url === 'string' ? uploaded.url : null
     }
 
     await client.create(
@@ -58,6 +61,13 @@ export async function POST(request: Request) {
         createdAt: new Date().toISOString(),
       }),
     )
+
+    await sharePublishedExtra(date, {
+      headline: preview.headline,
+      body: preview.body,
+      imageCaption: preview.imageCaption,
+      imageUrl,
+    })
 
     return json({ok: true})
   } catch (error) {

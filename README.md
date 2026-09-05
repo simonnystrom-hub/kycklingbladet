@@ -63,6 +63,8 @@ npm run daily
 | `ALARMINDEX_SANITY_READ_TOKEN` | Valfri read-token om Alarmindex-dataset kräver det |
 | `ANTHROPIC_API_KEY` | Claude API-nyckel (daglig generering) |
 | `ANTHROPIC_MODEL` | Claude-modell (valfri override) |
+| `FACEBOOK_PAGE_ID` | Facebooksida som ska få nya larm och Extra Extra |
+| `FACEBOOK_PAGE_ACCESS_TOKEN` | Långlivat Page Access Token (inte app-secret) |
 
 ## GitHub Actions (daily job)
 
@@ -76,6 +78,12 @@ Schemat körs via `.github/workflows/daily.yml` (vardagar 12:00, helg 14:00 Euro
 | `ALARMINDEX_SANITY_READ_TOKEN` | Valfri Alarmindex read-token |
 | `ANTHROPIC_API_KEY` | Claude API-nyckel |
 | `ANTHROPIC_MODEL` | Valfri modell-override |
+| `FACEBOOK_PAGE_ID` | Facebooksida |
+| `FACEBOOK_PAGE_ACCESS_TOKEN` | Page Access Token med `pages_manage_posts`, `pages_read_engagement` och `pages_manage_engagement` |
+
+Samma Facebook-värden ska också sättas i Vercel så Extra Extra-publicering från Studio kan posta. App-id och app-secret används bara för att skapa tokenet, inte i jobbet.
+
+Page token (en gång): i Graph API Explorer, användartoken med sidorättigheterna ovan → byt till långlivat användartoken med app-id + app-secret → `GET /me/accounts` → kopiera sidans `access_token`. Appen ska vara Live, annars syns inläggen bara för app-roller.
 
 ## Redigering och publicering
 

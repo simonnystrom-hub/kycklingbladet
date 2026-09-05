@@ -1,7 +1,7 @@
 # Facebook: post new leads and Extra Extra to the page
 
 **Date:** 2026-09-05  
-**Status:** Draft for review  
+**Status:** Approved  
 **Goal:** When a new lead (larm) or Extra Extra is published for the first time, post it to the Kycklingbladet Facebook Page with the cartoon when one exists, the full on-site copy, and the article URL as a comment.
 
 App id and app secret are **not** used at publish time. They are only for minting a long-lived **Page Access Token**. Runtime secrets are `FACEBOOK_PAGE_ID` and `FACEBOOK_PAGE_ACCESS_TOKEN`.

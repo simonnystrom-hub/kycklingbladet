@@ -7,6 +7,7 @@ import { generateAlarm } from '../src/lib/generate/claude'
 import { attachLeadImage } from '../src/lib/lead/attach-image'
 import { scoreAlarmIfMissing } from '../src/lib/sanity/score-published'
 import { fillNoticesForDate } from '../src/lib/sanity/fill-notices'
+import { sharePublishedLead } from '../src/lib/facebook/published'
 
 const RETRIES = 3
 const WAIT_MS = 10 * 60 * 1000
@@ -76,7 +77,8 @@ export async function runDaily(now = new Date()) {
     modelVersion,
   })
   console.log(result === 'skipped' ? `Hoppar över ${date}` : `Publicerat ${date}: ${generated.headline}`)
-  if (result === 'created') {
+  const created = result === 'created'
+  if (created) {
     try {
       const image = await attachLeadImage({
         id: alarmIdForDate(date),
@@ -90,6 +92,9 @@ export async function runDaily(now = new Date()) {
   }
   await scoreDate(date)
   await fillNoticesSafe(date)
+  if (created) {
+    await sharePublishedLead(date)
+  }
 }
 
 runDaily().catch((error) => {
