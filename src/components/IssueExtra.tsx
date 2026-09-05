@@ -43,7 +43,10 @@ export function IssueExtra({
   )
 
   return (
-    <section className="mt-10 border-t border-[var(--rule)] pt-8 lg:mt-14 lg:pt-10">
+    <section
+      className="mt-10 border-t border-[var(--rule)] pt-8 lg:mt-14 lg:pt-10"
+      id="extra-extra"
+    >
       <p
         className="text-[var(--brass)]"
         style={{
@@ -59,11 +62,7 @@ export function IssueExtra({
       </h2>
       {illustration ? (
         <div className="lg:grid lg:grid-cols-[1fr_minmax(12rem,38%)] lg:gap-10 lg:items-start">
-          <div className="lg:col-start-1 lg:row-start-1">
-            {paragraphs}
-            {source}
-          </div>
-          <figure className="mt-5 lg:mt-0 lg:col-start-2 lg:row-start-1 lg:row-span-2">
+          <figure className="mt-5 lg:mt-0 lg:col-start-2 lg:row-span-2">
             <div className="border border-[var(--rule)] bg-[#f3ead6] p-2">
               <Image
                 src={illustration.url}
@@ -78,6 +77,10 @@ export function IssueExtra({
               {illustration.caption}
             </figcaption>
           </figure>
+          <div className="lg:col-start-1 lg:row-start-1">
+            {paragraphs}
+            {source}
+          </div>
         </div>
       ) : (
         <>

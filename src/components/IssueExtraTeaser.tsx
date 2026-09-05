@@ -38,25 +38,31 @@ export function IssueExtraTeaser({
         <h2 className="mt-3 font-serif text-[1.35rem] leading-snug text-[var(--ink)] group-hover:text-[var(--brass)] sm:text-[1.5rem] lg:text-[1.7rem]">
           {extra.headline}
         </h2>
-        {lede ? (
-          <p className="mt-3 leading-[1.7] text-[var(--ink-muted)]">{lede}</p>
-        ) : null}
         {illustration ? (
-          <figure className="mt-5">
-            <div className="border border-[var(--rule)] bg-[#f3ead6] p-2">
-              <Image
-                src={illustration.url}
-                alt={illustration.caption}
-                width={768}
-                height={1024}
-                sizes="(min-width: 1024px) 38vw, 100vw"
-                className="h-auto w-full"
-              />
-            </div>
-            <figcaption className="mt-2 text-xs italic leading-relaxed text-[var(--brass)] lg:text-sm">
-              {illustration.caption}
-            </figcaption>
-          </figure>
+          <div className="lg:grid lg:grid-cols-[1fr_minmax(12rem,38%)] lg:gap-10 lg:items-start">
+            <figure className="mt-5 lg:mt-0 lg:col-start-2 lg:row-span-2">
+              <div className="border border-[var(--rule)] bg-[#f3ead6] p-2">
+                <Image
+                  src={illustration.url}
+                  alt={illustration.caption}
+                  width={768}
+                  height={1024}
+                  sizes="(min-width: 1024px) 38vw, 100vw"
+                  className="h-auto w-full"
+                />
+              </div>
+              <figcaption className="mt-2 text-xs italic leading-relaxed text-[var(--brass)] lg:text-sm">
+                {illustration.caption}
+              </figcaption>
+            </figure>
+            {lede ? (
+              <p className="mt-3 leading-[1.7] text-[var(--ink-muted)] lg:col-start-1 lg:row-start-1 lg:mt-0">
+                {lede}
+              </p>
+            ) : null}
+          </div>
+        ) : lede ? (
+          <p className="mt-3 leading-[1.7] text-[var(--ink-muted)]">{lede}</p>
         ) : null}
       </Link>
     </section>

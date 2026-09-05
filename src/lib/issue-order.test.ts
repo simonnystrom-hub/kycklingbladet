@@ -4,8 +4,8 @@ import {describe, expect, it} from 'vitest'
 describe('issue order', () => {
   it('puts IssueExtra above Dagens nyheter on home', () => {
     const src = readFileSync('src/app/page.tsx', 'utf8')
-    expect(src.indexOf('<IssueExtraTeaser')).toBeGreaterThan(-1)
-    expect(src.indexOf('<IssueExtraTeaser')).toBeLessThan(
+    expect(src.indexOf('<IssueExtra ')).toBeGreaterThan(-1)
+    expect(src.indexOf('<IssueExtra ')).toBeLessThan(
       src.indexOf('<SectionHead>{TODAY_ISSUE_HEADING}'),
     )
   })
