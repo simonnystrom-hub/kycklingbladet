@@ -1,5 +1,5 @@
 import {hasExtraExtra} from '@/lib/extra-extra/has-extra'
-import type {Alarm} from '@/lib/sanity/types'
+import type {Alarm, ExtraExtra} from '@/lib/sanity/types'
 import {parseIsoDateAtNoonUtc} from '@/lib/select/stockholm-date'
 
 export const RSS_FEED_PATH = '/rss.xml'
@@ -13,27 +13,37 @@ export type RssItem = {
   pathSuffix?: string
 }
 
-export function rssItemsFromAlarms(alarms: Alarm[]): RssItem[] {
-  return alarms.flatMap((alarm) => {
-    const lead: RssItem = {
-      date: alarm.date,
-      kicker: alarm.kicker,
-      headline: alarm.headline,
-      body: alarm.body,
+export function rssItemsFromAlarms(alarms: Alarm[], extras: ExtraExtra[] = []): RssItem[] {
+  const alarmByDate = new Map(alarms.map((alarm) => [alarm.date, alarm]))
+  const extraByDate = new Map(
+    extras.filter(hasExtraExtra).map((extra) => [extra.date, extra]),
+  )
+  const dates = [...new Set([...alarmByDate.keys(), ...extraByDate.keys()])].sort().reverse()
+
+  return dates.flatMap((date) => {
+    const items: RssItem[] = []
+    const alarm = alarmByDate.get(date)
+    if (alarm) {
+      items.push({
+        date: alarm.date,
+        kicker: alarm.kicker,
+        headline: alarm.headline,
+        body: alarm.body,
+      })
     }
 
-    if (!hasExtraExtra(alarm)) return [lead]
-
-    return [
-      lead,
-      {
-        date: alarm.date,
-        kicker: alarm.extraExtra.kicker,
-        headline: alarm.extraExtra.headline,
-        body: alarm.extraExtra.body,
+    const extra = extraByDate.get(date)
+    if (extra) {
+      items.push({
+        date: extra.date,
+        kicker: extra.kicker,
+        headline: extra.headline,
+        body: extra.body,
         pathSuffix: '#extra-extra',
-      },
-    ]
+      })
+    }
+
+    return items
   })
 }
 

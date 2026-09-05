@@ -3,9 +3,6 @@ import {corsHeaders, extraExtraSecretOk} from '@/lib/extra-extra/auth'
 import {scrapeArticleHeadline} from '@/lib/extra-extra/scrape'
 import {generateExtra} from '@/lib/generate/claude-extra'
 import {EXTRA_KICKER} from '@/lib/generate/extra-prompt'
-import {getWriteClient} from '@/lib/sanity/write-client'
-
-type StoredAlarm = {_id: string; date: string}
 
 function json(body: unknown, status = 200) {
   return NextResponse.json(body, {status, headers: corsHeaders()})
@@ -26,16 +23,9 @@ export async function POST(request: Request) {
       throw new Error('Ogiltig förfrågan')
     }
     const payload = input as Record<string, unknown>
-    if (typeof payload.alarmId !== 'string' || typeof payload.url !== 'string') {
+    if (typeof payload.url !== 'string') {
       throw new Error('Ogiltig förfrågan')
     }
-
-    const id = payload.alarmId.replace(/^drafts\./, '')
-    const alarm = await getWriteClient().fetch<StoredAlarm | null>(
-      '*[_id in [$id, $draftId]][0]{_id, date}',
-      {id, draftId: `drafts.${id}`},
-    )
-    if (!alarm) return json({error: 'Inget larm'}, 404)
 
     const source = await scrapeArticleHeadline(payload.url)
     const result = await generateExtra({

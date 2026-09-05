@@ -1,18 +1,17 @@
 import {hasExtraExtra} from '@/lib/extra-extra/has-extra'
-import type {AlarmExtra} from '@/lib/sanity/types'
+import type {ExtraExtra} from '@/lib/sanity/types'
 import {formatSwedishDateShort} from '@/lib/select/stockholm-date'
 
 export function IssueExtra({
   extra,
   date,
 }: {
-  extra?: AlarmExtra | null
+  extra?: ExtraExtra | null
   date: string
 }) {
-  const alarm = {extraExtra: extra}
-  if (!hasExtraExtra(alarm)) return null
+  if (!hasExtraExtra(extra)) return null
 
-  const paragraphs = alarm.extraExtra.body.split('\n\n').filter(Boolean)
+  const paragraphs = extra.body.split('\n\n').filter(Boolean)
 
   return (
     <section
@@ -30,7 +29,7 @@ export function IssueExtra({
         EXTRA EXTRA
       </p>
       <h2 className="mt-3 font-serif text-[1.35rem] leading-snug text-[var(--ink)] sm:text-[1.5rem] lg:text-[1.7rem]">
-        {alarm.extraExtra.headline}
+        {extra.headline}
       </h2>
       {paragraphs.map((paragraph, index) => (
         <p
@@ -42,17 +41,16 @@ export function IssueExtra({
       ))}
       <p className="mt-3 text-xs leading-relaxed text-[var(--ink-muted)] lg:text-sm">
         <span className="block">
-          Ursprungligen {alarm.extraExtra.sourceNewspaper},{' '}
-          {formatSwedishDateShort(date)}
+          Ursprungligen {extra.sourceNewspaper}, {formatSwedishDateShort(date)}
         </span>
         {'"'}
         <a
-          href={alarm.extraExtra.sourceUrl}
+          href={extra.sourceUrl}
           rel="noreferrer"
           target="_blank"
           className="text-[var(--brass)] underline decoration-[var(--brass)]/40 underline-offset-2 hover:text-[var(--ink)]"
         >
-          {alarm.extraExtra.sourceHeadline}
+          {extra.sourceHeadline}
         </a>
         {'"'}
       </p>

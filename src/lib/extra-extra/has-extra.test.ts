@@ -1,8 +1,10 @@
 import {describe, expect, it} from 'vitest'
-import type {AlarmExtra} from '@/lib/sanity/types'
+import type {ExtraExtra} from '@/lib/sanity/types'
 import {hasExtraExtra} from './has-extra'
 
-const extraExtra: AlarmExtra = {
+const extraExtra: ExtraExtra = {
+  _id: 'extra-extra-2026-09-05',
+  date: '2026-09-05',
   kicker: 'EXTRA EXTRA',
   headline: 'Tuppchock på riksväg 40',
   body: 'Hela gården håller andan.',
@@ -17,7 +19,7 @@ const extraExtra: AlarmExtra = {
 
 describe('hasExtraExtra', () => {
   it('accepts non-empty headline and body strings', () => {
-    expect(hasExtraExtra({extraExtra})).toBe(true)
+    expect(hasExtraExtra(extraExtra)).toBe(true)
   })
 
   it.each([
@@ -28,6 +30,6 @@ describe('hasExtraExtra', () => {
     {...extraExtra, headline: 42},
     {...extraExtra, body: 42},
   ])('rejects missing, empty, or non-string content', (value) => {
-    expect(hasExtraExtra({extraExtra: value as AlarmExtra | null | undefined})).toBe(false)
+    expect(hasExtraExtra(value as ExtraExtra | null | undefined)).toBe(false)
   })
 })
