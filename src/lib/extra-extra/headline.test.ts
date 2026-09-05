@@ -25,4 +25,19 @@ describe('extractHeadlineFromHtml', () => {
   it('returns null when empty', () => {
     expect(extractHeadlineFromHtml('<html></html>')).toBeNull()
   })
+
+  it('ignores lookalike data-* attribute names', () => {
+    const html = `<html><head>
+      <meta data-property="og:title" data-content="Wrong">
+      <meta data-name="twitter:title" data-content="Also wrong">
+      </head><body><h1>Real headline</h1></body></html>`
+    expect(extractHeadlineFromHtml(html)).toBe('Real headline')
+  })
+
+  it('reads og:title from property and content attributes only', () => {
+    const html = `<html><head>
+      <meta data-property="og:title" data-content="Wrong" property="og:title" content="Correct">
+      </head></html>`
+    expect(extractHeadlineFromHtml(html)).toBe('Correct')
+  })
 })

@@ -33,16 +33,21 @@ export function cleanScrapedHeadline(raw: string): string {
   return trimmed
 }
 
+function getMetaAttribute(tag: string, name: string): string | null {
+  const match = tag.match(new RegExp(`(?:^|\\s)${name}\\s*=\\s*["']([^"']*)["']`, 'i'))
+  return match ? match[1] : null
+}
+
 function extractMetaTitle(html: string): string | null {
   const metaRegex = /<meta\s+[^>]*>/gi
   for (const match of html.matchAll(metaRegex)) {
     const tag = match[0]
     const isTitle =
-      /property\s*=\s*["']og:title["']/i.test(tag) ||
-      /name\s*=\s*["']twitter:title["']/i.test(tag)
+      getMetaAttribute(tag, 'property') === 'og:title' ||
+      getMetaAttribute(tag, 'name') === 'twitter:title'
     if (!isTitle) continue
-    const contentMatch = tag.match(/content\s*=\s*["']([^"']*)["']/i)
-    if (contentMatch) return contentMatch[1]
+    const content = getMetaAttribute(tag, 'content')
+    if (content !== null) return content
   }
   return null
 }
