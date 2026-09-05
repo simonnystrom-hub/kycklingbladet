@@ -163,22 +163,23 @@ type GraphListRow = {
   page_story_id?: string
 }
 
-async function deleteMatchingFrom(
+export type FacebookFeedItem = {
+  id: string
+  text: string
+}
+
+async function paginatePageList(
   config: FacebookConfig,
   path: string,
   fields: string,
-  needle: string,
-  idOf: (row: GraphListRow) => string | undefined,
-  textOf: (row: GraphListRow) => string | undefined,
-): Promise<number> {
+): Promise<GraphListRow[]> {
   const first = new URL(`${FACEBOOK_GRAPH_BASE}/${config.pageId}${path}`)
   first.searchParams.set('fields', fields)
   first.searchParams.set('limit', '25')
   first.searchParams.set('access_token', config.token)
 
-  let deleted = 0
+  const rows: GraphListRow[] = []
   let url: string | null = first.toString()
-  const seen = new Set<string>()
   while (url) {
     const listed = await fetch(url, {signal: AbortSignal.timeout(15_000)})
     const json = (await listed.json()) as {
@@ -189,49 +190,62 @@ async function deleteMatchingFrom(
     if (!listed.ok) {
       throw new Error(json.error?.message ?? `Kunde inte lista Facebook-inlägg (${listed.status})`)
     }
-    for (const row of json.data ?? []) {
-      const id = idOf(row)
-      const text = textOf(row)
-      if (!id || seen.has(id) || !text?.includes(needle)) continue
-      seen.add(id)
-      const removed = await fetch(
-        `${FACEBOOK_GRAPH_BASE}/${id}?access_token=${encodeURIComponent(config.token)}`,
-        {method: 'DELETE', signal: AbortSignal.timeout(15_000)},
-      )
-      if (!removed.ok) {
-        const body = (await removed.json()) as {error?: {message?: string}}
-        console.error(`Kunde inte radera ${id}: ${body.error?.message ?? removed.status}`)
-        continue
-      }
-      deleted += 1
-      console.log(`Raderade Facebook-inlägg ${deleted}`)
-    }
+    rows.push(...(json.data ?? []))
     url = json.paging?.next ?? null
   }
-  return deleted
+  return rows
 }
 
-export async function deleteFacebookPostsContaining(needle: string): Promise<number> {
+export async function listFacebookFeed(): Promise<FacebookFeedItem[]> {
   const config = facebookConfig()
   if (!config) {
     throw new Error('FACEBOOK_PAGE_ID eller FACEBOOK_PAGE_ACCESS_TOKEN saknas')
   }
 
-  const fromPosts = await deleteMatchingFrom(
-    config,
-    '/posts',
-    'id,message',
-    needle,
-    (row) => row.id,
-    (row) => row.message,
-  )
-  const fromPhotos = await deleteMatchingFrom(
-    config,
-    '/photos',
-    'id,name,page_story_id',
-    needle,
-    (row) => row.page_story_id ?? row.id,
-    (row) => row.name ?? row.message,
-  )
-  return fromPosts + fromPhotos
+  const items = new Map<string, string>()
+  const remember = (id: string | undefined, text: string | undefined) => {
+    if (!id || items.has(id)) return
+    items.set(id, text?.trim() ?? '')
+  }
+
+  for (const row of await paginatePageList(config, '/posts', 'id,message')) {
+    remember(row.id, row.message)
+  }
+  for (const row of await paginatePageList(config, '/photos', 'id,name,page_story_id')) {
+    remember(row.page_story_id ?? row.id, row.name ?? row.message)
+  }
+  return [...items.entries()].map(([id, text]) => ({id, text}))
+}
+
+export async function deleteFacebookPostsContaining(needles: string | string[]): Promise<number> {
+  const config = facebookConfig()
+  if (!config) {
+    throw new Error('FACEBOOK_PAGE_ID eller FACEBOOK_PAGE_ACCESS_TOKEN saknas')
+  }
+
+  const matchers = (Array.isArray(needles) ? needles : [needles])
+    .map((needle) => needle.trim())
+    .filter((needle) => needle.length > 0)
+  if (matchers.length === 0) return 0
+
+  const feed = await listFacebookFeed()
+  let deleted = 0
+  const seen = new Set<string>()
+  for (const item of feed) {
+    if (seen.has(item.id)) continue
+    if (!matchers.some((needle) => item.text.includes(needle))) continue
+    seen.add(item.id)
+    const removed = await fetch(
+      `${FACEBOOK_GRAPH_BASE}/${item.id}?access_token=${encodeURIComponent(config.token)}`,
+      {method: 'DELETE', signal: AbortSignal.timeout(15_000)},
+    )
+    if (!removed.ok) {
+      const body = (await removed.json()) as {error?: {message?: string}}
+      console.error(`Kunde inte radera ${item.id}: ${body.error?.message ?? removed.status}`)
+      continue
+    }
+    deleted += 1
+    console.log(`Raderade Facebook-inlägg ${deleted}`)
+  }
+  return deleted
 }

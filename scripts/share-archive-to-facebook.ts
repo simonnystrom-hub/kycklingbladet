@@ -16,6 +16,7 @@ const GAP_MS = 4000
 type LeadRow = FacebookLeadCopy & {
   date: string
   slug?: string | null
+  slot?: number | null
   imageUrl?: string | null
 }
 
@@ -32,7 +33,7 @@ async function loadQueue(): Promise<QueueItem[]> {
   const [leads, extras] = await Promise.all([
     client.fetch<LeadRow[]>(
       `*[_type == "alarm" && defined(headline) && defined(body)] | order(date asc){
-        date, slug, headline, body, expertVoice, expertHeadline, expertText, imageCaption,
+        date, slug, slot, headline, body, expertVoice, expertHeadline, expertText, imageCaption,
         "imageUrl": image.asset->url
       }`,
     ),
@@ -64,8 +65,11 @@ async function loadQueue(): Promise<QueueItem[]> {
 
   items.sort((a, b) => {
     if (a.date !== b.date) return a.date.localeCompare(b.date)
-    if (a.kind === b.kind) return 0
-    return a.kind === 'alarm' ? -1 : 1
+    if (a.kind !== b.kind) return a.kind === 'alarm' ? -1 : 1
+    if (a.kind === 'alarm' && b.kind === 'alarm') {
+      return (a.lead.slot ?? 1) - (b.lead.slot ?? 1)
+    }
+    return 0
   })
   return items
 }
@@ -94,7 +98,7 @@ async function main() {
   )
   if (process.env.FACEBOOK_DRY_RUN === '1') {
     for (const item of queue) {
-      console.log(`${item.date} ${item.kind === 'alarm' ? 'larm' : 'extra extra'}`)
+    console.log(`${item.date} ${item.kind === 'alarm' ? `larm ${item.lead.slot ?? 1}` : 'extra extra'}`)
     }
     return
   }

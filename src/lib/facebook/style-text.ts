@@ -32,6 +32,10 @@ export function facebookBoldCaps(text: string): string {
   return styleLatin(text.toLocaleUpperCase('sv-SE'), BOLD_CAPITAL_A, BOLD_SMALL_A, BOLD_DIGIT_ZERO)
 }
 
+export function facebookBold(text: string): string {
+  return styleLatin(text, BOLD_CAPITAL_A, BOLD_SMALL_A, BOLD_DIGIT_ZERO)
+}
+
 export function facebookItalic(text: string): string {
   return styleLatin(text, ITALIC_CAPITAL_A, ITALIC_SMALL_A, null)
 }

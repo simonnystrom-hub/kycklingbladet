@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       wipe_old:
-        description: Radera inlägg med "Se länk i kommentar" innan ny körning
+        description: Radera befintliga Kycklingbladet-inlägg innan ny körning
         type: boolean
         default: false
 

@@ -1,5 +1,5 @@
 import {describe, expect, it} from 'vitest'
-import {facebookBoldCaps, facebookItalic, formatFacebookBody, stripLeadingExtraExtra} from './style-text'
+import {facebookBold, facebookBoldCaps, facebookItalic, formatFacebookBody, stripLeadingExtraExtra} from './style-text'
 
 describe('facebookBoldCaps', () => {
   it('uppercases Swedish and maps Latin letters to sans-serif bold', () => {
@@ -7,6 +7,15 @@ describe('facebookBoldCaps', () => {
     expect(styled.startsWith('𝗥')).toBe(true)
     expect(styled).toContain('Ä')
     expect(styled).not.toMatch(/[a-z]/)
+  })
+})
+
+describe('facebookBold', () => {
+  it('maps Latin letters to sans-serif bold without uppercasing', () => {
+    const styled = facebookBold('Högsta hönset')
+    expect(styled.startsWith('𝗛')).toBe(true)
+    expect(styled).toContain('ö')
+    expect(styled).not.toBe(facebookBoldCaps('Högsta hönset'))
   })
 })
 
