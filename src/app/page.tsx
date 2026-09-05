@@ -5,9 +5,9 @@ import {IssueNav} from '@/components/IssueNav'
 import {IssueNotices} from '@/components/IssueNotices'
 import {SectionHead} from '@/components/SectionHead'
 import {WeekLeads} from '@/components/WeekLeads'
-import {TAGLINE, TODAY_ISSUE_HEADING} from '@/lib/copy'
+import {HOME_DESCRIPTION, HOME_TITLE, TODAY_ISSUE_HEADING} from '@/lib/copy'
 import {cartoonImageUrl, shareImages} from '@/lib/og'
-import {getAdjacentDates, getAlarmByDate, getLatestAlarm, getSiteSettings, getWeekLeads, getExtraByDate} from '@/lib/sanity/queries'
+import {getAdjacentDates, getAlarmByDate, getLatestAlarm, getWeekLeads, getExtraByDate} from '@/lib/sanity/queries'
 import {formatSwedishDate, stockholmToday} from '@/lib/select/stockholm-date'
 import type {Metadata} from 'next'
 
@@ -15,29 +15,28 @@ export const revalidate = 60
 
 export async function generateMetadata(): Promise<Metadata> {
   const today = stockholmToday()
-  const [todayAlarm, latest, extra, settings] = await Promise.all([
+  const [todayAlarm, latest, extra] = await Promise.all([
     getAlarmByDate(today),
     getLatestAlarm(),
     getExtraByDate(today),
-    getSiteSettings(),
   ])
   const alarm = todayAlarm ?? latest
-  const description =
-    alarm?.headline?.trim() ||
-    settings?.tagline?.trim() ||
-    TAGLINE
   const images = shareImages(cartoonImageUrl(extra), cartoonImageUrl(alarm))
 
   return {
-    description,
+    title: {absolute: HOME_TITLE},
+    description: HOME_DESCRIPTION,
     alternates: {canonical: '/'},
     openGraph: {
-      description,
+      title: HOME_TITLE,
+      description: HOME_DESCRIPTION,
       url: '/',
       images,
     },
     twitter: {
       card: 'summary_large_image',
+      title: HOME_TITLE,
+      description: HOME_DESCRIPTION,
       images,
     },
   }

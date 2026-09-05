@@ -1,5 +1,9 @@
 export const TAGLINE =
   'Nyheter för dig som vet att räven alltid står utanför luckan.'
+export const HOME_TITLE =
+  'Kycklingbladet — nyheter för dig som vet att räven står utanför luckan'
+export const HOME_DESCRIPTION =
+  'Satiriska nyheter på hönsspråk, byggda på dagens mest alarmerande löpsedlar. Mörk humor som attack mot alarmismen, aldrig åt olyckan.'
 export const EMPTY_HOME =
   'Hönan ruvar. Första numret landar vid middag.'
 export const EMPTY_ARCHIVE = 'Inga larm i arkivet ännu. Hönan samlar sig.'
