@@ -1,6 +1,6 @@
 import {describe, expect, it} from 'vitest'
 import {EXTRA_KICKER} from '@/lib/generate/extra-prompt'
-import {parseExtraPreview} from './payload'
+import {parseExtraPreview, parseExtraPreviewImage} from './payload'
 
 const validPreview = {
   kicker: EXTRA_KICKER,
@@ -38,5 +38,58 @@ describe('parseExtraPreview', () => {
 
   it.each([null, undefined, [], 'preview', 42])('rejects non-object input %#', (input) => {
     expect(parseExtraPreview(input)).toBeNull()
+  })
+
+  it('round-trips valid optional image fields', () => {
+    const withImage = {
+      ...validPreview,
+      imageShotType: 'incident',
+      imageCaption: 'Tuppen Gösta vid luckan i går kväll.',
+      imagePrompt: 'A rooster by a henhouse hatch at night, simple panel.',
+    }
+    expect(parseExtraPreview(withImage)).toEqual(withImage)
+  })
+
+  it('parses flash-only preview without image fields', () => {
+    expect(parseExtraPreview(validPreview)).toEqual(validPreview)
+  })
+
+  it('treats empty image strings as absent', () => {
+    expect(
+      parseExtraPreview({
+        ...validPreview,
+        imageShotType: '',
+        imageCaption: '',
+        imagePrompt: '',
+      }),
+    ).toEqual(validPreview)
+  })
+
+  it('rejects preview when image fields are present but invalid', () => {
+    expect(
+      parseExtraPreview({
+        ...validPreview,
+        imageShotType: 'foto',
+        imageCaption: 'Caption.',
+        imagePrompt: 'Scene.',
+      }),
+    ).toBeNull()
+  })
+})
+
+describe('parseExtraPreviewImage', () => {
+  it('accepts a jpeg payload with non-empty base64', () => {
+    expect(parseExtraPreviewImage({mimeType: 'image/jpeg', base64: 'abc123'})).toEqual({
+      mimeType: 'image/jpeg',
+      base64: 'abc123',
+    })
+  })
+
+  it('rejects non-jpeg mime types', () => {
+    expect(parseExtraPreviewImage({mimeType: 'image/png', base64: 'abc123'})).toBeNull()
+  })
+
+  it('rejects empty base64', () => {
+    expect(parseExtraPreviewImage({mimeType: 'image/jpeg', base64: ''})).toBeNull()
   })
 })
