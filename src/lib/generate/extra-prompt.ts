@@ -24,8 +24,8 @@ Regler:
 - Citat med raka citattecken " så här ". Inte « ». Citat kommer bara från höns och tuppar, aldrig från människor.
 - body är två till tre korta stycken, åtskilda av \\n\\n. Hela meningar, lätt att följa.
 - Föreslå ett bildmanus som passar en hönstidningsillustration: intervju, incident eller annat.
-- imageCaption är svensk bildtext (vem/var/vad), inte en one-liner. Bildtexten ska aldrig in i teckningen — ingen text i bilden.
-- imagePrompt är bara scenen, på engelska, för serierutan.
+- imageCaption är svensk bildtext (vem/var/vad), inte en one-liner. Bildtexten ska aldrig in i teckningen.
+- imagePrompt är bara scenen, på engelska, för serierutan. Ingen skylttext, pratbubbla eller artistnamn i scenen. Signaturen låses senare.
 
 Svara med ENDAST ett JSON-objekt:
 {
@@ -33,7 +33,7 @@ Svara med ENDAST ett JSON-objekt:
   "body": "string",
   "imageShotType": "intervju" | "incident" | "annat",
   "imageCaption": "string — svensk bildtext vem/var/vad, inte en one-liner",
-  "imagePrompt": "string — English scene for the cartoon, no text in the picture"
+  "imagePrompt": "string — English scene for the cartoon, no signs or speech in the picture"
 }`
 
 export function buildExtraWriteUserPrompt(source: {text: string; newspaperName: string}): string {

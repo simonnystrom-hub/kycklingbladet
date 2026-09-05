@@ -1,6 +1,7 @@
 import {describe, expect, it} from 'vitest'
 import {
   buildGeminiImagePrompt,
+  EXTRA_IMAGE_SIGNATURE,
   EXTRA_IMAGE_STYLE,
   parseExtraImageShotType,
   validateExtraImageBrief,
@@ -39,13 +40,15 @@ describe('validateExtraImageBrief', () => {
 })
 
 describe('EXTRA_IMAGE_STYLE', () => {
-  it('locks Berglin/Larson, monochrome, hens only, no in-image text', () => {
+  it('locks Berglin/Larson, monochrome, hens only, Kycklingbladet.com signature', () => {
     expect(EXTRA_IMAGE_STYLE).toMatch(/Berglin/i)
     expect(EXTRA_IMAGE_STYLE).toMatch(/Larson/i)
     expect(EXTRA_IMAGE_STYLE).toMatch(/monochrome|black-and-white|grayscale/i)
     expect(EXTRA_IMAGE_STYLE).toMatch(/no humans/i)
     expect(EXTRA_IMAGE_STYLE).toMatch(/hens|roosters/i)
-    expect(EXTRA_IMAGE_STYLE).toMatch(/no text|no letters|no speech/i)
+    expect(EXTRA_IMAGE_STYLE).toContain(EXTRA_IMAGE_SIGNATURE)
+    expect(EXTRA_IMAGE_STYLE).toMatch(/Never sign Larson/i)
+    expect(EXTRA_IMAGE_STYLE).toMatch(/no other text|no letters|no speech/i)
   })
 })
 
