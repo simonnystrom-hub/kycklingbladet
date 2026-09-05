@@ -24,11 +24,13 @@ describe('shareToFacebook', () => {
     vi.stubGlobal('fetch', fetchMock)
     const spy = vi.spyOn(console, 'error').mockImplementation(() => {})
 
-    await shareToFacebook({
-      message: 'Rubrik',
-      articleUrl,
-      imageUrl: 'https://cdn.sanity.io/x.jpg',
-    })
+    await expect(
+      shareToFacebook({
+        message: 'Rubrik',
+        articleUrl,
+        imageUrl: 'https://cdn.sanity.io/x.jpg',
+      }),
+    ).resolves.toBe('skipped')
 
     expect(fetchMock).not.toHaveBeenCalled()
     expect(spy).toHaveBeenCalled()
@@ -43,11 +45,13 @@ describe('shareToFacebook', () => {
       .mockResolvedValueOnce(jsonResponse(200, {id: 'comment-1'}))
     vi.stubGlobal('fetch', fetchMock)
 
-    await shareToFacebook({
-      message: 'Rubrik\n\nSe länk i kommentar',
-      articleUrl,
-      imageUrl: 'https://cdn.sanity.io/x.jpg',
-    })
+    await expect(
+      shareToFacebook({
+        message: 'Rubrik\n\nSe länk i kommentar',
+        articleUrl,
+        imageUrl: 'https://cdn.sanity.io/x.jpg',
+      }),
+    ).resolves.toBe('shared')
 
     expect(fetchMock).toHaveBeenCalledTimes(2)
     expect(fetchMock.mock.calls[0][0]).toBe(`${FACEBOOK_GRAPH_BASE}/page-1/photos`)
@@ -70,10 +74,7 @@ describe('shareToFacebook', () => {
       .mockResolvedValueOnce(jsonResponse(200, {id: 'comment-1'}))
     vi.stubGlobal('fetch', fetchMock)
 
-    await shareToFacebook({
-      message: 'Rubrik',
-      articleUrl,
-    })
+    await expect(shareToFacebook({message: 'Rubrik', articleUrl})).resolves.toBe('shared')
 
     expect(fetchMock.mock.calls[0][0]).toBe(`${FACEBOOK_GRAPH_BASE}/page-1/feed`)
     expect(String(fetchMock.mock.calls[0][1].body)).toContain('message=Rubrik')
@@ -85,8 +86,6 @@ describe('shareToFacebook', () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(jsonResponse(400, {error: {message: 'fail'}})))
     vi.spyOn(console, 'error').mockImplementation(() => {})
 
-    await expect(
-      shareToFacebook({message: 'Rubrik', articleUrl}),
-    ).resolves.toBeUndefined()
+    await expect(shareToFacebook({message: 'Rubrik', articleUrl})).resolves.toBe('failed')
   })
 })

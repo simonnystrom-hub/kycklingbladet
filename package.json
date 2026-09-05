@@ -13,7 +13,8 @@
     "fill-notices": "tsx --env-file=.env.local scripts/fill-notices.ts",
     "rewrite-leads": "tsx --env-file=.env.local scripts/rewrite-leads.ts",
     "restore-leads": "tsx --env-file=.env.local scripts/restore-leads.ts",
-    "rewrite-notices": "tsx --env-file=.env.local scripts/rewrite-notices.ts"
+    "rewrite-notices": "tsx --env-file=.env.local scripts/rewrite-notices.ts",
+    "share-facebook-archive": "tsx --env-file=.env.local scripts/share-archive-to-facebook.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.110.0",

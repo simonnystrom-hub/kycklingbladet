@@ -1,6 +1,8 @@
 export const FACEBOOK_GRAPH_VERSION = 'v21.0'
 export const FACEBOOK_GRAPH_BASE = `https://graph.facebook.com/${FACEBOOK_GRAPH_VERSION}`
 
+export type ShareToFacebookResult = 'shared' | 'skipped' | 'failed'
+
 export type ShareToFacebookInput = {
   message: string
   articleUrl: string
@@ -52,11 +54,20 @@ function postedObjectId(json: Record<string, unknown>): string | null {
   return null
 }
 
-export async function shareToFacebook(input: ShareToFacebookInput): Promise<void> {
+function graphErrorText(json: Record<string, unknown>): string {
+  const error = json.error
+  if (error && typeof error === 'object' && !Array.isArray(error)) {
+    const message = (error as {message?: unknown}).message
+    if (typeof message === 'string' && message.length > 0) return message
+  }
+  return 'okänt fel'
+}
+
+export async function shareToFacebook(input: ShareToFacebookInput): Promise<ShareToFacebookResult> {
   const config = facebookConfig()
   if (!config) {
     console.error('Hoppar över Facebook: FACEBOOK_PAGE_ID eller FACEBOOK_PAGE_ACCESS_TOKEN saknas')
-    return
+    return 'skipped'
   }
 
   const imageUrl = input.imageUrl?.trim()
@@ -74,14 +85,14 @@ export async function shareToFacebook(input: ShareToFacebookInput): Promise<void
         )
 
     if (!created.ok) {
-      console.error(`Kunde inte posta till Facebook (${created.status})`)
-      return
+      console.error(`Kunde inte posta till Facebook (${created.status}): ${graphErrorText(created.json)}`)
+      return 'failed'
     }
 
     const objectId = postedObjectId(created.json)
     if (!objectId) {
       console.error('Facebook svarade utan post-id')
-      return
+      return 'failed'
     }
 
     const commented = await graphPost(
@@ -90,9 +101,11 @@ export async function shareToFacebook(input: ShareToFacebookInput): Promise<void
       config.token,
     )
     if (!commented.ok) {
-      console.error(`Kunde inte kommentera Facebook-inlägget (${commented.status})`)
+      console.error(`Kunde inte kommentera Facebook-inlägget (${commented.status}): ${graphErrorText(commented.json)}`)
     }
+    return 'shared'
   } catch (error) {
     console.error('Kunde inte posta till Facebook', error)
+    return 'failed'
   }
 }
