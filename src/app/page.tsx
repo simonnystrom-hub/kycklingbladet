@@ -41,6 +41,7 @@ export default async function HomePage() {
   return (
     <div className="flex flex-col">
       <section className="sm:order-2">
+        <IssueExtra extra={extra} date={today} />
         <SectionHead>{TODAY_ISSUE_HEADING}</SectionHead>
         <p
           className="text-[var(--brass)]"
@@ -55,13 +56,11 @@ export default async function HomePage() {
         {alarm ? (
           <>
             <AlarmArticle alarm={alarm} />
-            <IssueExtra extra={extra} date={today} />
             <IssueNotices notices={alarm.notices} date={alarm.date} />
             <IssueNav previous={adjacent.previous} next={adjacent.next} />
           </>
         ) : (
           <div className="mt-6">
-            <IssueExtra extra={extra} date={today} />
             <EmptyIssue />
           </div>
         )}

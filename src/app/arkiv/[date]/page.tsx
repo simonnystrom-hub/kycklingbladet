@@ -32,8 +32,8 @@ export default async function ArchiveDatePage({params}: ArchiveDatePageProps) {
 
   return (
     <div>
-      {alarm ? <AlarmArticle alarm={alarm} showDate /> : null}
       <IssueExtra extra={extra} date={date} />
+      {alarm ? <AlarmArticle alarm={alarm} showDate /> : null}
       {alarm ? <IssueNotices notices={alarm.notices} date={alarm.date} /> : null}
       <IssueNav previous={previous} next={next} />
     </div>
