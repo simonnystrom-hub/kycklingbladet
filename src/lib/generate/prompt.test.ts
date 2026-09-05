@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest'
 import { buildUserPrompt, PROMPT_VERSION, SYSTEM_PROMPT } from './prompt'
 
 describe('PROMPT_VERSION', () => {
-  it('is kb-v9', () => {
-    expect(PROMPT_VERSION).toBe('kb-v9')
+  it('is kb-v11', () => {
+    expect(PROMPT_VERSION).toBe('kb-v11')
   })
 })
 
@@ -46,6 +46,13 @@ describe('SYSTEM_PROMPT', () => {
     expect(SYSTEM_PROMPT).not.toContain('satirisk')
     expect(SYSTEM_PROMPT).toContain('Kalla det inte satir')
     expect(SYSTEM_PROMPT).toContain('Skratta inte åt olyckan')
+  })
+
+  it('asks for a lead cartoon brief', () => {
+    expect(SYSTEM_PROMPT).toContain('imageShotType')
+    expect(SYSTEM_PROMPT).toContain('imageCaption')
+    expect(SYSTEM_PROMPT).toContain('intervju')
+    expect(SYSTEM_PROMPT).toContain('Bildtexten ska aldrig in i teckningen')
   })
 })
 

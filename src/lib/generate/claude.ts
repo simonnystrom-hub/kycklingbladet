@@ -18,7 +18,7 @@ export async function generateAlarm(source: {
   const call = async () => {
     const message = await anthropic.messages.create({
       model,
-      max_tokens: 1600,
+      max_tokens: 2000,
       temperature: 0.9,
       system: SYSTEM_PROMPT,
       messages: [{ role: 'user', content: buildUserPrompt(source) }],
