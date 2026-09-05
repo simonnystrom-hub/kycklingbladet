@@ -47,13 +47,18 @@ async function loadQueue(): Promise<QueueItem[]> {
 
   const items: QueueItem[] = [
     ...leads
-      .filter((lead) => lead.headline?.trim() && lead.body?.trim() && lead.date)
+      .filter(
+        (lead) =>
+          lead.headline?.trim() && lead.body?.trim() && lead.date && lead.imageUrl?.trim(),
+      )
       .map((lead) => ({kind: 'alarm' as const, date: lead.date, lead})),
-    ...extras.filter(hasExtraExtra).map((extra) => ({
-      kind: 'extra' as const,
-      date: extra.date,
-      extra,
-    })),
+    ...extras
+      .filter((extra) => hasExtraExtra(extra) && extra.imageUrl?.trim())
+      .map((extra) => ({
+        kind: 'extra' as const,
+        date: extra.date,
+        extra,
+      })),
   ]
 
   items.sort((a, b) => {
@@ -81,7 +86,9 @@ async function postItem(item: QueueItem) {
 
 async function main() {
   const queue = await loadQueue()
-  console.log(`Kö: ${queue.length} inlägg, äldst först (larm före Extra Extra samma dag).`)
+  console.log(
+    `Kö: ${queue.length} inlägg med bild, äldst först (larm före Extra Extra samma dag).`,
+  )
   if (process.env.FACEBOOK_DRY_RUN === '1') {
     for (const item of queue) {
       console.log(`${item.date} ${item.kind === 'alarm' ? 'larm' : 'extra extra'}`)
@@ -117,7 +124,7 @@ async function main() {
   }
 
   console.log(`Klart. shared=${shared} failed=${failed} skipped=${skipped}`)
-  if (failed > 0 || skipped > 0) process.exitCode = 1
+  if (failed > 0) process.exitCode = 1
 }
 
 main().catch((error) => {

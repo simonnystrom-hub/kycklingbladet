@@ -26,10 +26,12 @@ describe('shareToFacebook', () => {
       .mockResolvedValueOnce(jsonResponse(200, {id: 'comment-1'}))
     vi.stubGlobal('fetch', fetchMock)
 
-    await expect(shareToFacebook({message: 'Rubrik', articleUrl})).resolves.toBe('shared')
+    await expect(
+      shareToFacebook({message: 'Rubrik', articleUrl, imageUrl: 'https://cdn.sanity.io/x.jpg'}),
+    ).resolves.toBe('shared')
 
     expect(String(fetchMock.mock.calls[0][1].body)).toContain('access_token=token-1')
-    expect(fetchMock.mock.calls[0][0]).toBe(`${FACEBOOK_GRAPH_BASE}/page-1/feed`)
+    expect(fetchMock.mock.calls[0][0]).toBe(`${FACEBOOK_GRAPH_BASE}/page-1/photos`)
   })
 
   it('does not fetch when env is missing', async () => {
@@ -80,19 +82,15 @@ describe('shareToFacebook', () => {
     )
   })
 
-  it('posts to feed when there is no image', async () => {
+  it('skips when there is no image', async () => {
     vi.stubEnv('FACEBOOK_PAGE_ID', 'page-1')
     vi.stubEnv('FACEBOOK_PAGE_ACCESS_TOKEN', 'token-1')
-    const fetchMock = vi
-      .fn()
-      .mockResolvedValueOnce(jsonResponse(200, {id: 'page-1_post'}))
-      .mockResolvedValueOnce(jsonResponse(200, {id: 'comment-1'}))
+    const fetchMock = vi.fn()
     vi.stubGlobal('fetch', fetchMock)
+    vi.spyOn(console, 'error').mockImplementation(() => {})
 
-    await expect(shareToFacebook({message: 'Rubrik', articleUrl})).resolves.toBe('shared')
-
-    expect(fetchMock.mock.calls[0][0]).toBe(`${FACEBOOK_GRAPH_BASE}/page-1/feed`)
-    expect(String(fetchMock.mock.calls[0][1].body)).toContain('message=Rubrik')
+    await expect(shareToFacebook({message: 'Rubrik', articleUrl})).resolves.toBe('skipped')
+    expect(fetchMock).not.toHaveBeenCalled()
   })
 
   it('does not throw when Graph returns an error', async () => {
@@ -101,6 +99,8 @@ describe('shareToFacebook', () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(jsonResponse(400, {error: {message: 'fail'}})))
     vi.spyOn(console, 'error').mockImplementation(() => {})
 
-    await expect(shareToFacebook({message: 'Rubrik', articleUrl})).resolves.toBe('failed')
+    await expect(
+      shareToFacebook({message: 'Rubrik', articleUrl, imageUrl: 'https://cdn.sanity.io/x.jpg'}),
+    ).resolves.toBe('failed')
   })
 })

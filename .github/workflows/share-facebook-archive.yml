@@ -2,6 +2,11 @@ name: Share archive to Facebook
 
 on:
   workflow_dispatch:
+    inputs:
+      wipe_old:
+        description: Radera inlägg med "Se länk i kommentar" innan ny körning
+        type: boolean
+        default: false
 
 concurrency:
   group: share-facebook-archive
@@ -23,4 +28,6 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - if: ${{ inputs.wipe_old }}
+        run: npx tsx scripts/delete-old-facebook-posts.ts
       - run: npx tsx scripts/share-archive-to-facebook.ts

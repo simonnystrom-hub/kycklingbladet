@@ -118,18 +118,17 @@ export async function shareToFacebook(input: ShareToFacebookInput): Promise<Shar
   }
 
   const imageUrl = input.imageUrl?.trim()
+  if (!imageUrl) {
+    console.error('Hoppar över Facebook: inlägget saknar bild')
+    return 'skipped'
+  }
+
   try {
-    const created = imageUrl
-      ? await graphPost(
-          `/${config.pageId}/photos`,
-          {url: imageUrl, caption: input.message},
-          config.token,
-        )
-      : await graphPost(
-          `/${config.pageId}/feed`,
-          {message: input.message},
-          config.token,
-        )
+    const created = await graphPost(
+      `/${config.pageId}/photos`,
+      {url: imageUrl, caption: input.message},
+      config.token,
+    )
 
     if (!created.ok) {
       console.error(`Kunde inte posta till Facebook (${created.status}): ${graphErrorText(created.json)}`)
@@ -155,4 +154,84 @@ export async function shareToFacebook(input: ShareToFacebookInput): Promise<Shar
     console.error('Kunde inte posta till Facebook', error)
     return 'failed'
   }
+}
+
+type GraphListRow = {
+  id?: string
+  message?: string
+  name?: string
+  page_story_id?: string
+}
+
+async function deleteMatchingFrom(
+  config: FacebookConfig,
+  path: string,
+  fields: string,
+  needle: string,
+  idOf: (row: GraphListRow) => string | undefined,
+  textOf: (row: GraphListRow) => string | undefined,
+): Promise<number> {
+  const first = new URL(`${FACEBOOK_GRAPH_BASE}/${config.pageId}${path}`)
+  first.searchParams.set('fields', fields)
+  first.searchParams.set('limit', '25')
+  first.searchParams.set('access_token', config.token)
+
+  let deleted = 0
+  let url: string | null = first.toString()
+  const seen = new Set<string>()
+  while (url) {
+    const listed = await fetch(url, {signal: AbortSignal.timeout(15_000)})
+    const json = (await listed.json()) as {
+      data?: GraphListRow[]
+      paging?: {next?: string}
+      error?: {message?: string}
+    }
+    if (!listed.ok) {
+      throw new Error(json.error?.message ?? `Kunde inte lista Facebook-inlägg (${listed.status})`)
+    }
+    for (const row of json.data ?? []) {
+      const id = idOf(row)
+      const text = textOf(row)
+      if (!id || seen.has(id) || !text?.includes(needle)) continue
+      seen.add(id)
+      const removed = await fetch(
+        `${FACEBOOK_GRAPH_BASE}/${id}?access_token=${encodeURIComponent(config.token)}`,
+        {method: 'DELETE', signal: AbortSignal.timeout(15_000)},
+      )
+      if (!removed.ok) {
+        const body = (await removed.json()) as {error?: {message?: string}}
+        console.error(`Kunde inte radera ${id}: ${body.error?.message ?? removed.status}`)
+        continue
+      }
+      deleted += 1
+      console.log(`Raderade Facebook-inlägg ${deleted}`)
+    }
+    url = json.paging?.next ?? null
+  }
+  return deleted
+}
+
+export async function deleteFacebookPostsContaining(needle: string): Promise<number> {
+  const config = facebookConfig()
+  if (!config) {
+    throw new Error('FACEBOOK_PAGE_ID eller FACEBOOK_PAGE_ACCESS_TOKEN saknas')
+  }
+
+  const fromPosts = await deleteMatchingFrom(
+    config,
+    '/posts',
+    'id,message',
+    needle,
+    (row) => row.id,
+    (row) => row.message,
+  )
+  const fromPhotos = await deleteMatchingFrom(
+    config,
+    '/photos',
+    'id,name,page_story_id',
+    needle,
+    (row) => row.page_story_id ?? row.id,
+    (row) => row.name ?? row.message,
+  )
+  return fromPosts + fromPhotos
 }

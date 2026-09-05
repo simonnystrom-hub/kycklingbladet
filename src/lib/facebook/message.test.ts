@@ -1,9 +1,6 @@
 import {describe, expect, it} from 'vitest'
-import {
-  FACEBOOK_LINK_HINT,
-  facebookExtraMessage,
-  facebookLeadMessage,
-} from './message'
+import {facebookExtraMessage, facebookLeadMessage} from './message'
+import {facebookBoldCaps, facebookItalic} from './style-text'
 
 const lead = {
   headline: 'Tvingades söka skydd i grannredet',
@@ -14,43 +11,38 @@ const lead = {
 }
 
 describe('facebookLeadMessage', () => {
-  it('includes headline, caption, body, expert, notices, and the comment hint', () => {
+  it('uses a bold-caps title, body, then italic caption', () => {
     const text = facebookLeadMessage({
       ...lead,
       imageCaption: 'Hönan vid luckan.',
-      notices: [
-        {headline: 'Glitterboll', body: 'Tuppen skadad.'},
-        {headline: 'Celina', body: 'Trådrulle mot räven.'},
-      ],
+      notices: [{headline: 'Glitterboll', body: 'Tuppen skadad.'}],
     })
 
     expect(text).toBe(
       [
-        'Tvingades söka skydd i grannredet',
-        'Hönan vid luckan.',
+        facebookBoldCaps('Tvingades söka skydd i grannredet'),
         'Första stycket.\n\nAndra stycket.',
-        'Högsta hönset Så fungerar nödredet',
-        'Skyddet innebär trygghet.',
-        'Notiser',
-        'Glitterboll',
-        'Tuppen skadad.',
-        'Celina',
-        'Trådrulle mot räven.',
-        FACEBOOK_LINK_HINT,
+        `I bilden: ${facebookItalic('Hönan vid luckan.')}`,
       ].join('\n\n'),
     )
+    expect(text).not.toContain('Högsta hönset')
+    expect(text).not.toContain('Notiser')
+    expect(text).not.toContain('Se länk i kommentar')
   })
 
-  it('omits caption and Notiser when they are missing', () => {
+  it('omits the caption line when it is missing', () => {
     const text = facebookLeadMessage({...lead, imageCaption: '  ', notices: []})
-    expect(text).not.toContain('Notiser')
-    expect(text).not.toContain('Hönan vid luckan')
-    expect(text.endsWith(FACEBOOK_LINK_HINT)).toBe(true)
+    expect(text).not.toContain('I bilden:')
+    expect(text).toBe(
+      [facebookBoldCaps('Tvingades söka skydd i grannredet'), 'Första stycket.\n\nAndra stycket.'].join(
+        '\n\n',
+      ),
+    )
   })
 })
 
 describe('facebookExtraMessage', () => {
-  it('stamps EXTRA EXTRA and skips expert and notices', () => {
+  it('stamps EXTRA EXTRA, then title, body, and caption', () => {
     const text = facebookExtraMessage({
       headline: 'Putinsson slutar hugga',
       body: 'Hackandet tystnar.',
@@ -59,11 +51,10 @@ describe('facebookExtraMessage', () => {
 
     expect(text).toBe(
       [
-        'EXTRA EXTRA',
-        'Putinsson slutar hugga',
-        'Taleshönan vid tråget.',
+        facebookBoldCaps('EXTRA EXTRA'),
+        facebookBoldCaps('Putinsson slutar hugga'),
         'Hackandet tystnar.',
-        FACEBOOK_LINK_HINT,
+        `I bilden: ${facebookItalic('Taleshönan vid tråget.')}`,
       ].join('\n\n'),
     )
     expect(text).not.toContain('Notiser')

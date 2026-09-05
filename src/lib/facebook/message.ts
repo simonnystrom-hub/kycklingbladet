@@ -1,4 +1,5 @@
 import {EXTRA_EXTRA_STAMP} from '@/lib/copy'
+import {facebookBoldCaps, facebookItalic, formatFacebookBody} from './style-text'
 
 export const FACEBOOK_LINK_HINT = 'Se länk i kommentar'
 
@@ -30,36 +31,25 @@ function joinBlocks(blocks: Array<string | null | undefined>): string {
     .join('\n\n')
 }
 
-function expertBlock(lead: FacebookLeadCopy): string | null {
-  const heading = `${lead.expertVoice} ${lead.expertHeadline}`.trim()
-  return joinBlocks([heading, lead.expertText]) || null
-}
-
-function noticesBlock(notices?: FacebookNoticeCopy[] | null): string | null {
-  if (!notices?.length) return null
-  return joinBlocks([
-    'Notiser',
-    ...notices.map((notice) => joinBlocks([notice.headline, notice.body])),
-  ])
+function captionBlock(caption?: string | null): string | null {
+  const text = caption?.trim()
+  if (!text) return null
+  return `I bilden: ${facebookItalic(text)}`
 }
 
 export function facebookLeadMessage(lead: FacebookLeadCopy): string {
   return joinBlocks([
-    lead.headline,
-    lead.imageCaption,
-    lead.body,
-    expertBlock(lead),
-    noticesBlock(lead.notices),
-    FACEBOOK_LINK_HINT,
+    facebookBoldCaps(lead.headline),
+    formatFacebookBody(lead.body),
+    captionBlock(lead.imageCaption),
   ])
 }
 
 export function facebookExtraMessage(extra: FacebookExtraCopy): string {
   return joinBlocks([
-    EXTRA_EXTRA_STAMP,
-    extra.headline,
-    extra.imageCaption,
-    extra.body,
-    FACEBOOK_LINK_HINT,
+    facebookBoldCaps(EXTRA_EXTRA_STAMP),
+    facebookBoldCaps(extra.headline),
+    formatFacebookBody(extra.body),
+    captionBlock(extra.imageCaption),
   ])
 }
