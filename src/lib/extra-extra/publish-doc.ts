@@ -9,10 +9,10 @@ export function extraCreateDocument(input: {
   preview: ExtraExtraPreview
   asset: ExtraPublishAsset | null
   createdAt: string
-}): Record<string, unknown> {
+}): Record<string, unknown> & {_type: 'extraExtra'} {
   const {id, date, preview, asset, createdAt} = input
 
-  const doc: Record<string, unknown> = {
+  const doc: Record<string, unknown> & {_type: 'extraExtra'} = {
     _id: id,
     _type: 'extraExtra',
     date,

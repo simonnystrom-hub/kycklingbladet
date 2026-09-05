@@ -63,7 +63,14 @@ export function IssueExtra({
         <div className="lg:grid lg:grid-cols-[1fr_minmax(12rem,38%)] lg:gap-10 lg:items-start">
           <figure className="mt-5 lg:mt-0 lg:col-start-2 lg:row-span-2">
             <div className="border border-[var(--rule)] bg-[#f3ead6] p-2">
-              <Image src={illustration.url} alt={illustration.caption} width={768} height={1024} className="h-auto w-full" />
+              <Image
+                src={illustration.url}
+                alt={illustration.caption}
+                width={768}
+                height={1024}
+                sizes="(min-width: 1024px) 38vw, 100vw"
+                className="h-auto w-full"
+              />
             </div>
             <figcaption className="mt-2 text-xs italic leading-relaxed text-[var(--brass)] lg:text-sm">
               {illustration.caption}

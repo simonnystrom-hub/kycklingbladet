@@ -5,6 +5,8 @@ import {parseExtraPreview} from '@/lib/extra-extra/payload'
 import {extraPreviewResponse} from '@/lib/extra-extra/preview-body'
 import {briefFromPreview} from '@/lib/extra-extra/regenerate'
 
+export const maxDuration = 60
+
 function json(body: unknown, status = 200) {
   return NextResponse.json(body, {status, headers: corsHeaders()})
 }

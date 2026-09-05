@@ -2,7 +2,7 @@ import {GoogleGenAI} from '@google/genai'
 
 const DEFAULT_MODEL = 'gemini-3-pro-image'
 const MAX_ATTEMPTS = 3
-const QUOTA_SLEEP_MS = 15_000
+const QUOTA_SLEEP_MS = 2_000
 
 function getGeminiClient(): GoogleGenAI {
   const apiKey = process.env.GEMINI_API_KEY

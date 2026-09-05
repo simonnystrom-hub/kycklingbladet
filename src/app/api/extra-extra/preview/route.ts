@@ -6,6 +6,8 @@ import {scrapeArticleHeadline} from '@/lib/extra-extra/scrape'
 import {generateExtra} from '@/lib/generate/claude-extra'
 import {EXTRA_KICKER} from '@/lib/generate/extra-prompt'
 
+export const maxDuration = 60
+
 function json(body: unknown, status = 200) {
   return NextResponse.json(body, {status, headers: corsHeaders()})
 }

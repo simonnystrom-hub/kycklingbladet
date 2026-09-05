@@ -2,7 +2,7 @@ import {afterEach, describe, expect, it, vi} from 'vitest'
 import {drawExtraImage} from '@/lib/extra-extra/draw'
 import {parseExtraImageShotType} from '@/lib/generate/extra-image'
 import {EXTRA_KICKER} from '@/lib/generate/extra-prompt'
-import {OPTIONS, POST} from './route'
+import {maxDuration, OPTIONS, POST} from './route'
 
 vi.mock('@/lib/extra-extra/draw', () => ({
   drawExtraImage: vi.fn(),
@@ -47,6 +47,7 @@ describe('preview-image route', () => {
   it('exports HTTP handlers', () => {
     expect(typeof OPTIONS).toBe('function')
     expect(typeof POST).toBe('function')
+    expect(maxDuration).toBe(60)
   })
 
   it('answers OPTIONS with the same CORS as preview', () => {
