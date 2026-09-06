@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     )) {
       throw new Error('Ogiltig förfrågan')
     }
-    const count = Math.max(0, Math.min(100, Math.floor(requestedCount ?? 100)))
+    const count = Math.max(0, Math.min(100, Math.floor(requestedCount ?? 10)))
 
     const existingQuotes = await getWriteClient().fetch<string[]>(
       '*[_type == "visdomsord" && !(_id in path("drafts.**"))].quote',
