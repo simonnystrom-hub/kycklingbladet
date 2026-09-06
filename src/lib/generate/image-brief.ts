@@ -24,11 +24,15 @@ Svara med ENDAST ett JSON-objekt:
 }`
 
 export function buildImageBriefUserPrompt(input: {
-  kind: 'larm' | 'extra'
+  kind: 'larm' | 'extra' | 'visdomsord'
   headline: string
   body: string
 }): string {
-  const kind = input.kind === 'extra' ? 'EXTRA EXTRA' : 'Larm'
+  const kind = input.kind === 'extra'
+    ? 'EXTRA EXTRA'
+    : input.kind === 'visdomsord'
+      ? 'Visdomsord'
+      : 'Larm'
   return `${kind}
 Rubrik: ${input.headline}
 
@@ -36,7 +40,7 @@ ${input.body}`
 }
 
 export async function generateImageBriefFromCopy(input: {
-  kind: 'larm' | 'extra'
+  kind: 'larm' | 'extra' | 'visdomsord'
   headline: string
   body: string
 }): Promise<ExtraImageBrief> {

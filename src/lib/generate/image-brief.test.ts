@@ -18,4 +18,14 @@ describe('image brief prompt', () => {
     expect(prompt).toContain('Putinsson slutar hugga')
     expect(prompt).toContain('Hackandet tystnar.')
   })
+
+  it('labels visdomsord copy and includes the quote', () => {
+    const prompt = buildImageBriefUserPrompt({
+      kind: 'visdomsord',
+      headline: 'Gerda',
+      body: 'Sitt inte',
+    })
+    expect(prompt).toMatch(/VISDOMSORD/i)
+    expect(prompt).toContain('Sitt inte')
+  })
 })
