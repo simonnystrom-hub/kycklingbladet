@@ -1,4 +1,3 @@
-import {EXTRA_EXTRA_STAMP} from '@/lib/copy'
 import {
   facebookBold,
   facebookBoldCaps,
@@ -76,7 +75,6 @@ export function facebookLeadMessage(lead: FacebookLeadCopy): string {
 
 export function facebookExtraMessage(extra: FacebookExtraCopy): string {
   return joinBlocks([
-    facebookBoldCaps(EXTRA_EXTRA_STAMP),
     facebookBoldCaps(extra.headline),
     formatFacebookBody(stripLeadingExtraExtra(extra.body)),
     facebookExpertBlock(extra),

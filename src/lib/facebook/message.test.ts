@@ -61,7 +61,7 @@ describe('facebookExpertBlock', () => {
 })
 
 describe('facebookExtraMessage', () => {
-  it('strips a leading EXTRA EXTRA from the body and can append an expert quote', () => {
+  it('omits the EXTRA EXTRA stamp and strips a leading stamp from the body', () => {
     const text = facebookExtraMessage({
       headline: 'Putinsson slutar hugga',
       body: 'EXTRA EXTRA Efter månader av rävanfall tystnar hackandet.',
@@ -72,12 +72,12 @@ describe('facebookExtraMessage', () => {
 
     expect(text).toBe(
       [
-        facebookBoldCaps('EXTRA EXTRA'),
         facebookBoldCaps('Putinsson slutar hugga'),
         'Efter månader av rävanfall tystnar hackandet.',
         `${facebookBold('Gårdsanalytikern')}: "Hackandet tystnar bara tills nästa natt."`,
         facebookItalic('I bilden: Taleshönan vid tråget.'),
       ].join('\n\n'),
     )
+    expect(text).not.toContain('EXTRA EXTRA')
   })
 })
