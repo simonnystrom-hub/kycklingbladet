@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import {DoomsdayClock} from '@/components/DoomsdayClock'
+import {FacebookFollow} from '@/components/FacebookFollow'
 import {SiteNav} from '@/components/SiteNav'
 import {TAGLINE} from '@/lib/copy'
 import {getSiteSettings} from '@/lib/sanity/queries'
@@ -40,7 +40,7 @@ export async function Masthead() {
                 </p>
               </span>
             </Link>
-            <DoomsdayClock />
+            <FacebookFollow />
           </div>
           <p
             className="mt-2.5 line-clamp-2 text-[10px] leading-snug tracking-[0.04em] text-[var(--ink-muted)] sm:hidden"

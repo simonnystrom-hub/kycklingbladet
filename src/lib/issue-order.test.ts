@@ -2,12 +2,13 @@ import {readFileSync} from 'node:fs'
 import {describe, expect, it} from 'vitest'
 
 describe('issue order', () => {
-  it('puts IssueExtra above Dagens nyheter on home', () => {
-    const src = readFileSync('src/app/page.tsx', 'utf8')
-    expect(src.indexOf('<IssueExtra ')).toBeGreaterThan(-1)
-    expect(src.indexOf('<IssueExtra ')).toBeLessThan(
-      src.indexOf('<SectionHead>{TODAY_ISSUE_HEADING}'),
-    )
+  it('keeps Extra Extra on home and Facebook in the masthead', () => {
+    const home = readFileSync('src/app/page.tsx', 'utf8')
+    const masthead = readFileSync('src/components/Masthead.tsx', 'utf8')
+    expect(home).toContain('<IssueExtra ')
+    expect(home).not.toContain('FACEBOOK_PAGE_URL')
+    expect(home).not.toContain('TODAY_ISSUE_HEADING')
+    expect(masthead).toContain('<FacebookFollow')
   })
 
   it('redirects the archive date page and keeps Extra Extra off larm pages', () => {

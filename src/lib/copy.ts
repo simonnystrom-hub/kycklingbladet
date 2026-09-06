@@ -10,7 +10,9 @@ export const EMPTY_ARCHIVE = 'Inga larm i arkivet ännu. Hönan samlar sig.'
 export const EMPTY_CITAT =
   'Inga visdomsord med bild ännu. Hönan ruvar på formuleringarna.'
 export const WEEK_LEADS_HEADING = 'Huvudnyheter senaste veckan'
-export const TODAY_ISSUE_HEADING = 'Dagens nyheter'
+export const FACEBOOK_PAGE_URL =
+  'https://www.facebook.com/profile.php?id=61594266741912'
+export const FACEBOOK_PAGE_LABEL = 'Följ oss på Facebook'
 export const EXTRA_EXTRA_STAMP = 'EXTRA EXTRA'
 export const ABOUT = `Det började som en seriös tanke. Alarmindex rankar dagens löpsedlar efter hur mycket panik de skriker ut. Tanken är att få upp ögonen för vad det gör med våra hjärnor.
 

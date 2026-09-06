@@ -2,9 +2,8 @@ import {AlarmArticle} from '@/components/AlarmArticle'
 import {EmptyIssue} from '@/components/EmptyIssue'
 import {IssueExtra} from '@/components/IssueExtra'
 import {IssueNav} from '@/components/IssueNav'
-import {SectionHead} from '@/components/SectionHead'
 import {WeekLeads} from '@/components/WeekLeads'
-import {HOME_DESCRIPTION, HOME_TITLE, TODAY_ISSUE_HEADING} from '@/lib/copy'
+import {HOME_DESCRIPTION, HOME_TITLE} from '@/lib/copy'
 import {cartoonImageUrl, shareImages} from '@/lib/og'
 import {
   getAdjacentDates,
@@ -71,7 +70,6 @@ export default async function HomePage() {
     <div className="flex flex-col">
       <section className="sm:order-2">
         <IssueExtra extra={extra} date={today} />
-        <SectionHead>{TODAY_ISSUE_HEADING}</SectionHead>
         <p
           className="text-[var(--brass)]"
           style={{
