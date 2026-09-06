@@ -1,5 +1,13 @@
 import {describe, expect, it} from 'vitest'
-import {facebookWisdomMessage} from './message'
+import {facebookWisdomMessage, wrapWisdomQuote} from './message'
+
+describe('wrapWisdomQuote', () => {
+  it('wraps a bare quote in ASCII quotation marks', () => {
+    expect(wrapWisdomQuote('Sitt inte med ryggen mot luckan.')).toBe(
+      '"Sitt inte med ryggen mot luckan."',
+    )
+  })
+})
 
 describe('facebookWisdomMessage', () => {
   it('wraps a bare quote and puts KUCKELIKUUUU, quote and hen name on separate blocks', () => {

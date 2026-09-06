@@ -1,4 +1,4 @@
-function quotedLine(quote: string): string {
+export function wrapWisdomQuote(quote: string): string {
   const trimmed = quote.trim()
   if (
     (trimmed.startsWith('"') && trimmed.endsWith('"')) ||
@@ -10,5 +10,5 @@ function quotedLine(quote: string): string {
 }
 
 export function facebookWisdomMessage(input: {quote: string; henName: string}): string {
-  return ['KUCKELIKUUUU!', quotedLine(input.quote), input.henName.trim()].join('\n\n')
+  return ['KUCKELIKUUUU!', wrapWisdomQuote(input.quote), input.henName.trim()].join('\n\n')
 }
