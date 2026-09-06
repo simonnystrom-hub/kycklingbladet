@@ -60,7 +60,11 @@ describe('visdomsord draw route', () => {
     await expect(response.json()).resolves.toEqual({
       results: [{id: 'wisdom-1', imageError: null}],
     })
-    expect(fetch).toHaveBeenCalledWith(expect.any(String), {ids: ['wisdom-1']})
+    expect(fetch).toHaveBeenCalledWith(
+      expect.stringContaining('!defined(usedDate)'),
+      {ids: ['wisdom-1']},
+    )
+    expect(fetch.mock.calls[0][0]).not.toContain('!defined(image.asset)')
     expect(generateImageBriefFromCopy).toHaveBeenCalledTimes(1)
     expect(attachLeadImage).toHaveBeenCalledTimes(1)
   })

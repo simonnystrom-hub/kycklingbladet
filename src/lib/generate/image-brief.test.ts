@@ -6,6 +6,8 @@ describe('image brief prompt', () => {
     expect(IMAGE_BRIEF_SYSTEM).toContain('Skriv INTE om rubrik eller brödtext')
     expect(IMAGE_BRIEF_SYSTEM).toContain('imageCaption')
     expect(IMAGE_BRIEF_SYSTEM).toContain('imagePrompt')
+    expect(IMAGE_BRIEF_SYSTEM).toMatch(/Teckningen är tyst/)
+    expect(IMAGE_BRIEF_SYSTEM).toMatch(/Citera ALDRIG visdomen/)
   })
 
   it('includes the existing copy', () => {
@@ -27,5 +29,7 @@ describe('image brief prompt', () => {
     })
     expect(prompt).toMatch(/VISDOMSORD/i)
     expect(prompt).toContain('Sitt inte')
+    expect(prompt).toMatch(/Teckna innebörden tyst/i)
+    expect(prompt).toContain('Kycklingbladet.com')
   })
 })

@@ -25,7 +25,7 @@ Regler:
 - body är två till tre korta stycken, åtskilda av \\n\\n. Hela meningar, lätt att följa.
 - Föreslå ett bildmanus som passar en hönstidningsillustration: intervju, incident eller annat.
 - imageCaption är svensk bildtext (vem/var/vad), inte en one-liner. Bildtexten ska aldrig in i teckningen.
-- imagePrompt är bara scenen, på engelska, för serierutan. Ingen skylttext, pratbubbla eller artistnamn i scenen. Signaturen låses senare.
+- imagePrompt är bara scenen, på engelska, för serierutan. Ingen skylttext, pratbubbla, citat eller andra ord i scenen. Signaturen låses senare.
 
 Svara med ENDAST ett JSON-objekt:
 {

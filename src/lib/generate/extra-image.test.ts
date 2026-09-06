@@ -63,5 +63,7 @@ describe('buildGeminiImagePrompt', () => {
     expect(prompt).toContain('intervju')
     expect(prompt).toContain('A hen interviewed beside a grain bin.')
     expect(prompt).not.toContain('Hönan Bodil i hönshuset.')
+    expect(prompt).toMatch(/zero readable language/i)
+    expect(prompt).toContain(EXTRA_IMAGE_SIGNATURE)
   })
 })

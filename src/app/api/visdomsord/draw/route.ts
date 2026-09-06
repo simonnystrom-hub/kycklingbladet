@@ -49,8 +49,7 @@ export async function POST(request: Request) {
         _type == "visdomsord" &&
         _id in $ids &&
         !(_id in path("drafts.**")) &&
-        !defined(usedDate) &&
-        !defined(image.asset)
+        !defined(usedDate)
       ]{_id, quote, henName}`,
       {ids: uniqueIds},
     )

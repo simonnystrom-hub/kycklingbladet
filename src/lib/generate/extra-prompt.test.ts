@@ -16,7 +16,7 @@ describe('EXTRA_WRITE_SYSTEM', () => {
     expect(EXTRA_WRITE_SYSTEM).toContain('imageCaption')
     expect(EXTRA_WRITE_SYSTEM).toContain('intervju')
     expect(EXTRA_WRITE_SYSTEM).toContain('Bildtexten ska aldrig in i teckningen')
-    expect(EXTRA_WRITE_SYSTEM).toContain('artistnamn')
+    expect(EXTRA_WRITE_SYSTEM).toContain('citat eller andra ord i scenen')
   })
 })
 

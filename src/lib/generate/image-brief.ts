@@ -13,7 +13,8 @@ ${HEN_NAMES}
 Regler:
 - Bilden är en hönstidningsillustration: intervju, incident eller annat.
 - imageCaption är svensk bildtext (vem/var/vad), inte en one-liner. Den ska stämma med artikeln. Bildtexten ska aldrig in i teckningen.
-- imagePrompt är bara scenen, på engelska, för serierutan. Ingen skylttext, pratbubbla eller artistnamn i scenen.
+- imagePrompt är bara scenen, på engelska, för serierutan. Ingen skylttext, pratbubbla, citat, ordspråk eller andra ord i scenen. Teckningen är tyst.
+- För visdomsord: fånga innebörden som tyst skådespeleri. Citera ALDRIG visdomen i imagePrompt som synlig text.
 - Bara höns och tuppar i scenen, inga människor.
 
 Svara med ENDAST ett JSON-objekt:
@@ -33,10 +34,14 @@ export function buildImageBriefUserPrompt(input: {
     : input.kind === 'visdomsord'
       ? 'Visdomsord'
       : 'Larm'
+  const visdomRule =
+    input.kind === 'visdomsord'
+      ? '\n\nTeckna innebörden tyst. Skriv inte citatet, inga skyltar och inga pratbubblor. Enda tillåtna texten i färdig bild är signaturen Kycklingbladet.com.'
+      : ''
   return `${kind}
 Rubrik: ${input.headline}
 
-${input.body}`
+${input.body}${visdomRule}`
 }
 
 export async function generateImageBriefFromCopy(input: {
