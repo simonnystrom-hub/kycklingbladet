@@ -70,6 +70,10 @@ npm run daily
 
 Schemat körs via `.github/workflows/daily.yml` (vardagar 12:00, helg 14:00 Europe/Stockholm). Sätt dessa repository secrets så de matchar workflowen:
 
+Visdomsord körs separat via `.github/workflows/visdomsord.yml` varje dag 07:00 Europe/Stockholm och postar endast till Facebook. Jobbet hämtar från Studio-poolen och kräver ett visdomsord med en Studio-ritad bild. Det använder samma Facebook-secrets och Sanity write-secrets som daily-jobbet.
+
+Kör visdomsord-jobbet manuellt med `gh workflow run visdomsord.yml`.
+
 | Secret | Används som |
 |--------|-------------|
 | `NEXT_PUBLIC_SANITY_PROJECT_ID` | Kycklingbladet Sanity project id |
