@@ -1,3 +1,5 @@
+import {envSecret} from '@/lib/env-secret'
+
 export const FACEBOOK_GRAPH_VERSION = 'v21.0'
 export const FACEBOOK_GRAPH_BASE = `https://graph.facebook.com/${FACEBOOK_GRAPH_VERSION}`
 
@@ -14,20 +16,9 @@ export type FacebookConfig = {
   token: string
 }
 
-function unwrapSecret(value: string): string {
-  const trimmed = value.trim()
-  if (trimmed.length >= 2) {
-    const quote = trimmed[0]
-    if ((quote === '"' || quote === "'") && trimmed.endsWith(quote)) {
-      return trimmed.slice(1, -1).trim()
-    }
-  }
-  return trimmed
-}
-
 export function facebookConfig(): FacebookConfig | null {
-  const pageId = unwrapSecret(process.env.FACEBOOK_PAGE_ID ?? '')
-  const token = unwrapSecret(process.env.FACEBOOK_PAGE_ACCESS_TOKEN ?? '')
+  const pageId = envSecret(process.env.FACEBOOK_PAGE_ID)
+  const token = envSecret(process.env.FACEBOOK_PAGE_ACCESS_TOKEN)
   if (!pageId || !token) return null
   return {pageId, token}
 }

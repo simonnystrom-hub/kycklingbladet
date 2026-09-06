@@ -1,4 +1,5 @@
 import {createClient, type SanityClient} from '@sanity/client'
+import {envSecret} from '@/lib/env-secret'
 
 const DATASET_PATTERN = /^~?[a-z0-9_-]{1,64}$/
 
@@ -31,7 +32,7 @@ export function getAlarmindexClient(): SanityClient {
   }
 
   if (!cachedClient) {
-    const token = process.env.ALARMINDEX_SANITY_READ_TOKEN?.trim() || undefined
+    const token = envSecret(process.env.ALARMINDEX_SANITY_READ_TOKEN) || undefined
     cachedClient = createClient({
       projectId,
       dataset,
