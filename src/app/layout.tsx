@@ -1,5 +1,6 @@
 import type {Metadata, Viewport} from 'next'
 import {Source_Serif_4} from 'next/font/google'
+import {Analytics} from '@vercel/analytics/next'
 import {Masthead} from '@/components/Masthead'
 import {SiteFooter} from '@/components/SiteFooter'
 import {TAGLINE} from '@/lib/copy'
@@ -61,6 +62,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
           {children}
         </main>
         <SiteFooter />
+        <Analytics />
       </body>
     </html>
   )

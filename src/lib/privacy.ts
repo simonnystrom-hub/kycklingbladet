@@ -1,4 +1,4 @@
-export const PRIVACY_UPDATED = '5 september 2026'
+export const PRIVACY_UPDATED = '6 september 2026'
 
 export const PRIVACY_INTRO =
   'Denna integritetspolicy beskriver hur Kycklingbladet behandlar personuppgifter när du besöker www.kycklingbladet.com eller skickar ett meddelande via kontaktsidan. Vi följer Europaparlamentets och rådets förordning (EU) 2016/679 (GDPR) och svensk dataskyddslagstiftning.'
@@ -15,6 +15,7 @@ export const PRIVACY_SECTIONS: {heading: string; paragraphs: string[]}[] = [
     paragraphs: [
       'Kontaktsidan: namn, e-postadress och det meddelande du skriver. Ett dolt fält används enbart för att avvisa automatisk skräppost och sparas inte om det är ifyllt.',
       'Teknisk drift: när du besöker sajten kan vår driftleverantör tillfälligt behandla uppgifter som IP-adress, tidpunkt, begärd adress och webbläsarens user agent i serverloggar, i den utsträckning som krävs för att visa sidan, felsöka och skydda tjänsten mot missbruk.',
+      'Trafikstatistik: vi använder Vercel Web Analytics för att se ungefär hur många som besöker sajten, vilka sidor som läses och varifrån trafiken kommer. Uppgifterna är aggregerade och avsedda att vara avidentifierade. Verktyget sätter inte cookies för analys och används inte för profilering eller riktad reklam.',
       'Vi har inga användarkonton, inget nyhetsbrev och ingen inloggning. Vi säljer inte personuppgifter och använder inte uppgifterna för profilering eller riktad reklam.',
     ],
   },
@@ -23,6 +24,7 @@ export const PRIVACY_SECTIONS: {heading: string; paragraphs: string[]}[] = [
     paragraphs: [
       'Besvara meddelanden du skickar till oss: artikel 6.1.f GDPR (berättigat intresse av att hantera korrespondens) och, när det behövs för att följa upp just din förfrågan, artikel 6.1.b.',
       'Driva, säkra och felsöka webbplatsen: artikel 6.1.f (berättigat intresse av en fungerande och säker sajt).',
+      'Förstå hur sajten används, till exempel vilka sidor som läses: artikel 6.1.f (berättigat intresse av att följa trafiken i grova drag).',
       'Följa rättsliga skyldigheter, till exempel att kunna visa hur en förfrågan hanterats: artikel 6.1.c.',
       'Publicering av satiriska artiklar och bilder på sajten och på Kycklingbladets Facebooksida avser redaktionellt innehåll, inte insamling av dina personuppgifter från Facebook. Om du interagerar med oss på Facebook gäller Metas egna villkor och policy för den behandlingen.',
     ],
@@ -30,7 +32,7 @@ export const PRIVACY_SECTIONS: {heading: string; paragraphs: string[]}[] = [
   {
     heading: 'Mottagare och personuppgiftsbiträden',
     paragraphs: [
-      'Webbplatsen hostas hos Vercel. Innehåll och kontaktmeddelanden lagras i Sanity. Dessa leverantörer behandlar uppgifter på våra instruktioner som personuppgiftsbiträden, i den mån behandlingen omfattas av GDPR.',
+      'Webbplatsen hostas hos Vercel, som också tillhandahåller Web Analytics. Innehåll och kontaktmeddelanden lagras i Sanity. Dessa leverantörer behandlar uppgifter på våra instruktioner som personuppgiftsbiträden, i den mån behandlingen omfattas av GDPR.',
       'Myndighet kan få del av uppgifter om vi är skyldiga att lämna ut dem enligt lag.',
     ],
   },
@@ -45,12 +47,13 @@ export const PRIVACY_SECTIONS: {heading: string; paragraphs: string[]}[] = [
     paragraphs: [
       'Kontaktmeddelanden sparas så länge det behövs för att hantera ärendet och därefter en kortare tid för uppföljning, dock inte längre än tre år om det inte finns ett rättsligt skäl att spara längre.',
       'Tekniska loggar hos driftleverantören följer deras ordinarie, korta rotationsrutiner.',
+      'Trafikstatistik hos Vercel sparas i aggregerad form enligt deras ordinarie lagring för Web Analytics.',
     ],
   },
   {
     heading: 'Cookies och liknande teknik',
     paragraphs: [
-      'Kycklingbladet använder inte analysverktyg, annonsnätverk eller spårningspixlar från tredje part på sajten. Vi sätter inte cookies för marknadsföring.',
+      'Kycklingbladet använder Vercel Web Analytics för trafikstatistik. Det sätter inte analyscookies och används inte för annonsering. Vi använder inte annonsnätverk eller spårningspixlar från tredje part på sajten, och vi sätter inte cookies för marknadsföring.',
       'Tekniskt nödvändig lagring kan förekomma för att sajten ska fungera (till exempel session eller säkerhet hos driftleverantören). Sådan behandling kräver inte samtycke enligt undantaget för strikt nödvändig lagring.',
     ],
   },

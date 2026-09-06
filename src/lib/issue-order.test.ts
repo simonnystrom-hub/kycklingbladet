@@ -27,3 +27,11 @@ describe('issue order', () => {
     expect(src).not.toContain('IssueNotices')
   })
 })
+
+describe('vercel analytics', () => {
+  it('loads Web Analytics in the root layout', () => {
+    const src = readFileSync('src/app/layout.tsx', 'utf8')
+    expect(src).toContain("from '@vercel/analytics/next'")
+    expect(src).toContain('<Analytics />')
+  })
+})

@@ -10,5 +10,7 @@ describe('privacy copy', () => {
     expect(blob).toContain('kontaktsidan')
     expect(blob).toContain('Integritetsskyddsmyndigheten')
     expect(blob).toMatch(/artikel 6\.1/)
+    expect(blob).toContain('Vercel Web Analytics')
+    expect(blob).not.toContain('använder inte analysverktyg')
   })
 })
