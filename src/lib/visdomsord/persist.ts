@@ -31,10 +31,10 @@ export async function rewriteVisdomsord(
   let rewritten = 0
   let skipped = 0
 
-  for (const id of ids) {
+  for (const id of [...new Set(ids)]) {
     try {
       const row = await client.fetch<VisdomsordToRewrite | null>(
-        '*[_type == "visdomsord" && _id == $id][0]{_id, quote, henName, usedDate}',
+        '*[_type == "visdomsord" && _id == $id && !(_id in path("drafts.**"))][0]{_id, quote, henName, usedDate}',
         {id},
       )
       if (!row || row.usedDate !== undefined && row.usedDate !== null) {
@@ -43,7 +43,7 @@ export async function rewriteVisdomsord(
       }
 
       const existingQuotes = await client.fetch<string[]>(
-        '*[_type == "visdomsord" && _id != $id].quote',
+        '*[_type == "visdomsord" && _id != $id && !(_id in path("drafts.**"))].quote',
         {id: row._id},
       )
       const drafts = await generateVisdomsordDrafts({count: 1, existingQuotes})

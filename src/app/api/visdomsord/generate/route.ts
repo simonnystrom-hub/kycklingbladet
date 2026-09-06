@@ -35,7 +35,7 @@ export async function POST(request: Request) {
     const count = Math.max(0, Math.min(100, Math.floor(requestedCount ?? 100)))
 
     const existingQuotes = await getWriteClient().fetch<string[]>(
-      '*[_type == "visdomsord"].quote',
+      '*[_type == "visdomsord" && !(_id in path("drafts.**"))].quote',
     )
     const drafts = await generateVisdomsordDrafts({count, existingQuotes})
     const created = await createVisdomsord(drafts)

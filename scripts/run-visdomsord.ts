@@ -12,7 +12,7 @@ export async function runVisdomsord(now = new Date()): Promise<'posted' | 'skipp
   const date = stockholmToday(now)
   const client = getWriteClient()
   const rows = await client.fetch<VisdomsordRow[]>(
-    `*[_type == "visdomsord"] | order(_createdAt asc){
+    `*[_type == "visdomsord" && !(_id in path("drafts.**"))] | order(_createdAt asc){
       _id, quote, henName, usedDate, _createdAt, "imageUrl": image.asset->url
     }`,
   )

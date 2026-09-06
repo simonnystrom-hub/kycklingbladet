@@ -93,4 +93,20 @@ describe('rewriteVisdomsord', () => {
     expect(patch).toHaveBeenCalledTimes(1)
     expect(patch).toHaveBeenCalledWith('second')
   })
+
+  it('rewrites duplicate ids only once', async () => {
+    const chain = patchChain()
+    patch.mockReturnValue(chain)
+    fetch
+      .mockResolvedValueOnce({_id: 'same', quote: 'Ett.', henName: 'Agda'})
+      .mockResolvedValueOnce([])
+    generateDrafts.mockResolvedValue([{quote: 'Två.', henName: 'Rut'}])
+
+    await expect(
+      rewriteVisdomsord(['same', 'same']),
+    ).resolves.toEqual({rewritten: 1, skipped: 0})
+    expect(fetch).toHaveBeenCalledTimes(2)
+    expect(generateDrafts).toHaveBeenCalledTimes(1)
+    expect(patch).toHaveBeenCalledTimes(1)
+  })
 })
