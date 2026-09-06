@@ -8,6 +8,7 @@ describe('parseVisdomsordDrafts', () => {
       '```json',
       '[{"quote":"Kackla först.","henName":"Hedvig Höna"}]',
       '```',
+      'Fotnot [inte JSON]',
     ].join('\n')
 
     expect(parseVisdomsordDrafts(text)).toEqual([
@@ -18,7 +19,7 @@ describe('parseVisdomsordDrafts', () => {
   it('extracts the first JSON array from surrounding text', () => {
     expect(
       parseVisdomsordDrafts(
-        'Inledning [{"quote":"Sitt på pinnen.","henName":"Rut"}] avslutning',
+        'Inledning [{"quote":"Sitt på pinnen.","henName":"Rut"}] avslutning [fotnot]',
       ),
     ).toEqual([{quote: 'Sitt på pinnen.', henName: 'Rut'}])
   })
