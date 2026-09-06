@@ -8,7 +8,7 @@ import {
   type FacebookExtraCopy,
   type FacebookLeadCopy,
 } from './message'
-import {shareToFacebook} from './share'
+import {shareToFacebook, type ShareToFacebookResult} from './share'
 
 type StoredLead = FacebookLeadCopy & {
   date: string
@@ -16,7 +16,7 @@ type StoredLead = FacebookLeadCopy & {
   imageUrl?: string | null
 }
 
-export async function sharePublishedLead(id: string): Promise<void> {
+export async function sharePublishedLead(id: string): Promise<ShareToFacebookResult> {
   try {
     const alarm = await getWriteClient().fetch<StoredLead | null>(
       `*[_id == $id][0]{
@@ -27,9 +27,9 @@ export async function sharePublishedLead(id: string): Promise<void> {
     )
     if (!alarm?.headline?.trim() || !alarm.body?.trim() || !alarm.date) {
       console.error(`Hoppar över Facebook: larm ${id} saknar text`)
-      return
+      return 'skipped'
     }
-    await shareToFacebook({
+    return await shareToFacebook({
       message: facebookLeadMessage(alarm),
       imageUrl: alarm.imageUrl,
       articleUrl: absoluteUrl(
@@ -38,6 +38,7 @@ export async function sharePublishedLead(id: string): Promise<void> {
     })
   } catch (error) {
     console.error(`Kunde inte posta larm ${id} till Facebook`, error)
+    return 'failed'
   }
 }
 

@@ -7,6 +7,10 @@ on:
         description: Radera befintliga Kycklingbladet-inlägg innan ny körning
         type: boolean
         default: false
+      ids:
+        description: Bara dessa larm-id (mellanslag). Tomt = hela arkivet
+        required: false
+        default: ""
 
 concurrency:
   group: share-facebook-archive
@@ -19,6 +23,7 @@ jobs:
     env:
       NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_SANITY_PROJECT_ID }}
       NEXT_PUBLIC_SANITY_DATASET: production
+      SANITY_API_WRITE_TOKEN: ${{ secrets.SANITY_API_WRITE_TOKEN }}
       FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
       FACEBOOK_PAGE_ACCESS_TOKEN: ${{ secrets.FACEBOOK_PAGE_ACCESS_TOKEN }}
     steps:
@@ -30,4 +35,9 @@ jobs:
       - run: npm ci
       - if: ${{ inputs.wipe_old }}
         run: npx tsx scripts/delete-old-facebook-posts.ts
-      - run: npx tsx scripts/share-archive-to-facebook.ts
+      - if: ${{ inputs.ids != '' }}
+        env:
+          SHARE_IDS: ${{ inputs.ids }}
+        run: npx tsx scripts/share-published-leads.ts $SHARE_IDS
+      - if: ${{ inputs.ids == '' }}
+        run: npx tsx scripts/share-archive-to-facebook.ts
