@@ -40,10 +40,12 @@ describe('validateExtraImageBrief', () => {
 })
 
 describe('EXTRA_IMAGE_STYLE', () => {
-  it('locks Berglin/Larson, monochrome, hens only, Kycklingbladet.com signature', () => {
+  it('locks Berglin/Larson, full colour, hens only, Kycklingbladet.com signature', () => {
     expect(EXTRA_IMAGE_STYLE).toMatch(/Berglin/i)
     expect(EXTRA_IMAGE_STYLE).toMatch(/Larson/i)
-    expect(EXTRA_IMAGE_STYLE).toMatch(/monochrome|black-and-white|grayscale/i)
+    expect(EXTRA_IMAGE_STYLE).toMatch(/FULL COLOUR|full colour|full color/i)
+    expect(EXTRA_IMAGE_STYLE).toMatch(/never greyscale|never black-and-white/i)
+    expect(EXTRA_IMAGE_STYLE).not.toMatch(/MONOCHROME ONLY/)
     expect(EXTRA_IMAGE_STYLE).toMatch(/no humans/i)
     expect(EXTRA_IMAGE_STYLE).toMatch(/hens|roosters/i)
     expect(EXTRA_IMAGE_STYLE).toContain(EXTRA_IMAGE_SIGNATURE)

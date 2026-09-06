@@ -26,8 +26,8 @@ export const EXTRA_IMAGE_SIGNATURE = 'Kycklingbladet.com'
 
 export const EXTRA_IMAGE_STYLE = `STYLE (always, never vary):
 Single-panel newspaper cartoon in the manner of Jan Berglin and Gary Larson (The Far Side).
-MONOCHROME ONLY — black, white, grey. No colour.
-Simple ink drawing, few details, flat shapes. Not a photograph, not a painting, not photorealistic.
+FULL COLOUR — saturated editorial-cartoon colour, never greyscale, never black-and-white, never sepia. Warm reds for combs, wattles and Swedish barns; clear blue sky; yellow beaks; white feathers with soft shadow; earthy greens and browns. Cel-shaded volume, not neon, not photoreal.
+Simple ink drawing with bold outlines, few details, flat shapes. Not a photograph, not a painting, not photorealistic.
 Actors: hens and roosters only, anthropomorphic as farmyard characters.
 NO HUMANS, no human hands, no photorealistic faces.
 SIGNATURE (always, never vary): in one bottom corner, a tiny loose ink cartoonist signature in Far Side handwriting. The letters must be exactly "${EXTRA_IMAGE_SIGNATURE}". Never sign Larson, Gary Larson, Berglin, Jan Berglin, Far Side, The Far Side, or any other person or studio name.
