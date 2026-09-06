@@ -5,7 +5,7 @@ export async function scrapeArticleHeadline(
   articleUrl: string,
 ): Promise<{headline: string; paper: ExtraPaper}> {
   const paper = resolveNewspaper(articleUrl)
-  if (!paper) throw new Error('Okänd tidning')
+  if (!paper) throw new Error('Ogiltig länk')
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), 8000)
   let html: string
@@ -25,7 +25,7 @@ export async function scrapeArticleHeadline(
   } finally {
     clearTimeout(timer)
   }
-  const headline = extractHeadlineFromHtml(html)
+  const headline = extractHeadlineFromHtml(html, [paper.name, paper.slug])
   if (!headline) throw new Error('Hittade ingen rubrik')
   return {headline, paper}
 }

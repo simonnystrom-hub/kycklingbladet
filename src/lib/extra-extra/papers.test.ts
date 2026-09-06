@@ -19,10 +19,18 @@ describe('resolveNewspaper', () => {
     expect(resolveNewspaper('https://www.svd.se/a/foo')).toEqual({name: 'SvD', slug: 'svd'})
   })
 
-  it('rejects unknown hosts and bad URLs', () => {
-    expect(resolveNewspaper('https://example.com/nyhet')).toBeNull()
-    expect(resolveNewspaper('https://alarmindex.com/dag/2026-09-03/expressen')).toBeNull()
+  it('maps unknown hosts from the domain and rejects bad URLs', () => {
+    expect(resolveNewspaper('https://example.com/nyhet')).toEqual({
+      name: 'Example',
+      slug: 'example',
+    })
+    expect(resolveNewspaper('https://www.gp.se/nyheter/x')).toEqual({name: 'GP', slug: 'gp'})
+    expect(resolveNewspaper('https://alarmindex.com/dag/2026-09-03/expressen')).toEqual({
+      name: 'Alarmindex',
+      slug: 'alarmindex',
+    })
     expect(resolveNewspaper('not-a-url')).toBeNull()
     expect(resolveNewspaper('https://constructor/')).toBeNull()
+    expect(resolveNewspaper('ftp://expressen.se/x')).toBeNull()
   })
 })

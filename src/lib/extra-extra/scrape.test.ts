@@ -17,10 +17,16 @@ describe('scrapeArticleHeadline', () => {
     })
   })
 
-  it('rejects unknown hosts without fetching', async () => {
-    const fetchMock = vi.fn()
-    vi.stubGlobal('fetch', fetchMock)
-    await expect(scrapeArticleHeadline('https://example.com/x')).rejects.toThrow('Okänd tidning')
-    expect(fetchMock).not.toHaveBeenCalled()
+  it('scrapes unknown hosts and names the paper from the domain', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () =>
+        new Response('<meta property="og:title" content="Chock i stan | GP">', {status: 200}),
+      ),
+    )
+    await expect(scrapeArticleHeadline('https://www.gp.se/nyheter/x')).resolves.toEqual({
+      headline: 'Chock i stan',
+      paper: {name: 'GP', slug: 'gp'},
+    })
   })
 })

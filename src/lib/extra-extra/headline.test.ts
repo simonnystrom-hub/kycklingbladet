@@ -5,6 +5,7 @@ describe('cleanScrapedHeadline', () => {
   it('strips site-name suffixes', () => {
     expect(cleanScrapedHeadline('Får inte heta sylt | Expressen')).toBe('Får inte heta sylt')
     expect(cleanScrapedHeadline('Rubrik - Aftonbladet')).toBe('Rubrik')
+    expect(cleanScrapedHeadline('Chock i stan | GP', ['GP', 'gp.se'])).toBe('Chock i stan')
   })
 })
 

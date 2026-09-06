@@ -17,15 +17,18 @@ function decodeHtmlEntities(text: string): string {
     .replace(/&gt;/g, '>')
 }
 
-export function cleanScrapedHeadline(raw: string): string {
+export function cleanScrapedHeadline(raw: string, extraNames: string[] = []): string {
   const trimmed = raw.trim()
+  const names = new Set(
+    [...PAPER_NAMES, ...extraNames].map((name) => name.trim().toLowerCase()).filter(Boolean),
+  )
 
   for (const sep of [' | ', ' - ']) {
     const idx = trimmed.lastIndexOf(sep)
     if (idx === -1) continue
     const left = trimmed.slice(0, idx)
     const right = trimmed.slice(idx + sep.length)
-    if (PAPER_NAMES.has(right)) {
+    if (names.has(right.trim().toLowerCase())) {
       return left.trim()
     }
   }
@@ -62,11 +65,11 @@ function extractTitle(html: string): string | null {
   return match ? match[1] : null
 }
 
-export function extractHeadlineFromHtml(html: string): string | null {
+export function extractHeadlineFromHtml(html: string, extraNames: string[] = []): string | null {
   const raw = extractMetaTitle(html) ?? extractH1(html) ?? extractTitle(html)
   if (raw === null) return null
 
   const decoded = decodeHtmlEntities(raw)
-  const cleaned = cleanScrapedHeadline(decoded)
+  const cleaned = cleanScrapedHeadline(decoded, extraNames)
   return cleaned.length === 0 ? null : cleaned
 }
