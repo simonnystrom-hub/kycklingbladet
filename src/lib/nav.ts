@@ -1,6 +1,7 @@
 export const NAV_LINKS = [
   {href: '/', label: 'Dagens nyheter'},
   {href: '/arkiv', label: 'Arkiv'},
+  {href: '/citat', label: 'Citat'},
   {href: '/om', label: 'Om'},
   {href: '/kontakt', label: 'Kontakt'},
 ] as const

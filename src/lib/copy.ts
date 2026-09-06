@@ -7,6 +7,8 @@ export const HOME_DESCRIPTION =
 export const EMPTY_HOME =
   'Hönan ruvar. Första numret landar vid middag.'
 export const EMPTY_ARCHIVE = 'Inga larm i arkivet ännu. Hönan samlar sig.'
+export const EMPTY_CITAT =
+  'Inga visdomsord med bild ännu. Hönan ruvar på formuleringarna.'
 export const WEEK_LEADS_HEADING = 'Huvudnyheter senaste veckan'
 export const TODAY_ISSUE_HEADING = 'Dagens nyheter'
 export const EXTRA_EXTRA_STAMP = 'EXTRA EXTRA'

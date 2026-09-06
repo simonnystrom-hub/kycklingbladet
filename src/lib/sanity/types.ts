@@ -65,6 +65,14 @@ export type ArchiveItem = AlarmTeaser & {
   kind: 'alarm' | 'extraExtra'
 }
 
+export type VisdomsordQuote = {
+  _id: string
+  quote: string
+  henName: string
+  imageUrl: string
+  imageCaption?: string | null
+}
+
 export type SiteSettings = {
   title: string
   tagline: string

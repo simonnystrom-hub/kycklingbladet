@@ -5,6 +5,11 @@ describe('NAV_LINKS', () => {
   it('labels the home link Dagens nyheter', () => {
     expect(NAV_LINKS[0]).toEqual({ href: '/', label: 'Dagens nyheter' })
   })
+
+  it('links to the public quotes page after the archive', () => {
+    expect(NAV_LINKS[1]).toEqual({ href: '/arkiv', label: 'Arkiv' })
+    expect(NAV_LINKS[2]).toEqual({ href: '/citat', label: 'Citat' })
+  })
 })
 
 describe('archivePageWindow', () => {

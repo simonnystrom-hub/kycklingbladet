@@ -4,7 +4,7 @@ import {RSS_ITEM_LIMIT} from '@/lib/rss'
 import {WEEK_LEAD_COUNT, weekLeadStart} from '@/lib/week-leads'
 import {alarmPath, alarmSlugOrFallback, decodeAlarmSlug} from '@/lib/select/alarm-path'
 import {getSanityClient, isKycklingbladetConfigured} from './client'
-import type {Alarm, AlarmTeaser, ArchiveItem, ExtraExtra, SiteSettings} from './types'
+import type {Alarm, AlarmTeaser, ArchiveItem, ExtraExtra, SiteSettings, VisdomsordQuote} from './types'
 
 const alarmFields = `{
   _id,
@@ -191,6 +191,18 @@ export async function getAdjacentLarm(
     previous: hrefs[index + 1] ?? null,
     next: hrefs[index - 1] ?? null,
   }
+}
+
+export async function getVisdomsordWithImages(): Promise<VisdomsordQuote[]> {
+  return safeFetchMany(
+    `*[_type == "visdomsord" && !(_id in path("drafts.**")) && defined(image.asset)] | order(_createdAt desc){
+      _id,
+      quote,
+      henName,
+      imageCaption,
+      "imageUrl": image.asset->url
+    }`,
+  )
 }
 
 export async function getSiteSettings(): Promise<SiteSettings | null> {
