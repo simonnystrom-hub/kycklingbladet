@@ -41,6 +41,7 @@ export async function POST(request: Request) {
   if (!Array.isArray(ids) || !ids.every((id) => typeof id === 'string')) {
     return json({error: 'Ogiltig förfrågan'}, 400)
   }
+  const uniqueIds = [...new Set(ids)]
 
   try {
     const rows = await getWriteClient().fetch<Visdomsord[]>(
@@ -50,12 +51,12 @@ export async function POST(request: Request) {
         !defined(usedDate) &&
         !defined(image.asset)
       ]{_id, quote, henName}`,
-      {ids},
+      {ids: uniqueIds},
     )
     const byId = new Map(rows.map((row) => [row._id, row]))
     const results: {id: string; imageError: string | null}[] = []
 
-    for (const id of ids) {
+    for (const id of uniqueIds) {
       const row = byId.get(id)
       if (!row) continue
 
