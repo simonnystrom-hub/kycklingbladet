@@ -53,6 +53,20 @@ describe('shareToFacebook', () => {
     expect(spy).toHaveBeenCalled()
   })
 
+  it('posts a photo without a URL comment when articleUrl is missing', async () => {
+    vi.stubEnv('FACEBOOK_PAGE_ID', 'page-1')
+    vi.stubEnv('FACEBOOK_PAGE_ACCESS_TOKEN', 'token-1')
+    const fetchMock = vi.fn().mockResolvedValueOnce(jsonResponse(200, {id: 'photo-9', post_id: 'page-1_photo-9'}))
+    vi.stubGlobal('fetch', fetchMock)
+
+    await expect(
+      shareToFacebook({message: 'KUCKELIKUUUU!', imageUrl: 'https://cdn.sanity.io/x.jpg'}),
+    ).resolves.toBe('shared')
+
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(fetchMock.mock.calls[0][0]).toBe(`${FACEBOOK_GRAPH_BASE}/page-1/photos`)
+  })
+
   it('posts a photo then comments the article URL', async () => {
     vi.stubEnv('FACEBOOK_PAGE_ID', 'page-1')
     vi.stubEnv('FACEBOOK_PAGE_ACCESS_TOKEN', 'token-1')

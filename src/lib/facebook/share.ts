@@ -7,7 +7,7 @@ export type ShareToFacebookResult = 'shared' | 'skipped' | 'failed'
 
 export type ShareToFacebookInput = {
   message: string
-  articleUrl: string
+  articleUrl?: string | null
   imageUrl?: string | null
 }
 
@@ -132,9 +132,14 @@ export async function shareToFacebook(input: ShareToFacebookInput): Promise<Shar
       return 'failed'
     }
 
+    const articleUrl = input.articleUrl?.trim()
+    if (!articleUrl) {
+      return 'shared'
+    }
+
     const commented = await graphPost(
       `/${objectId}/comments`,
-      {message: input.articleUrl},
+      {message: articleUrl},
       config.token,
     )
     if (!commented.ok) {
