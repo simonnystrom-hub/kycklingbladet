@@ -78,6 +78,8 @@ Schemat körs via `.github/workflows/daily.yml` (vardagar 12:00, helg 14:00 Euro
 | `ALARMINDEX_SANITY_READ_TOKEN` | Valfri Alarmindex read-token |
 | `ANTHROPIC_API_KEY` | Claude API-nyckel |
 | `ANTHROPIC_MODEL` | Valfri modell-override |
+| `GEMINI_API_KEY` | Google-nyckel för larm- och Extra Extra-teckningar |
+| `GEMINI_IMAGE_MODEL` | Valfri modell-override (default `gemini-3-pro-image`) |
 | `FACEBOOK_PAGE_ID` | Facebooksida |
 | `FACEBOOK_PAGE_ACCESS_TOKEN` | Page Access Token med `pages_manage_posts`, `pages_read_engagement` och `pages_manage_engagement` |
 

@@ -1,11 +1,12 @@
 import {GoogleGenAI} from '@google/genai'
+import {envSecret} from '@/lib/env-secret'
 
 const DEFAULT_MODEL = 'gemini-3-pro-image'
 const MAX_ATTEMPTS = 3
 const QUOTA_SLEEP_MS = 2_000
 
 function getGeminiClient(): GoogleGenAI {
-  const apiKey = process.env.GEMINI_API_KEY
+  const apiKey = envSecret(process.env.GEMINI_API_KEY)
   if (!apiKey) {
     throw new Error('GEMINI_API_KEY saknas')
   }

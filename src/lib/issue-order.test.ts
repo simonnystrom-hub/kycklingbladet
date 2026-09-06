@@ -35,3 +35,10 @@ describe('vercel analytics', () => {
     expect(src).toContain('<Analytics />')
   })
 })
+
+describe('daily workflow', () => {
+  it('passes the Gemini key so cartoons can draw', () => {
+    const yml = readFileSync('.github/workflows/daily.yml', 'utf8')
+    expect(yml).toContain('GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}')
+  })
+})
