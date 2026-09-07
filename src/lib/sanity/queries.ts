@@ -127,8 +127,16 @@ export async function getAlarmsForFeed(): Promise<Alarm[]> {
   )
 }
 
+export async function getExtrasByDate(date: string): Promise<ExtraExtra[]> {
+  return safeFetchMany(
+    `*[_type == "extraExtra" && date == $date] | order(createdAt desc, _id desc)${extraExtraFields}`,
+    {date},
+  )
+}
+
 export async function getExtraByDate(date: string): Promise<ExtraExtra | null> {
-  return safeFetchOne(`*[_type == "extraExtra" && date == $date][0]${extraExtraFields}`, {date})
+  const extras = await getExtrasByDate(date)
+  return extras[0] ?? null
 }
 
 export async function getExtrasByDates(dates: string[]): Promise<ExtraExtra[]> {
@@ -140,7 +148,7 @@ export async function getExtraArchive(): Promise<
   {_id: string; date: string; headline: string; body: string}[]
 > {
   return safeFetchMany(
-    `*[_type == "extraExtra"] | order(date desc){ _id, date, headline, body }`,
+    `*[_type == "extraExtra"] | order(date desc, createdAt desc){ _id, date, headline, body }`,
   )
 }
 

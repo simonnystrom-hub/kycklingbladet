@@ -15,6 +15,7 @@ describe('extra extra page', () => {
     const src = readFileSync('src/app/extra-extra/[date]/page.tsx', 'utf8')
     expect(src).toContain('canShowExtraExtraPage')
     expect(src).toContain('notFound()')
+    expect(src).toContain('getExtrasByDate')
     expect(src).toContain('<IssueExtra')
   })
 })

@@ -22,12 +22,12 @@ function extra(overrides: Partial<ExtraExtra> = {}): ExtraExtra {
 
 describe('canShowExtraExtraPage', () => {
   it('accepts an ISO date with a valid extra', () => {
-    expect(canShowExtraExtraPage('2026-09-05', extra())).toBe(true)
+    expect(canShowExtraExtraPage('2026-09-05', [extra()])).toBe(true)
   })
 
   it('rejects a bad date or a missing extra', () => {
-    expect(canShowExtraExtraPage('nope', extra())).toBe(false)
-    expect(canShowExtraExtraPage('2026-09-05', null)).toBe(false)
-    expect(canShowExtraExtraPage('2026-09-05', extra({headline: ''}))).toBe(false)
+    expect(canShowExtraExtraPage('nope', [extra()])).toBe(false)
+    expect(canShowExtraExtraPage('2026-09-05', [])).toBe(false)
+    expect(canShowExtraExtraPage('2026-09-05', [extra({headline: ''})])).toBe(false)
   })
 })

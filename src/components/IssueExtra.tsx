@@ -45,7 +45,7 @@ export function IssueExtra({
   return (
     <section
       className="mt-10 border-t border-[var(--rule)] pt-8 lg:mt-14 lg:pt-10"
-      id="extra-extra"
+      id={extra._id}
     >
       <p
         className="text-[var(--brass)]"

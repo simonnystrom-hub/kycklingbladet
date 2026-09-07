@@ -37,9 +37,9 @@ describe('mixArchiveItems', () => {
     )
 
     expect(items.map((item) => item.href)).toEqual([
-      '/extra-extra/2026-09-05',
+      '/extra-extra/2026-09-05#extra-extra-2026-09-05',
       '/arkiv/2026-09-05/luckan',
-      '/extra-extra/2026-09-04',
+      '/extra-extra/2026-09-04#extra-extra-2026-09-04',
       '/arkiv/2026-09-03/äldre-larm',
     ])
     expect(items[0]).toMatchObject({
@@ -88,10 +88,45 @@ describe('mixArchiveItems', () => {
     )
 
     expect(items.map((item) => item.href)).toEqual([
-      '/extra-extra/2026-09-05',
+      '/extra-extra/2026-09-05#extra-extra-2026-09-05',
       '/arkiv/2026-09-05/forsta',
       '/arkiv/2026-09-05/andra',
       '/arkiv/2026-09-05/tredje',
+    ])
+  })
+
+  it('lists every Extra Extra on a date before the larm', () => {
+    const items = mixArchiveItems(
+      [
+        {
+          _id: 'alarm-2026-09-05',
+          date: '2026-09-05',
+          kicker: 'Kicker',
+          headline: 'Luckan',
+          slug: 'luckan',
+          slot: 1,
+        },
+      ],
+      [
+        {
+          _id: 'extra-extra-2026-09-05-2',
+          date: '2026-09-05',
+          headline: 'Andra flashen',
+          body: 'Två.',
+        },
+        {
+          _id: 'extra-extra-2026-09-05',
+          date: '2026-09-05',
+          headline: 'Första flashen',
+          body: 'En.',
+        },
+      ],
+    )
+
+    expect(items.map((item) => item.href)).toEqual([
+      '/extra-extra/2026-09-05#extra-extra-2026-09-05',
+      '/extra-extra/2026-09-05#extra-extra-2026-09-05-2',
+      '/arkiv/2026-09-05/luckan',
     ])
   })
 

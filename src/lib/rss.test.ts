@@ -120,7 +120,7 @@ describe('rssItemsFromAlarms', () => {
         kicker: 'EXTRA EXTRA',
         headline: 'Räven gripen',
         body: 'Faran är över.',
-        path: '/extra-extra/2026-09-03',
+        path: '/extra-extra/2026-09-03#extra-extra-2026-09-03',
       },
       {
         date: '2026-09-03',
@@ -161,7 +161,7 @@ describe('rssItemsFromAlarms', () => {
         kicker: 'EXTRA EXTRA',
         headline: 'Räven gripen',
         body: 'Faran är över.',
-        path: '/extra-extra/2026-09-05',
+        path: '/extra-extra/2026-09-05#extra-extra-2026-09-05',
       },
       {
         date: '2026-09-03',
@@ -170,6 +170,41 @@ describe('rssItemsFromAlarms', () => {
         body: 'Första stycket.\n\nAndra stycket.',
         path: '/arkiv/2026-09-03/luckan-fällan',
       },
+    ])
+  })
+
+  it('emits every Extra Extra on a date before the larm', () => {
+    const first: ExtraExtra = {
+      _id: 'extra-extra-2026-09-03',
+      date: '2026-09-03',
+      kicker: 'EXTRA EXTRA',
+      headline: 'Första flashen',
+      body: 'En.',
+      sourceUrl: 'https://example.com/a',
+      sourceHeadline: 'A',
+      sourceNewspaper: 'Tidningen',
+      sourceNewspaperSlug: 'tidningen',
+      promptVersion: 'extra-v1',
+      modelVersion: 'model-v1',
+      createdAt: '2026-09-03T10:00:00.000Z',
+    }
+    const second: ExtraExtra = {
+      ...first,
+      _id: 'extra-extra-2026-09-03-2',
+      headline: 'Andra flashen',
+      body: 'Två.',
+      createdAt: '2026-09-03T15:00:00.000Z',
+    }
+    const items = rssItemsFromAlarms([alarm()], [first, second])
+    expect(items.map((item) => item.headline)).toEqual([
+      'Andra flashen',
+      'Första flashen',
+      'Luckan & fällan',
+    ])
+    expect(items.map((item) => item.path)).toEqual([
+      '/extra-extra/2026-09-03#extra-extra-2026-09-03-2',
+      '/extra-extra/2026-09-03#extra-extra-2026-09-03',
+      '/arkiv/2026-09-03/luckan-fällan',
     ])
   })
 

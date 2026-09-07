@@ -1,5 +1,5 @@
 import {hasExtraExtra} from '@/lib/extra-extra/has-extra'
-import {extraExtraPath} from '@/lib/extra-extra/path'
+import {extraExtraItemPath} from '@/lib/extra-extra/path'
 import type {Alarm, ExtraExtra} from '@/lib/sanity/types'
 import {alarmPath, alarmSlugOrFallback} from '@/lib/select/alarm-path'
 import {parseIsoDateAtNoonUtc} from '@/lib/select/stockholm-date'
@@ -16,23 +16,32 @@ export type RssItem = {
 }
 
 export function rssItemsFromAlarms(alarms: Alarm[], extras: ExtraExtra[] = []): RssItem[] {
-  const extraByDate = new Map(
-    extras.filter(hasExtraExtra).map((extra) => [extra.date, extra]),
-  )
-  const dates = [...new Set([...alarms.map((alarm) => alarm.date), ...extraByDate.keys()])]
+  const extrasByDate = new Map<string, ExtraExtra[]>()
+  for (const extra of extras.filter(hasExtraExtra)) {
+    const list = extrasByDate.get(extra.date) ?? []
+    list.push(extra)
+    extrasByDate.set(extra.date, list)
+  }
+  for (const list of extrasByDate.values()) {
+    list.sort((a, b) => {
+      const created = (b.createdAt ?? '').localeCompare(a.createdAt ?? '')
+      if (created !== 0) return created
+      return b._id.localeCompare(a._id)
+    })
+  }
+  const dates = [...new Set([...alarms.map((alarm) => alarm.date), ...extrasByDate.keys()])]
     .sort()
     .reverse()
 
   return dates.flatMap((date) => {
     const items: RssItem[] = []
-    const extra = extraByDate.get(date)
-    if (extra) {
+    for (const extra of extrasByDate.get(date) ?? []) {
       items.push({
         date: extra.date,
         kicker: extra.kicker,
         headline: extra.headline,
         body: extra.body,
-        path: extraExtraPath(extra.date),
+        path: extraExtraItemPath(extra.date, extra._id),
       })
     }
 

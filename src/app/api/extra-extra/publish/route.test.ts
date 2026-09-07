@@ -52,7 +52,7 @@ describe('extra extra publish Facebook', () => {
   it('shares after a successful create', async () => {
     const create = vi.fn().mockResolvedValue({})
     vi.mocked(getWriteClient).mockReturnValue({
-      fetch: vi.fn().mockResolvedValue(null),
+      fetch: vi.fn().mockResolvedValue([]),
       assets: {upload: vi.fn()},
       create,
     } as never)
@@ -68,16 +68,19 @@ describe('extra extra publish Facebook', () => {
     })
   })
 
-  it('does not share when the date already has Extra Extra', async () => {
-    const create = vi.fn()
+  it('still shares when the date already has Extra Extra', async () => {
+    const create = vi.fn().mockResolvedValue({})
     vi.mocked(getWriteClient).mockReturnValue({
-      fetch: vi.fn().mockResolvedValue('extra-extra-2026-09-05'),
+      fetch: vi.fn().mockResolvedValue(['extra-extra-2026-09-05']),
+      assets: {upload: vi.fn()},
       create,
     } as never)
 
     const response = await POST(request())
-    expect(response.status).toBe(409)
-    expect(create).not.toHaveBeenCalled()
-    expect(sharePublishedExtra).not.toHaveBeenCalled()
+    expect(response.status).toBe(200)
+    expect(create).toHaveBeenCalledWith(
+      expect.objectContaining({_id: 'extra-extra-2026-09-05-2'}),
+    )
+    expect(sharePublishedExtra).toHaveBeenCalled()
   })
 })

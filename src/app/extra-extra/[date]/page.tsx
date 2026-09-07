@@ -1,9 +1,10 @@
 import type {Metadata} from 'next'
 import {IssueExtra} from '@/components/IssueExtra'
 import {canShowExtraExtraPage} from '@/lib/extra-extra/page-guard'
+import {hasExtraExtra} from '@/lib/extra-extra/has-extra'
 import {extraExtraPath} from '@/lib/extra-extra/path'
 import {cartoonImageUrl, shareImages} from '@/lib/og'
-import {getExtraByDate} from '@/lib/sanity/queries'
+import {getExtrasByDate} from '@/lib/sanity/queries'
 import {formatSwedishDate} from '@/lib/select/stockholm-date'
 import {notFound} from 'next/navigation'
 
@@ -17,8 +18,10 @@ export async function generateMetadata({
   params,
 }: ExtraExtraPageProps): Promise<Metadata> {
   const {date} = await params
-  const extra = await getExtraByDate(date)
-  if (!canShowExtraExtraPage(date, extra)) return {}
+  const extras = await getExtrasByDate(date)
+  if (!canShowExtraExtraPage(date, extras)) return {}
+  const extra = extras.find(hasExtraExtra)
+  if (!extra) return {}
   const canonical = extraExtraPath(date)
   const images = shareImages(cartoonImageUrl(extra))
   return {
@@ -40,8 +43,8 @@ export async function generateMetadata({
 
 export default async function ExtraExtraPage({params}: ExtraExtraPageProps) {
   const {date} = await params
-  const extra = await getExtraByDate(date)
-  if (!canShowExtraExtraPage(date, extra)) {
+  const extras = await getExtrasByDate(date)
+  if (!canShowExtraExtraPage(date, extras)) {
     notFound()
   }
 
@@ -57,7 +60,9 @@ export default async function ExtraExtraPage({params}: ExtraExtraPageProps) {
       >
         {formatSwedishDate(date)}
       </p>
-      <IssueExtra extra={extra} date={date} />
+      {extras.map((extra) => (
+        <IssueExtra key={extra._id} extra={extra} date={date} />
+      ))}
     </div>
   )
 }

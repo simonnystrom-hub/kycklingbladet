@@ -10,7 +10,7 @@ import {
   getAlarmsByDate,
   getLatestAlarm,
   getWeekLeads,
-  getExtraByDate,
+  getExtrasByDate,
 } from '@/lib/sanity/queries'
 import {alarmPath, alarmSlugOrFallback} from '@/lib/select/alarm-path'
 import {formatSwedishDate, stockholmToday} from '@/lib/select/stockholm-date'
@@ -20,13 +20,13 @@ export const revalidate = 60
 
 export async function generateMetadata(): Promise<Metadata> {
   const today = stockholmToday()
-  const [todayAlarms, latest, extra] = await Promise.all([
+  const [todayAlarms, latest, extras] = await Promise.all([
     getAlarmsByDate(today),
     getLatestAlarm(),
-    getExtraByDate(today),
+    getExtrasByDate(today),
   ])
   const alarm = todayAlarms[0] ?? latest
-  const images = shareImages(cartoonImageUrl(extra), cartoonImageUrl(alarm))
+  const images = shareImages(cartoonImageUrl(extras[0]), cartoonImageUrl(alarm))
 
   return {
     title: {absolute: HOME_TITLE},
@@ -49,10 +49,10 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function HomePage() {
   const today = stockholmToday()
-  const [todayAlarms, latest, extra] = await Promise.all([
+  const [todayAlarms, latest, extras] = await Promise.all([
     getAlarmsByDate(today),
     getLatestAlarm(),
-    getExtraByDate(today),
+    getExtrasByDate(today),
   ])
   const alarms =
     todayAlarms.length > 0
@@ -69,7 +69,9 @@ export default async function HomePage() {
   return (
     <div className="flex flex-col">
       <section className="sm:order-2">
-        <IssueExtra extra={extra} date={today} />
+        {extras.map((extra) => (
+          <IssueExtra key={extra._id} extra={extra} date={today} />
+        ))}
         <p
           className="text-[var(--brass)]"
           style={{

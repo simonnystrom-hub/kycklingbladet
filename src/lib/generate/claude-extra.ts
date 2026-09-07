@@ -7,6 +7,8 @@ import {resolveModel} from './claude'
 export async function generateExtra(source: {
   text: string
   newspaperName: string
+  dumhet?: number
+  uppskruvning?: number
 }): Promise<{generated: GeneratedExtra; modelVersion: string; promptVersion: string}> {
   const model = resolveModel()
   const anthropic = new Anthropic({apiKey: process.env.ANTHROPIC_API_KEY})

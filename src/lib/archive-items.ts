@@ -1,5 +1,5 @@
 import {EXTRA_EXTRA_STAMP} from '@/lib/copy'
-import {extraExtraPath} from '@/lib/extra-extra/path'
+import {extraExtraItemPath} from '@/lib/extra-extra/path'
 import {alarmPath, alarmSlugOrFallback} from '@/lib/select/alarm-path'
 import type {AlarmTeaser, ArchiveItem} from '@/lib/sanity/types'
 
@@ -23,7 +23,7 @@ export function mixArchiveItems(
       date: extra.date,
       kicker: EXTRA_EXTRA_STAMP,
       headline: extra.headline,
-      href: extraExtraPath(extra.date),
+      href: extraExtraItemPath(extra.date, extra._id),
       kind: 'extraExtra',
     }))
   const alarmRows: ArchiveItem[] = alarms.map((alarm) => ({
