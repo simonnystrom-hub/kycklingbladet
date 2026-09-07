@@ -152,6 +152,36 @@ export async function shareToFacebook(input: ShareToFacebookInput): Promise<Shar
   }
 }
 
+export async function shareFacebookFeed(message: string): Promise<ShareToFacebookResult> {
+  const config = facebookConfig()
+  if (!config) {
+    console.error('Hoppar över Facebook: FACEBOOK_PAGE_ID eller FACEBOOK_PAGE_ACCESS_TOKEN saknas')
+    return 'skipped'
+  }
+
+  const text = message.trim()
+  if (!text) {
+    console.error('Hoppar över Facebook: inlägget saknar text')
+    return 'skipped'
+  }
+
+  try {
+    const created = await graphPost(`/${config.pageId}/feed`, {message: text}, config.token)
+    if (!created.ok) {
+      console.error(`Kunde inte posta till Facebook (${created.status}): ${graphErrorText(created.json)}`)
+      return 'failed'
+    }
+    if (!postedObjectId(created.json)) {
+      console.error('Facebook svarade utan post-id')
+      return 'failed'
+    }
+    return 'shared'
+  } catch (error) {
+    console.error('Kunde inte posta till Facebook', error)
+    return 'failed'
+  }
+}
+
 type GraphListRow = {
   id?: string
   message?: string

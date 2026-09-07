@@ -1,5 +1,5 @@
 import {afterEach, describe, expect, it, vi} from 'vitest'
-import {FACEBOOK_GRAPH_BASE, shareToFacebook} from './share'
+import {FACEBOOK_GRAPH_BASE, shareFacebookFeed, shareToFacebook} from './share'
 
 const articleUrl = 'https://www.kycklingbladet.com/arkiv/2026-09-05'
 
@@ -105,6 +105,24 @@ describe('shareToFacebook', () => {
 
     await expect(shareToFacebook({message: 'Rubrik', articleUrl})).resolves.toBe('skipped')
     expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it('posts visdomsord as a text feed item without a photo', async () => {
+    vi.stubEnv('FACEBOOK_PAGE_ID', 'page-1')
+    vi.stubEnv('FACEBOOK_PAGE_ACCESS_TOKEN', 'token-1')
+    const fetchMock = vi.fn().mockResolvedValueOnce(jsonResponse(200, {id: 'page-1_status'}))
+    vi.stubGlobal('fetch', fetchMock)
+
+    await expect(shareFacebookFeed('KUCKELIKUUUU!\n\n"Hacka i lagom takt."\n\nGerda')).resolves.toBe(
+      'shared',
+    )
+
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(fetchMock.mock.calls[0][0]).toBe(`${FACEBOOK_GRAPH_BASE}/page-1/feed`)
+    const body = String(fetchMock.mock.calls[0][1].body)
+    expect(body).toContain('message=KUCKELIKUUUU')
+    expect(body).not.toContain('url=')
+    expect(body).not.toContain('/photos')
   })
 
   it('does not throw when Graph returns an error', async () => {

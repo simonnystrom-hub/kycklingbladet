@@ -11,9 +11,9 @@ export function alreadyPostedOn(rows: VisdomsordRow[], date: string): boolean {
   return rows.some((row) => row.usedDate === date)
 }
 
-export function pickNextUnusedWithImage(rows: VisdomsordRow[]): VisdomsordRow | null {
+export function pickNextUnused(rows: VisdomsordRow[]): VisdomsordRow | null {
   const candidates = rows
-    .filter((row) => !row.usedDate?.trim() && Boolean(row.imageUrl?.trim()))
+    .filter((row) => !row.usedDate?.trim() && Boolean(row.quote.trim()))
     .sort((a, b) => a._createdAt.localeCompare(b._createdAt))
 
   return candidates[0] ?? null
