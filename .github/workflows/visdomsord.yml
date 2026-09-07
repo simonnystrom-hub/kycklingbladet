@@ -2,7 +2,7 @@ name: Daily visdomsord
 
 on:
   schedule:
-    - cron: "0 7 * * *"
+    - cron: "7 7 * * *"
       timezone: Europe/Stockholm
   workflow_dispatch:
 
