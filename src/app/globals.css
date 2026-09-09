@@ -5,11 +5,12 @@
 }
 
 :root {
-  --bg: #14110c;
-  --ink: #e8dcc4;
-  --ink-muted: #d7cbb3;
-  --brass: #c4a574;
-  --rule: #3d3426;
+  --bg: #f3ead6;
+  --paper: #fff8ea;
+  --ink: #1c1510;
+  --ink-muted: #5c4f42;
+  --brass: #b51f1a;
+  --rule: #d7c4a4;
 }
 
 html { background: var(--bg); color: var(--ink); overflow-x: clip; }

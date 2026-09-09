@@ -115,7 +115,7 @@ export default async function HomePage() {
       </section>
       <WeekLeads
         items={weekLeads}
-        className="mt-10 sm:order-1 sm:mt-0 sm:mb-10 lg:mb-12"
+        className="mt-6 sm:order-1 sm:mt-0 sm:mb-6 lg:mb-8"
       />
     </div>
   )

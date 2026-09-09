@@ -18,8 +18,8 @@ export function WeekLeads({items, className}: {items: AlarmTeaser[]; className?:
               items.length < 2
                 ? undefined
                 : index === 0
-                  ? 'sm:border-r sm:border-[var(--rule)] sm:pr-8'
-                  : 'sm:pl-8'
+                  ? 'sm:border-r sm:border-[var(--rule)] sm:pr-5'
+                  : 'sm:pl-5'
             }
           >
             <Link href={`/arkiv/${item.date}`} className="group block py-2">

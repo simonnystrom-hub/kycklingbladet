@@ -18,7 +18,7 @@ const sourceSerif = Source_Serif_4({
 })
 
 export const viewport: Viewport = {
-  themeColor: '#14110c',
+  themeColor: '#f3ead6',
   viewportFit: 'cover',
 }
 
@@ -58,7 +58,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
         className={`${sourceSerif.className} flex min-h-full flex-col bg-[var(--bg)] text-[var(--ink)]`}
       >
         <Masthead />
-        <main className={`${SHELL} flex-1 py-5 sm:py-10 lg:py-14`}>
+        <main className={`${SHELL} flex-1 py-4 sm:py-5 lg:py-6`}>
           {children}
         </main>
         <SiteFooter />

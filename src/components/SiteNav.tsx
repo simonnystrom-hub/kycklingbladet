@@ -16,14 +16,14 @@ export function SiteNav({className}: {className?: string}) {
     <nav
       className={`text-[11px] tracking-[0.12em] uppercase lg:tracking-[0.16em] ${className ?? ''}`}
     >
-      <ul className="flex flex-wrap items-center justify-center gap-x-3 sm:gap-x-6 lg:gap-x-8">
+      <ul className="flex flex-wrap items-center justify-center gap-x-3 sm:gap-x-5 lg:gap-x-7">
         {NAV_LINKS.map(({href, label}) => {
           const active = isActive(pathname, href)
           return (
             <li key={href}>
               <Link
                 href={href}
-                className={`inline-flex min-h-11 items-center py-2 ${
+                className={`inline-flex min-h-9 items-center py-1 sm:min-h-10 ${
                   active
                     ? 'text-[var(--ink)] underline decoration-[var(--brass)] underline-offset-4'
                     : 'text-[var(--brass)]'

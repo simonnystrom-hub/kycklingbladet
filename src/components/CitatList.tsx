@@ -28,7 +28,7 @@ export function CitatList({quotes}: {quotes: VisdomsordQuote[]}) {
               {item.henName}
             </p>
             <figure className="mt-5 max-w-xl">
-              <div className="border border-[var(--rule)] bg-[#f3ead6] p-2">
+              <div className="border border-[var(--rule)] bg-[var(--paper)] p-2">
                 <Image
                   src={item.imageUrl}
                   alt={caption}

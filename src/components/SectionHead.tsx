@@ -1,6 +1,6 @@
 export function SectionHead({children}: {children: React.ReactNode}) {
   return (
-    <header className="mb-5 border-t-2 border-b border-[var(--brass)] py-2 sm:mb-6">
+    <header className="mb-3 border-t-2 border-b border-[var(--brass)] py-1.5 sm:mb-4">
       <h2
         className="text-center text-[var(--brass)]"
         style={{

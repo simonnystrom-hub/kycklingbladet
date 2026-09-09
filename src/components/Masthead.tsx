@@ -12,43 +12,38 @@ export async function Masthead() {
 
   return (
     <header className="w-full">
-      <div className={`${SHELL} pt-[max(1.25rem,env(safe-area-inset-top))] sm:pt-6 lg:pt-8`}>
-        <SiteNav className="mb-4 text-center sm:mb-6 lg:mb-8" />
-        <div className="pb-4 lg:pb-5" style={{borderBottom: '1px solid var(--brass)'}}>
-          <div className="flex items-center justify-between gap-3 sm:items-end sm:gap-4 lg:gap-6">
-            <Link
-              href="/"
-              className="flex min-w-0 items-center gap-2.5 text-[var(--ink)] hover:text-[var(--brass)] sm:items-end sm:gap-3 lg:gap-4"
-            >
-              <Image
-                src="/logo.png"
-                alt=""
-                width={88}
-                height={88}
-                priority
-                className="size-12 shrink-0 rounded-sm sm:size-[4.5rem] lg:size-[5.5rem]"
-              />
-              <span className="min-w-0">
-                <span className="block font-serif text-[1.5rem] italic leading-none sm:whitespace-nowrap sm:text-[2rem] lg:text-[2.75rem]">
-                  Kycklingbladet
-                </span>
-                <p
-                  className="mt-2 hidden text-[11px] leading-snug tracking-[0.08em] text-[var(--ink-muted)] sm:block lg:mt-3 lg:text-xs lg:tracking-[0.12em]"
-                  style={{fontVariant: 'small-caps'}}
-                >
-                  {tagline}
-                </p>
-              </span>
-            </Link>
-            <FacebookFollow />
-          </div>
-          <p
-            className="mt-2.5 line-clamp-2 text-[10px] leading-snug tracking-[0.04em] text-[var(--ink-muted)] sm:hidden"
-            style={{fontVariant: 'small-caps'}}
+      <div
+        className="relative h-44 w-full overflow-hidden sm:h-56 lg:h-72"
+        style={{borderBottom: '2px solid var(--brass)'}}
+      >
+        <Image
+          src="/cover.jpg"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-[center_38%]"
+        />
+      </div>
+      <div className={`${SHELL} pt-4 sm:pt-5`}>
+        <div className="flex items-start justify-between gap-4 sm:items-center">
+          <Link
+            href="/"
+            className="min-w-0 text-[var(--ink)] hover:text-[var(--brass)]"
           >
-            {tagline}
-          </p>
+            <span className="block font-serif text-[1.65rem] font-bold leading-none sm:text-[2.15rem] lg:text-[2.6rem]">
+              Kycklingbladet
+            </span>
+            <p
+              className="mt-2 text-[10px] leading-snug tracking-[0.06em] text-[var(--ink-muted)] sm:text-[11px] sm:tracking-[0.08em] lg:mt-2.5 lg:text-xs lg:tracking-[0.1em]"
+              style={{fontVariant: 'small-caps'}}
+            >
+              {tagline}
+            </p>
+          </Link>
+          <FacebookFollow />
         </div>
+        <SiteNav className="mt-4 border-y-2 border-[var(--brass)] py-1 text-center sm:mt-5 sm:py-1.5" />
       </div>
     </header>
   )
