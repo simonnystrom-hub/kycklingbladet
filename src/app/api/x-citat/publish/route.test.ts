@@ -6,6 +6,7 @@ vi.mock('@/lib/extra-extra/auth', () => ({
 }))
 vi.mock('@/lib/x/share', () => ({
   shareToX: vi.fn(),
+  shareToXDetailed: vi.fn(),
 }))
 vi.mock('@/lib/sanity/write-client', () => ({
   getWriteClient: vi.fn(),
@@ -16,7 +17,7 @@ vi.mock('@/lib/facebook/published', () => ({
 
 import {sharePublishedExtra} from '@/lib/facebook/published'
 import {getWriteClient} from '@/lib/sanity/write-client'
-import {shareToX} from '@/lib/x/share'
+import {shareToXDetailed} from '@/lib/x/share'
 import {POST} from './route'
 
 const validPayload = {
@@ -39,8 +40,8 @@ function request(payload: unknown) {
 
 describe('X citat publish API', () => {
   beforeEach(() => {
-    vi.mocked(shareToX).mockReset()
-    vi.mocked(shareToX).mockResolvedValue('shared')
+    vi.mocked(shareToXDetailed).mockReset()
+    vi.mocked(shareToXDetailed).mockResolvedValue({result: 'shared'})
     vi.mocked(getWriteClient).mockReset()
     vi.mocked(sharePublishedExtra).mockReset()
   })
@@ -50,10 +51,10 @@ describe('X citat publish API', () => {
 
     expect(response.status).toBe(200)
     expect(await response.json()).toEqual({ok: true})
-    const shareInput = vi.mocked(shareToX).mock.calls[0]?.[0]
+    const shareInput = vi.mocked(shareToXDetailed).mock.calls[0]?.[0]
     expect(shareInput?.text).toContain('@svtnyheter')
     expect(shareInput?.text).not.toContain('@expressen')
-    expect(shareToX).toHaveBeenCalledWith({
+    expect(shareToXDetailed).toHaveBeenCalledWith({
       text: 'Hönan kommenterar dagens nyhet.\n\n@svtnyheter',
       imageBase64: 'aaa',
       quoteTweetId: '1234567890',
@@ -72,7 +73,7 @@ describe('X citat publish API', () => {
 
     expect(response.status).toBe(400)
     expect(await response.json()).toEqual({error: 'Saknar tweet att citera'})
-    expect(shareToX).not.toHaveBeenCalled()
+    expect(shareToXDetailed).not.toHaveBeenCalled()
   })
 
   it('rejects a missing image', async () => {
@@ -80,20 +81,25 @@ describe('X citat publish API', () => {
 
     expect(response.status).toBe(400)
     expect(await response.json()).toEqual({error: 'Saknar bild'})
-    expect(shareToX).not.toHaveBeenCalled()
+    expect(shareToXDetailed).not.toHaveBeenCalled()
   })
 
   it('reports an X posting failure', async () => {
-    vi.mocked(shareToX).mockResolvedValue('failed')
+    vi.mocked(shareToXDetailed).mockResolvedValue({
+      result: 'failed',
+      error: 'You are not allowed to quote this Tweet.',
+    })
 
     const response = await POST(request(validPayload))
 
     expect(response.status).toBe(400)
-    expect(await response.json()).toEqual({error: 'Kunde inte posta till X'})
+    expect(await response.json()).toEqual({
+      error: 'Kunde inte posta till X: You are not allowed to quote this Tweet.',
+    })
   })
 
   it('reports missing X credentials', async () => {
-    vi.mocked(shareToX).mockResolvedValue('skipped')
+    vi.mocked(shareToXDetailed).mockResolvedValue({result: 'skipped'})
 
     const response = await POST(request(validPayload))
 

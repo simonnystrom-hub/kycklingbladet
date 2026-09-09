@@ -2,7 +2,7 @@ import {NextResponse} from 'next/server'
 import {corsHeaders, extraExtraSecretOk} from '@/lib/extra-extra/auth'
 import {parseExtraPreviewImage} from '@/lib/extra-extra/payload'
 import {appendMentions, normalizeMentions} from '@/lib/x/citat/mentions'
-import {shareToX} from '@/lib/x/share'
+import {shareToXDetailed} from '@/lib/x/share'
 
 export const maxDuration = 60
 
@@ -52,17 +52,19 @@ export async function POST(request: Request) {
       value.text,
       normalizeMentions(mentions, sourceUsername),
     )
-    const result = await shareToX({
+    const posted = await shareToXDetailed({
       text,
       imageBase64: image.base64,
       quoteTweetId: value.quoteTweetId.trim(),
     })
 
-    if (result === 'skipped') {
+    if (posted.result === 'skipped') {
       throw new Error('X-nycklar saknas')
     }
-    if (result === 'failed') {
-      throw new Error('Kunde inte posta till X')
+    if (posted.result === 'failed') {
+      throw new Error(
+        posted.error ? `Kunde inte posta till X: ${posted.error}` : 'Kunde inte posta till X',
+      )
     }
 
     return json({ok: true})

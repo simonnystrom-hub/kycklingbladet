@@ -7,12 +7,11 @@ const {tweet, uploadMedia} = vi.hoisted(() => ({
 
 vi.mock('twitter-api-v2', () => ({
   TwitterApi: vi.fn().mockImplementation(() => ({
-    v1: {uploadMedia},
-    v2: {tweet},
+    v2: {tweet, uploadMedia},
   })),
 }))
 
-import {shareToX} from './share'
+import {shareToX, xErrorMessage} from './share'
 
 function stubXEnv() {
   vi.stubEnv('X_API_KEY', '"app-key"')
@@ -86,7 +85,10 @@ describe('shareToX', () => {
       }),
     ).resolves.toBe('shared')
 
-    expect(uploadMedia).toHaveBeenCalledOnce()
+    expect(uploadMedia).toHaveBeenCalledWith(expect.any(Buffer), {
+      media_type: 'image/jpeg',
+      media_category: 'tweet_image',
+    })
     expect(tweet).toHaveBeenCalledWith({
       text: 'Larmrubrik',
       media: {media_ids: ['media-9']},
@@ -129,7 +131,10 @@ describe('shareToX', () => {
       }),
     ).resolves.toBe('shared')
 
-    expect(uploadMedia).toHaveBeenCalledOnce()
+    expect(uploadMedia).toHaveBeenCalledWith(expect.any(Buffer), {
+      media_type: 'image/jpeg',
+      media_category: 'tweet_image',
+    })
     expect(tweet).toHaveBeenCalledWith({
       text: 'Kackel',
       quote_tweet_id: '2097812376640696829',
@@ -152,5 +157,14 @@ describe('shareToX', () => {
     ).resolves.toBe('failed')
 
     expect(tweet).not.toHaveBeenCalled()
+  })
+
+  it('reads a useful message from an X API error payload', () => {
+    expect(
+      xErrorMessage({
+        data: {detail: 'You are not allowed to quote this Tweet.'},
+        code: 403,
+      }),
+    ).toBe('You are not allowed to quote this Tweet.')
   })
 })
