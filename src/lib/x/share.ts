@@ -76,7 +76,8 @@ export async function shareToX(input: ShareToXInput): Promise<ShareToXResult> {
           mimeType: 'image/jpeg',
         })
       } catch (error) {
-        console.error('Kunde inte ladda upp bild till X, postar utan bild', error)
+        console.error('Kunde inte ladda upp bild till X', error)
+        return 'failed'
       }
     } else {
       const imageUrl = input.imageUrl?.trim()

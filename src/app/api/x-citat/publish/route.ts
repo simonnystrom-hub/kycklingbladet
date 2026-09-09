@@ -4,6 +4,8 @@ import {parseExtraPreviewImage} from '@/lib/extra-extra/payload'
 import {appendMentions, normalizeMentions} from '@/lib/x/citat/mentions'
 import {shareToX} from '@/lib/x/share'
 
+export const maxDuration = 60
+
 function json(body: unknown, status = 200) {
   return NextResponse.json(body, {status, headers: corsHeaders()})
 }

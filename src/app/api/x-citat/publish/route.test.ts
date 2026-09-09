@@ -25,7 +25,7 @@ const validPayload = {
     quoteTweetId: '1234567890',
     sourceUsername: 'expressen',
   },
-  mentions: 'svtnyheter',
+  mentions: '@expressen, svtnyheter',
   image: {mimeType: 'image/jpeg', base64: 'aaa'},
 }
 
@@ -50,6 +50,9 @@ describe('X citat publish API', () => {
 
     expect(response.status).toBe(200)
     expect(await response.json()).toEqual({ok: true})
+    const shareInput = vi.mocked(shareToX).mock.calls[0]?.[0]
+    expect(shareInput?.text).toContain('@svtnyheter')
+    expect(shareInput?.text).not.toContain('@expressen')
     expect(shareToX).toHaveBeenCalledWith({
       text: 'Hönan kommenterar dagens nyhet.\n\n@svtnyheter',
       imageBase64: 'aaa',

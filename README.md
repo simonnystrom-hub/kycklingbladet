@@ -65,16 +65,17 @@ npm run daily
 | `ANTHROPIC_MODEL` | Claude-modell (valfri override) |
 | `FACEBOOK_PAGE_ID` | Facebooksida som ska få nya larm och Extra Extra |
 | `FACEBOOK_PAGE_ACCESS_TOKEN` | Långlivat Page Access Token (inte app-secret) |
-| `X_API_KEY` | X-appens API Key (OAuth 1.0a) |
-| `X_API_SECRET` | X-appens API Secret |
-| `X_ACCESS_TOKEN` | Användartoken för @Kycklingbladet med Read and Write |
-| `X_ACCESS_TOKEN_SECRET` | Access Token Secret för samma användartoken (`X_ACCESS_SECRET` går också) |
+| `EXTRA_EXTRA_SECRET` | Delad Studio-hemlighet för Extra Extra och Citat på X (Vercel) |
+| `X_API_KEY` | X-appens API Key för Citat på X (Vercel, OAuth 1.0a) |
+| `X_API_SECRET` | X-appens API Secret för Citat på X (Vercel) |
+| `X_ACCESS_TOKEN` | Användartoken för @Kycklingbladet med Read and Write (Vercel) |
+| `X_ACCESS_TOKEN_SECRET` | Access Token Secret för samma användartoken (Vercel; `X_ACCESS_SECRET` går också) |
 
 ## GitHub Actions (daily job)
 
 Schemat körs via `.github/workflows/daily.yml` (vardagar 12:00, helg 14:00 Europe/Stockholm). Sätt dessa repository secrets så de matchar workflowen:
 
-Visdomsord körs separat via `.github/workflows/visdomsord.yml` varje dag 07:07 Europe/Stockholm och postar text till Facebook och X. Jobbet hämtar nästa oanvända visdomsord från Studio-poolen. Det använder samma Facebook-, X- och Sanity-secrets som daily-jobbet.
+Visdomsord körs separat via `.github/workflows/visdomsord.yml` varje dag 07:07 Europe/Stockholm och postar text till Facebook. Jobbet hämtar nästa oanvända visdomsord från Studio-poolen.
 
 Kör visdomsord-jobbet manuellt med `gh workflow run visdomsord.yml`.
 
@@ -90,12 +91,8 @@ Kör visdomsord-jobbet manuellt med `gh workflow run visdomsord.yml`.
 | `GEMINI_IMAGE_MODEL` | Valfri modell-override (default `gemini-3-pro-image`) |
 | `FACEBOOK_PAGE_ID` | Facebooksida |
 | `FACEBOOK_PAGE_ACCESS_TOKEN` | Page Access Token med `pages_manage_posts`, `pages_read_engagement` och `pages_manage_engagement` |
-| `X_API_KEY` | X API Key |
-| `X_API_SECRET` | X API Secret |
-| `X_ACCESS_TOKEN` | X Access Token (användarkontext, Read and Write) |
-| `X_ACCESS_TOKEN_SECRET` | X Access Token Secret (`X_ACCESS_SECRET` går också) |
 
-Samma Facebook- och X-värden ska också sättas i Vercel så Extra Extra-publicering från Studio kan posta. Citat på X använder samma Extra Extra-secret och X-miljövariabler i Vercel. Facebook-app-id och app-secret används bara för att skapa tokenet, inte i jobbet. X Premium på kontot räcker inte — det krävs en app i [X Developer Portal](https://developer.x.com/) med Read and Write och API-krediter för att kunna posta.
+Samma Facebook-värden ska också sättas i Vercel så Extra Extra-publicering från Studio kan posta. Citat på X från Studio kräver `EXTRA_EXTRA_SECRET` och X-miljövariablerna ovan i Vercel; Studio ska ha samma hemlighet som `SANITY_STUDIO_EXTRA_EXTRA_SECRET`. Facebook-app-id och app-secret används bara för att skapa tokenet, inte i jobbet. X Premium på kontot räcker inte — det krävs en app i [X Developer Portal](https://developer.x.com/) med Read and Write och API-krediter för att kunna posta.
 
 Page token (en gång): i Graph API Explorer, användartoken med sidorättigheterna ovan → byt till långlivat användartoken med app-id + app-secret → `GET /me/accounts` → kopiera sidans `access_token`. Appen ska vara Live, annars syns inläggen bara för app-roller.
 

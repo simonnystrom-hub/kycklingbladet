@@ -23,7 +23,8 @@ export async function fetchSourceTweet(statusId: string): Promise<SourceTweet> {
     }
 
     return {id, username, text}
-  } catch {
+  } catch (error) {
+    console.error('Kunde inte hämta tweeten från X', error)
     throw new Error('Kunde inte hämta tweeten')
   }
 }

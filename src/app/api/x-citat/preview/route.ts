@@ -43,6 +43,7 @@ export async function POST(request: Request) {
     let quoteTweetId: string | null = null
     let sourceUsername: string | null = null
     let sourceText = pastedText
+    let sourceError: string | null = null
 
     if (sourceUrl) {
       const statusId = parseTweetStatusId(sourceUrl)
@@ -56,6 +57,7 @@ export async function POST(request: Request) {
           sourceText = source.text
         } catch (error) {
           if (!pastedText) throw error
+          sourceError = 'Kunde inte hämta tweeten'
         }
       }
     }
@@ -73,6 +75,7 @@ export async function POST(request: Request) {
         sourceUsername,
         sourceText,
         sourceUrl,
+        ...(sourceError ? {sourceError} : {}),
         text: result.generated.text,
         promptVersion: result.promptVersion,
         modelVersion: result.modelVersion,

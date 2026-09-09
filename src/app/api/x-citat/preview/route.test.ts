@@ -100,7 +100,10 @@ describe('X citat preview API', () => {
 
     expect(response.status).toBe(200)
     expect(generateCitat).toHaveBeenCalledWith({text: 'Reservkackel', username: null})
-    expect((await response.json()).preview.quoteTweetId).toBeNull()
+    expect((await response.json()).preview).toMatchObject({
+      quoteTweetId: null,
+      sourceError: 'Kunde inte hämta tweeten',
+    })
   })
 
   it('passes explicitly supplied generation knobs', async () => {

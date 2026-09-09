@@ -57,9 +57,12 @@ describe('fetchSourceTweet', () => {
 
   it('uses a Swedish error when the X API fails', async () => {
     stubXEnv()
-    singleTweet.mockRejectedValue(new Error('403'))
+    const failure = new Error('403')
+    singleTweet.mockRejectedValue(failure)
+    const errorLog = vi.spyOn(console, 'error').mockImplementation(() => {})
 
     await expect(fetchSourceTweet('123')).rejects.toThrow('Kunde inte hämta tweeten')
+    expect(errorLog).toHaveBeenCalledWith('Kunde inte hämta tweeten från X', failure)
   })
 
   it.each([
@@ -80,6 +83,7 @@ describe('fetchSourceTweet', () => {
   ])('rejects when the response is missing $missing', async ({response}) => {
     stubXEnv()
     singleTweet.mockResolvedValue(response)
+    vi.spyOn(console, 'error').mockImplementation(() => {})
 
     await expect(fetchSourceTweet('123')).rejects.toThrow('Kunde inte hämta tweeten')
   })

@@ -136,4 +136,21 @@ describe('shareToX', () => {
       media: {media_ids: ['media-q']},
     })
   })
+
+  it('fails without tweeting when jpeg base64 upload fails', async () => {
+    stubXEnv()
+    uploadMedia.mockRejectedValue(new Error('upload failed'))
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+    vi.spyOn(console, 'log').mockImplementation(() => {})
+
+    await expect(
+      shareToX({
+        text: 'Kackel',
+        imageBase64: Buffer.from([1, 2, 3]).toString('base64'),
+        quoteTweetId: '2097812376640696829',
+      }),
+    ).resolves.toBe('failed')
+
+    expect(tweet).not.toHaveBeenCalled()
+  })
 })
