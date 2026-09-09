@@ -5,7 +5,9 @@ import {
   type VisdomsordRow,
 } from '../src/lib/visdomsord/queue'
 import {facebookWisdomMessage} from '../src/lib/visdomsord/message'
+import {visdomsordShareOutcome} from '../src/lib/visdomsord/share-outcome'
 import {shareFacebookFeed} from '../src/lib/facebook/share'
+import {shareToX} from '../src/lib/x/share'
 import {getWriteClient} from '../src/lib/sanity/write-client'
 
 export async function runVisdomsord(now = new Date()): Promise<'posted' | 'skipped'> {
@@ -25,20 +27,27 @@ export async function runVisdomsord(now = new Date()): Promise<'posted' | 'skipp
     console.log(`Tom visdomsord-kö ${date}`)
     return 'skipped'
   }
-  const result = await shareFacebookFeed(
-    facebookWisdomMessage({quote: next.quote, henName: next.henName}),
-  )
-  if (result === 'shared') {
+  const message = facebookWisdomMessage({quote: next.quote, henName: next.henName})
+  const [facebook, x] = await Promise.all([
+    shareFacebookFeed(message),
+    shareToX({text: message}),
+  ])
+  const outcome = visdomsordShareOutcome(facebook, x)
+  if (facebook === 'failed') {
+    console.error(`Facebook misslyckades för visdomsord ${next._id}`)
+  }
+  if (x === 'failed') {
+    console.error(`X misslyckades för visdomsord ${next._id}`)
+  }
+  if (outcome.failed) {
+    process.exitCode = 1
+  }
+  if (outcome.markUsed) {
     await client.patch(next._id).set({usedDate: date}).commit()
     console.log(`Utlagt visdomsord ${next._id}`)
     return 'posted'
   }
-  if (result === 'failed') {
-    console.error(`Facebook misslyckades för visdomsord ${next._id}`)
-    process.exitCode = 1
-    return 'skipped'
-  }
-  console.error(`Hoppar över visdomsord ${next._id}: ingen Facebook-post`)
+  console.error(`Hoppar över visdomsord ${next._id}: ingen post`)
   return 'skipped'
 }
 

@@ -61,6 +61,7 @@ describe('extra extra publish Facebook', () => {
     expect(response.status).toBe(200)
     expect(create).toHaveBeenCalled()
     expect(sharePublishedExtra).toHaveBeenCalledWith('2026-09-05', {
+      id: 'extra-extra-2026-09-05',
       headline: preview.headline,
       body: preview.body,
       imageCaption: undefined,
@@ -81,6 +82,12 @@ describe('extra extra publish Facebook', () => {
     expect(create).toHaveBeenCalledWith(
       expect.objectContaining({_id: 'extra-extra-2026-09-05-2'}),
     )
-    expect(sharePublishedExtra).toHaveBeenCalled()
+    expect(sharePublishedExtra).toHaveBeenCalledWith('2026-09-05', {
+      id: 'extra-extra-2026-09-05-2',
+      headline: preview.headline,
+      body: preview.body,
+      imageCaption: undefined,
+      imageUrl: null,
+    })
   })
 })

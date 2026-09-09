@@ -1,7 +1,9 @@
-import {extraExtraPath} from '@/lib/extra-extra/path'
+import {extraExtraItemPath, extraExtraPath} from '@/lib/extra-extra/path'
 import {alarmPath, alarmSlugOrFallback} from '@/lib/select/alarm-path'
 import {getWriteClient} from '@/lib/sanity/write-client'
 import {absoluteUrl} from '@/lib/site-url'
+import {xExtraMessage, xLeadMessage} from '@/lib/x/message'
+import {shareToX} from '@/lib/x/share'
 import {
   facebookExtraMessage,
   facebookLeadMessage,
@@ -26,33 +28,51 @@ export async function sharePublishedLead(id: string): Promise<ShareToFacebookRes
       {id},
     )
     if (!alarm?.headline?.trim() || !alarm.body?.trim() || !alarm.date) {
-      console.error(`Hoppar över Facebook: larm ${id} saknar text`)
+      console.error(`Hoppar över Facebook och X: larm ${id} saknar text`)
       return 'skipped'
     }
-    return await shareToFacebook({
-      message: facebookLeadMessage(alarm),
-      imageUrl: alarm.imageUrl,
-      articleUrl: absoluteUrl(
-        alarmPath(alarm.date, alarmSlugOrFallback(alarm.headline, alarm.slug)),
-      ),
-    })
+    const articleUrl = absoluteUrl(
+      alarmPath(alarm.date, alarmSlugOrFallback(alarm.headline, alarm.slug)),
+    )
+    const [facebook] = await Promise.all([
+      shareToFacebook({
+        message: facebookLeadMessage(alarm),
+        imageUrl: alarm.imageUrl,
+        articleUrl,
+      }),
+      shareToX({
+        text: xLeadMessage(alarm, articleUrl),
+        imageUrl: alarm.imageUrl,
+      }),
+    ])
+    return facebook
   } catch (error) {
-    console.error(`Kunde inte posta larm ${id} till Facebook`, error)
+    console.error(`Kunde inte posta larm ${id} till Facebook eller X`, error)
     return 'failed'
   }
 }
 
 export async function sharePublishedExtra(
   date: string,
-  extra: FacebookExtraCopy & {imageUrl?: string | null},
+  extra: FacebookExtraCopy & {id?: string | null; imageUrl?: string | null},
 ): Promise<void> {
+  const extraId = extra.id?.trim()
+  const articleUrl = absoluteUrl(
+    extraId ? extraExtraItemPath(date, extraId) : extraExtraPath(date),
+  )
   try {
-    await shareToFacebook({
-      message: facebookExtraMessage(extra),
-      imageUrl: extra.imageUrl,
-      articleUrl: absoluteUrl(extraExtraPath(date)),
-    })
+    await Promise.all([
+      shareToFacebook({
+        message: facebookExtraMessage(extra),
+        imageUrl: extra.imageUrl,
+        articleUrl,
+      }),
+      shareToX({
+        text: xExtraMessage(extra, articleUrl),
+        imageUrl: extra.imageUrl,
+      }),
+    ])
   } catch (error) {
-    console.error(`Kunde inte posta Extra Extra ${date} till Facebook`, error)
+    console.error(`Kunde inte posta Extra Extra ${date} till Facebook eller X`, error)
   }
 }

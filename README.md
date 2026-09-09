@@ -75,7 +75,7 @@ npm run daily
 
 Schemat körs via `.github/workflows/daily.yml` (vardagar 12:00, helg 14:00 Europe/Stockholm). Sätt dessa repository secrets så de matchar workflowen:
 
-Visdomsord körs separat via `.github/workflows/visdomsord.yml` varje dag 07:07 Europe/Stockholm och postar text till Facebook. Jobbet hämtar nästa oanvända visdomsord från Studio-poolen.
+Visdomsord körs separat via `.github/workflows/visdomsord.yml` varje dag 07:07 Europe/Stockholm och postar samma text till Facebook och X. Jobbet hämtar nästa oanvända visdomsord från Studio-poolen. Daily-jobbet och Extra Extra postar också till båda.
 
 Kör visdomsord-jobbet manuellt med `gh workflow run visdomsord.yml`.
 
@@ -91,8 +91,12 @@ Kör visdomsord-jobbet manuellt med `gh workflow run visdomsord.yml`.
 | `GEMINI_IMAGE_MODEL` | Valfri modell-override (default `gemini-3-pro-image`) |
 | `FACEBOOK_PAGE_ID` | Facebooksida |
 | `FACEBOOK_PAGE_ACCESS_TOKEN` | Page Access Token med `pages_manage_posts`, `pages_read_engagement` och `pages_manage_engagement` |
+| `X_API_KEY` | X-appens API Key |
+| `X_API_SECRET` | X-appens API Secret |
+| `X_ACCESS_TOKEN` | Användartoken för @Kycklingbladet med Read and Write |
+| `X_ACCESS_SECRET` | Access Token Secret (GitHub-secretnamnet; `X_ACCESS_TOKEN_SECRET` går också) |
 
-Samma Facebook-värden ska också sättas i Vercel så Extra Extra-publicering från Studio kan posta. Citat på X från Studio kräver `EXTRA_EXTRA_SECRET` och X-miljövariablerna ovan i Vercel; Studio ska ha samma hemlighet som `SANITY_STUDIO_EXTRA_EXTRA_SECRET`. Facebook-app-id och app-secret används bara för att skapa tokenet, inte i jobbet. X Premium på kontot räcker inte — det krävs en app i [X Developer Portal](https://developer.x.com/) med Read and Write och API-krediter för att kunna posta.
+Samma Facebook- och X-värden ska också sättas i Vercel så Extra Extra- och Citat-publicering från Studio kan posta. Citat på X från Studio kräver `EXTRA_EXTRA_SECRET` och X-miljövariablerna ovan i Vercel; Studio ska ha samma hemlighet som `SANITY_STUDIO_EXTRA_EXTRA_SECRET`. Facebook-app-id och app-secret används bara för att skapa tokenet, inte i jobbet. X Premium på kontot räcker inte — det krävs en app i [X Developer Portal](https://developer.x.com/) med Read and Write och API-krediter för att kunna posta.
 
 Page token (en gång): i Graph API Explorer, användartoken med sidorättigheterna ovan → byt till långlivat användartoken med app-id + app-secret → `GET /me/accounts` → kopiera sidans `access_token`. Appen ska vara Live, annars syns inläggen bara för app-roller.
 

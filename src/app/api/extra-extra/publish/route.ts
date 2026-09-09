@@ -64,6 +64,7 @@ export async function POST(request: Request) {
     )
 
     await sharePublishedExtra(date, {
+      id,
       headline: preview.headline,
       body: preview.body,
       imageCaption: preview.imageCaption,
