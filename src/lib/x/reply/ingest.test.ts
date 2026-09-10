@@ -107,6 +107,27 @@ describe('runXReply', () => {
     expect(publishXReply).not.toHaveBeenCalled()
   })
 
+  it('skips duplicate mention ids within one fetched batch', async () => {
+    fetchXMentions.mockResolvedValue({
+      ourUserId: 'our-user',
+      mentions: [
+        firstMention,
+        {...firstMention, text: '@Kycklingbladet Dublett'},
+      ],
+    })
+    loadXReplyIndex.mockResolvedValue({
+      existingSourceIds: new Set(),
+      ourPostedIds: new Set(),
+    })
+
+    await expect(runXReply()).resolves.toEqual({
+      ingested: 1,
+      posted: 0,
+      skipped: 1,
+    })
+    expect(createPendingXReply).toHaveBeenCalledTimes(1)
+  })
+
   it('auto-posts up to five ready rows and continues after publish failures', async () => {
     loadXReplySettings.mockResolvedValue({
       mode: 'auto',

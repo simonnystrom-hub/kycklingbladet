@@ -76,6 +76,7 @@ export async function runXReply(): Promise<{
     }
 
     await createPendingXReply(pending)
+    skipContext.existingSourceIds.add(mention.id)
     ingested += 1
   }
 
