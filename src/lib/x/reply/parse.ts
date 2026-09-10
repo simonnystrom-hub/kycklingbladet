@@ -8,5 +8,7 @@ export function validateGeneratedXReply(input: unknown): string | null {
   if (!text) return null
   if (/https?:\/\//i.test(text)) return null
   if (/@[A-Za-z0-9_]/.test(text)) return null
+  if (text.includes('#')) return null
+  if (/\p{Extended_Pictographic}/u.test(text)) return null
   return text
 }
