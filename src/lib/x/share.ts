@@ -6,6 +6,7 @@ export type ShareToXResult = 'shared' | 'skipped' | 'failed'
 export type ShareToXDetail = {
   result: ShareToXResult
   error?: string
+  tweetId?: string
 }
 
 export type ShareToXInput = {
@@ -13,6 +14,7 @@ export type ShareToXInput = {
   imageUrl?: string | null
   imageBase64?: string | null
   quoteTweetId?: string | null
+  inReplyToTweetId?: string | null
 }
 
 export type XConfig = {
@@ -138,12 +140,15 @@ export async function shareToXDetailed(input: ShareToXInput): Promise<ShareToXDe
     }
 
     const quoteTweetId = input.quoteTweetId?.trim()
+    const inReplyToTweetId = input.inReplyToTweetId?.trim()
     const payload: {
       text: string
       quote_tweet_id?: string
+      reply?: {in_reply_to_tweet_id: string}
       media?: {media_ids: [string]}
     } = {text}
     if (quoteTweetId) payload.quote_tweet_id = quoteTweetId
+    if (inReplyToTweetId) payload.reply = {in_reply_to_tweet_id: inReplyToTweetId}
     if (mediaId) payload.media = {media_ids: [mediaId] as [string]}
     const tweet = await client.v2.tweet(payload)
     if (!tweet.data?.id) {
@@ -151,7 +156,7 @@ export async function shareToXDetailed(input: ShareToXInput): Promise<ShareToXDe
       return {result: 'failed', error: 'X svarade utan tweet-id'}
     }
     console.log(`Utlagt på X: ${tweet.data.id}`)
-    return {result: 'shared'}
+    return {result: 'shared', tweetId: tweet.data.id}
   } catch (error) {
     const message = xErrorMessage(error)
     console.error('Kunde inte posta till X', message)

@@ -11,7 +11,7 @@ vi.mock('twitter-api-v2', () => ({
   })),
 }))
 
-import {shareToX, xErrorMessage} from './share'
+import {shareToX, shareToXDetailed, xErrorMessage} from './share'
 
 function stubXEnv() {
   vi.stubEnv('X_API_KEY', '"app-key"')
@@ -157,6 +157,23 @@ describe('shareToX', () => {
     ).resolves.toBe('failed')
 
     expect(tweet).not.toHaveBeenCalled()
+  })
+
+  it('replies to an existing tweet and returns its id', async () => {
+    stubXEnv()
+    tweet.mockResolvedValue({data: {id: 'reply-1'}})
+    vi.spyOn(console, 'log').mockImplementation(() => {})
+
+    await expect(
+      shareToXDetailed({
+        text: 'Inspirerat av: https://x.com/jack/status/20',
+        inReplyToTweetId: 'parent-9',
+      }),
+    ).resolves.toEqual({result: 'shared', tweetId: 'reply-1'})
+    expect(tweet).toHaveBeenCalledWith({
+      text: 'Inspirerat av: https://x.com/jack/status/20',
+      reply: {in_reply_to_tweet_id: 'parent-9'},
+    })
   })
 
   it('reads a useful message from an X API error payload', () => {

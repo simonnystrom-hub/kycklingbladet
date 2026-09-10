@@ -23,7 +23,7 @@ import {POST} from './route'
 const validPayload = {
   preview: {
     text: 'Hönan kommenterar dagens nyhet.',
-    quoteTweetId: '1234567890',
+    sourceUrl: 'https://x.com/ekojonny/status/1234567890',
     sourceUsername: 'expressen',
   },
   mentions: '@expressen, svtnyheter',
@@ -41,38 +41,55 @@ function request(payload: unknown) {
 describe('X citat publish API', () => {
   beforeEach(() => {
     vi.mocked(shareToXDetailed).mockReset()
-    vi.mocked(shareToXDetailed).mockResolvedValue({result: 'shared'})
+    vi.mocked(shareToXDetailed).mockResolvedValue({result: 'shared', tweetId: 'parent-1'})
     vi.mocked(getWriteClient).mockReset()
     vi.mocked(sharePublishedExtra).mockReset()
   })
 
-  it('publishes a quote tweet with image and normalized mentions', async () => {
+  it('posts the hen tweet then a follow-up with the source URL', async () => {
     const response = await POST(request(validPayload))
 
     expect(response.status).toBe(200)
     expect(await response.json()).toEqual({ok: true})
-    const shareInput = vi.mocked(shareToXDetailed).mock.calls[0]?.[0]
-    expect(shareInput?.text).toContain('@svtnyheter')
-    expect(shareInput?.text).not.toContain('@expressen')
-    expect(shareToXDetailed).toHaveBeenCalledWith({
+    expect(shareToXDetailed).toHaveBeenNthCalledWith(1, {
       text: 'Hönan kommenterar dagens nyhet.\n\n@svtnyheter',
       imageBase64: 'aaa',
-      quoteTweetId: '1234567890',
+    })
+    expect(shareToXDetailed).toHaveBeenNthCalledWith(2, {
+      text: 'Inspirerat av: https://x.com/ekojonny/status/1234567890',
+      inReplyToTweetId: 'parent-1',
     })
     expect(getWriteClient).not.toHaveBeenCalled()
     expect(sharePublishedExtra).not.toHaveBeenCalled()
   })
 
-  it('rejects a missing quote tweet id', async () => {
+  it('posts only the hen tweet when there is no source URL', async () => {
     const payload = {
       ...validPayload,
-      preview: {...validPayload.preview, quoteTweetId: ' '},
+      mentions: '',
+      preview: {text: 'Hönan kommenterar dagens nyhet.'},
+    }
+
+    const response = await POST(request(payload))
+
+    expect(response.status).toBe(200)
+    expect(shareToXDetailed).toHaveBeenCalledOnce()
+    expect(shareToXDetailed).toHaveBeenCalledWith({
+      text: 'Hönan kommenterar dagens nyhet.',
+      imageBase64: 'aaa',
+    })
+  })
+
+  it('rejects an invalid source URL before posting', async () => {
+    const payload = {
+      ...validPayload,
+      preview: {...validPayload.preview, sourceUrl: 'https://x.com/ekojonny'},
     }
 
     const response = await POST(request(payload))
 
     expect(response.status).toBe(400)
-    expect(await response.json()).toEqual({error: 'Saknar tweet att citera'})
+    expect(await response.json()).toEqual({error: 'Ogiltig tweet-URL'})
     expect(shareToXDetailed).not.toHaveBeenCalled()
   })
 
@@ -87,14 +104,27 @@ describe('X citat publish API', () => {
   it('reports an X posting failure', async () => {
     vi.mocked(shareToXDetailed).mockResolvedValue({
       result: 'failed',
-      error: 'You are not allowed to quote this Tweet.',
+      error: 'X HTTP 403',
     })
 
     const response = await POST(request(validPayload))
 
     expect(response.status).toBe(400)
     expect(await response.json()).toEqual({
-      error: 'Kunde inte posta till X: You are not allowed to quote this Tweet.',
+      error: 'Kunde inte posta till X: X HTTP 403',
+    })
+  })
+
+  it('keeps the hen tweet if the follow-up fails', async () => {
+    vi.mocked(shareToXDetailed)
+      .mockResolvedValueOnce({result: 'shared', tweetId: 'parent-1'})
+      .mockResolvedValueOnce({result: 'failed', error: 'reply blocked'})
+
+    const response = await POST(request(validPayload))
+
+    expect(response.status).toBe(400)
+    expect(await response.json()).toEqual({
+      error: 'Hönstweeten gick ut men uppföljningen misslyckades: reply blocked',
     })
   })
 

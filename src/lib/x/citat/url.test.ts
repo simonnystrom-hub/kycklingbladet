@@ -1,5 +1,5 @@
 import {describe, expect, it} from 'vitest'
-import {parseTweetStatusId} from './url'
+import {citatFollowUpText, parseTweetStatusId} from './url'
 
 describe('parseTweetStatusId', () => {
   it('reads x.com and twitter.com status ids', () => {
@@ -9,6 +9,13 @@ describe('parseTweetStatusId', () => {
     expect(
       parseTweetStatusId('https://www.twitter.com/someone/status/12345?s=20'),
     ).toBe('12345')
+  })
+
+  it('builds the follow-up reply from a status URL', () => {
+    expect(citatFollowUpText('  https://x.com/jack/status/20  ')).toBe(
+      'Inspirerat av: https://x.com/jack/status/20',
+    )
+    expect(citatFollowUpText('https://x.com/Kycklingbladet')).toBeNull()
   })
 
   it('rejects junk', () => {

@@ -2,6 +2,7 @@ import {NextResponse} from 'next/server'
 import {corsHeaders, extraExtraSecretOk} from '@/lib/extra-extra/auth'
 import {parseExtraPreviewImage} from '@/lib/extra-extra/payload'
 import {appendMentions, normalizeMentions} from '@/lib/x/citat/mentions'
+import {citatFollowUpText} from '@/lib/x/citat/url'
 import {shareToXDetailed} from '@/lib/x/share'
 
 export const maxDuration = 60
@@ -12,6 +13,18 @@ function json(body: unknown, status = 200) {
 
 export function OPTIONS() {
   return new Response(null, {status: 204, headers: corsHeaders()})
+}
+
+function postedOrThrow(
+  posted: {result: 'shared' | 'skipped' | 'failed'; error?: string},
+  failedPrefix: string,
+) {
+  if (posted.result === 'skipped') {
+    throw new Error('X-nycklar saknas')
+  }
+  if (posted.result === 'failed') {
+    throw new Error(posted.error ? `${failedPrefix}: ${posted.error}` : failedPrefix)
+  }
 }
 
 export async function POST(request: Request) {
@@ -36,8 +49,10 @@ export async function POST(request: Request) {
       throw new Error('Ogiltig förfrågan')
     }
 
-    if (typeof value.quoteTweetId !== 'string' || !value.quoteTweetId.trim()) {
-      throw new Error('Saknar tweet att citera')
+    const sourceUrl = typeof value.sourceUrl === 'string' ? value.sourceUrl.trim() : ''
+    const followUp = sourceUrl ? citatFollowUpText(sourceUrl) : null
+    if (sourceUrl && !followUp) {
+      throw new Error('Ogiltig tweet-URL')
     }
 
     const image = parseExtraPreviewImage(payload.image)
@@ -52,19 +67,24 @@ export async function POST(request: Request) {
       value.text,
       normalizeMentions(mentions, sourceUsername),
     )
-    const posted = await shareToXDetailed({
+    const parent = await shareToXDetailed({
       text,
       imageBase64: image.base64,
-      quoteTweetId: value.quoteTweetId.trim(),
     })
+    postedOrThrow(parent, 'Kunde inte posta till X')
 
-    if (posted.result === 'skipped') {
-      throw new Error('X-nycklar saknas')
-    }
-    if (posted.result === 'failed') {
-      throw new Error(
-        posted.error ? `Kunde inte posta till X: ${posted.error}` : 'Kunde inte posta till X',
-      )
+    if (followUp && parent.tweetId) {
+      const reply = await shareToXDetailed({
+        text: followUp,
+        inReplyToTweetId: parent.tweetId,
+      })
+      if (reply.result !== 'shared') {
+        throw new Error(
+          reply.error
+            ? `Hönstweeten gick ut men uppföljningen misslyckades: ${reply.error}`
+            : 'Hönstweeten gick ut men uppföljningen misslyckades',
+        )
+      }
     }
 
     return json({ok: true})

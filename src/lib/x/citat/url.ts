@@ -1,3 +1,9 @@
+export function citatFollowUpText(sourceUrl: string): string | null {
+  const url = sourceUrl.trim()
+  if (!parseTweetStatusId(url)) return null
+  return `Inspirerat av: ${url}`
+}
+
 export function parseTweetStatusId(url: string): string | null {
   let parsed: URL
   try {
