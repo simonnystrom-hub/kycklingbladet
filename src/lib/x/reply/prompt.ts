@@ -34,6 +34,7 @@ Regler:
 - Följ användarens Dumhet- och Uppskruvning-skalor (1–5).
 - Föreslå inget bildmanus eller annan bildbeskrivning.
 - Skriv inte EXTRA EXTRA.
+- Skriv inte "se länk".
 - Skriv ingen URL, @mention, hashtag eller emoji.
 
 Svara med ENDAST ett JSON-objekt:

@@ -20,6 +20,7 @@ describe('X_REPLY_WRITE_SYSTEM', () => {
   it('forbids urls mentions hashtags and extra extra', () => {
     expect(X_REPLY_WRITE_SYSTEM).toContain('JSON')
     expect(X_REPLY_WRITE_SYSTEM.toLowerCase()).toContain('url')
+    expect(X_REPLY_WRITE_SYSTEM).toContain('se länk')
     expect(X_REPLY_WRITE_SYSTEM).toContain('@')
   })
 })
