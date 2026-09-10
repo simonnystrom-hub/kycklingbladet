@@ -77,6 +77,8 @@ Schemat körs via `.github/workflows/daily.yml` (vardagar 12:00, helg 14:00 Euro
 
 Visdomsord körs separat via `.github/workflows/visdomsord.yml` varje dag 07:07 Europe/Stockholm och postar samma text till Facebook och X. Jobbet hämtar nästa oanvända visdomsord från Studio-poolen. Daily-jobbet och Extra Extra postar också till båda.
 
+X-svar körs via `.github/workflows/x-reply.yml` var 15:e minut, hämtar omnämnanden och publicerar svar. `ANTHROPIC_API_KEY` är obligatorisk för detta GitHub Actions-jobb; `ANTHROPIC_MODEL` är en valfri override.
+
 Kör visdomsord-jobbet manuellt med `gh workflow run visdomsord.yml`.
 
 | Secret | Används som |
