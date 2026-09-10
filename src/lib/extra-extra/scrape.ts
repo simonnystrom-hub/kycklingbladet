@@ -1,6 +1,14 @@
 import {extractHeadlineFromHtml} from './headline'
 import {resolveNewspaper, type ExtraPaper} from './papers'
 
+export function cachedArticleHeadline(input: unknown): string | null {
+  if (!input || typeof input !== 'object' || Array.isArray(input)) return null
+  const headline = (input as {sourceHeadline?: unknown}).sourceHeadline
+  if (typeof headline !== 'string') return null
+  const trimmed = headline.trim()
+  return trimmed || null
+}
+
 export async function scrapeArticleHeadline(
   articleUrl: string,
 ): Promise<{headline: string; paper: ExtraPaper}> {

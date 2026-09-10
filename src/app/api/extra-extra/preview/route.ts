@@ -1,10 +1,9 @@
 import {NextResponse} from 'next/server'
 import {corsHeaders, extraExtraSecretOk} from '@/lib/extra-extra/auth'
-import {drawExtraImage} from '@/lib/extra-extra/draw'
-import {extraPreviewResponse} from '@/lib/extra-extra/preview-body'
-import {scrapeArticleHeadline} from '@/lib/extra-extra/scrape'
+import {cachedArticleHeadline, scrapeArticleHeadline} from '@/lib/extra-extra/scrape'
 import {generateExtra} from '@/lib/generate/claude-extra'
 import {EXTRA_KICKER, parseExtraWriteKnobs} from '@/lib/generate/extra-prompt'
+import {resolveNewspaper} from '@/lib/extra-extra/papers'
 
 export const maxDuration = 60
 
@@ -31,7 +30,13 @@ export async function POST(request: Request) {
       throw new Error('Ogiltig förfrågan')
     }
 
-    const source = await scrapeArticleHeadline(payload.url)
+    const paper = resolveNewspaper(payload.url)
+    if (!paper) throw new Error('Ogiltig länk')
+
+    const cachedHeadline = cachedArticleHeadline(payload)
+    const source = cachedHeadline
+      ? {headline: cachedHeadline, paper}
+      : await scrapeArticleHeadline(payload.url)
     const knobs = parseExtraWriteKnobs(payload)
     const result = await generateExtra({
       text: source.headline,
@@ -53,8 +58,7 @@ export async function POST(request: Request) {
       imageCaption: result.generated.imageBrief?.caption ?? '',
       imagePrompt: result.generated.imageBrief?.scenePrompt ?? '',
     }
-    const draw = await drawExtraImage(result.generated.imageBrief)
-    return json(extraPreviewResponse(preview, draw))
+    return json({preview})
   } catch (error) {
     return json({error: error instanceof Error ? error.message : 'Ogiltig förfrågan'}, 400)
   }

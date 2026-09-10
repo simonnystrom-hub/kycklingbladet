@@ -4,9 +4,13 @@ vi.mock('@/lib/extra-extra/auth', () => ({
   extraExtraSecretOk: vi.fn(() => true),
   corsHeaders: () => ({'Access-Control-Allow-Origin': '*'}),
 }))
-vi.mock('@/lib/x/citat/fetch-tweet', () => ({
-  fetchSourceTweet: vi.fn(),
-}))
+vi.mock('@/lib/x/citat/fetch-tweet', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/lib/x/citat/fetch-tweet')>()
+  return {
+    ...actual,
+    fetchSourceTweet: vi.fn(),
+  }
+})
 vi.mock('@/lib/x/citat/generate', () => ({
   generateCitat: vi.fn(),
 }))
@@ -74,6 +78,34 @@ describe('X citat preview API', () => {
         imageCaption: 'Hönor samlas utanför redaktionen.',
         imagePrompt: 'Chickens gathered outside a newsroom.',
       },
+    })
+  })
+
+  it('reuses a cached source tweet instead of fetching', async () => {
+    const sourceUrl = 'https://x.com/Expressen/status/123'
+    const response = await POST(
+      request({
+        url: sourceUrl,
+        text: 'Sparad originaltweet',
+        quoteTweetId: '123',
+        sourceUsername: 'Expressen',
+        dumhet: 2,
+        uppskruvning: 5,
+      }),
+    )
+
+    expect(response.status).toBe(200)
+    expect(fetchSourceTweet).not.toHaveBeenCalled()
+    expect(generateCitat).toHaveBeenCalledWith({
+      text: 'Sparad originaltweet',
+      username: 'Expressen',
+      dumhet: 2,
+      uppskruvning: 5,
+    })
+    expect((await response.json()).preview).toMatchObject({
+      quoteTweetId: '123',
+      sourceText: 'Sparad originaltweet',
+      sourceUsername: 'Expressen',
     })
   })
 

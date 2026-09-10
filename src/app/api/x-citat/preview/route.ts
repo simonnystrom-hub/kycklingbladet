@@ -1,6 +1,6 @@
 import {NextResponse} from 'next/server'
 import {corsHeaders, extraExtraSecretOk} from '@/lib/extra-extra/auth'
-import {fetchSourceTweet} from '@/lib/x/citat/fetch-tweet'
+import {fetchSourceTweet, reusedSourceTweet} from '@/lib/x/citat/fetch-tweet'
 import {generateCitat} from '@/lib/x/citat/generate'
 import {citatKnobsFromPayload} from '@/lib/x/citat/prompt'
 import {parseTweetStatusId} from '@/lib/x/citat/url'
@@ -50,14 +50,21 @@ export async function POST(request: Request) {
       if (!statusId) {
         if (!pastedText) throw new Error('Ogiltig tweet-URL')
       } else {
-        try {
-          const source = await fetchSourceTweet(statusId)
-          quoteTweetId = source.id
-          sourceUsername = source.username
-          sourceText = source.text
-        } catch (error) {
-          if (!pastedText) throw error
-          sourceError = 'Kunde inte hämta tweeten'
+        const reused = reusedSourceTweet(payload, statusId)
+        if (reused) {
+          quoteTweetId = reused.id
+          sourceUsername = reused.username
+          sourceText = reused.text
+        } else {
+          try {
+            const source = await fetchSourceTweet(statusId)
+            quoteTweetId = source.id
+            sourceUsername = source.username
+            sourceText = source.text
+          } catch (error) {
+            if (!pastedText) throw error
+            sourceError = 'Kunde inte hämta tweeten'
+          }
         }
       }
     }

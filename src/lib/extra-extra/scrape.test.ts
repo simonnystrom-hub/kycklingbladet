@@ -1,7 +1,15 @@
 import {afterEach, describe, expect, it, vi} from 'vitest'
-import {scrapeArticleHeadline} from './scrape'
+import {cachedArticleHeadline, scrapeArticleHeadline} from './scrape'
 
 afterEach(() => vi.unstubAllGlobals())
+
+describe('cachedArticleHeadline', () => {
+  it('returns a trimmed headline when reuse fields are present', () => {
+    expect(cachedArticleHeadline({sourceHeadline: '  Syltstoppet  '})).toBe('Syltstoppet')
+    expect(cachedArticleHeadline({sourceHeadline: ' '})).toBeNull()
+    expect(cachedArticleHeadline({})).toBeNull()
+  })
+})
 
 describe('scrapeArticleHeadline', () => {
   it('returns cleaned og:title for a known host', async () => {

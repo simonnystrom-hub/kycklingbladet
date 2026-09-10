@@ -10,7 +10,7 @@ vi.mock('twitter-api-v2', () => ({
   })),
 }))
 
-import {fetchSourceTweet} from './fetch-tweet'
+import {fetchSourceTweet, reusedSourceTweet} from './fetch-tweet'
 
 function stubXEnv() {
   vi.stubEnv('X_API_KEY', 'app-key')
@@ -86,5 +86,30 @@ describe('fetchSourceTweet', () => {
     vi.spyOn(console, 'error').mockImplementation(() => {})
 
     await expect(fetchSourceTweet('123')).rejects.toThrow('Kunde inte hämta tweeten')
+  })
+})
+
+describe('reusedSourceTweet', () => {
+  it('reuses a cached source when the status id matches', () => {
+    expect(
+      reusedSourceTweet(
+        {
+          quoteTweetId: '123',
+          text: 'Original tweet',
+          sourceUsername: 'Expressen',
+        },
+        '123',
+      ),
+    ).toEqual({id: '123', username: 'Expressen', text: 'Original tweet'})
+  })
+
+  it('ignores cache when the status id differs or fields are missing', () => {
+    expect(
+      reusedSourceTweet(
+        {quoteTweetId: '123', text: 'Original tweet', sourceUsername: 'Expressen'},
+        '999',
+      ),
+    ).toBeNull()
+    expect(reusedSourceTweet({quoteTweetId: '123', text: 'Original tweet'}, '123')).toBeNull()
   })
 })
