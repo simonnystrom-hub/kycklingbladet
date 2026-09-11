@@ -1,14 +1,15 @@
 import {beforeEach, describe, expect, it, vi} from 'vitest'
-import {rewriteVisdomsord} from './persist'
+import {createVisdomsord, rewriteVisdomsord} from './persist'
 
-const {fetch, generateDrafts, patch} = vi.hoisted(() => ({
+const {fetch, generateDrafts, patch, create} = vi.hoisted(() => ({
   fetch: vi.fn(),
   generateDrafts: vi.fn(),
   patch: vi.fn(),
+  create: vi.fn(),
 }))
 
 vi.mock('@/lib/sanity/write-client', () => ({
-  getWriteClient: () => ({fetch, patch}),
+  getWriteClient: () => ({fetch, patch, create}),
 }))
 
 vi.mock('./generate', async (importOriginal) => {
@@ -25,6 +26,78 @@ function patchChain() {
   const set = vi.fn(() => ({unset}))
   return {commit, set, unset}
 }
+
+function orderPatchChain() {
+  const commit = vi.fn().mockResolvedValue(undefined)
+  const set = vi.fn(() => ({commit}))
+  return {commit, set}
+}
+
+describe('createVisdomsord', () => {
+  beforeEach(() => {
+    fetch.mockReset()
+    patch.mockReset()
+    create.mockReset()
+    create.mockResolvedValue({_id: 'new'})
+  })
+
+  it('creates nothing when there are no drafts', async () => {
+    await expect(createVisdomsord([])).resolves.toBe(0)
+    expect(fetch).not.toHaveBeenCalled()
+    expect(create).not.toHaveBeenCalled()
+  })
+
+  it('lines up unused quotes then appends new ones at the end', async () => {
+    const chain = orderPatchChain()
+    patch.mockReturnValue(chain)
+    fetch.mockResolvedValue([
+      {_id: 'newish', queueOrder: null, _createdAt: '2026-09-03T00:00:00Z'},
+      {_id: 'oldest', _createdAt: '2026-09-01T00:00:00Z'},
+    ])
+
+    await expect(
+      createVisdomsord([
+        {quote: 'Först nya.', henName: 'Rut'},
+        {quote: 'Sen nya.', henName: 'Agda'},
+      ]),
+    ).resolves.toBe(2)
+
+    expect(patch).toHaveBeenNthCalledWith(1, 'oldest')
+    expect(chain.set).toHaveBeenNthCalledWith(1, {queueOrder: 0})
+    expect(patch).toHaveBeenNthCalledWith(2, 'newish')
+    expect(chain.set).toHaveBeenNthCalledWith(2, {queueOrder: 1})
+    expect(create).toHaveBeenNthCalledWith(1, {
+      _type: 'visdomsord',
+      quote: 'Först nya.',
+      henName: 'Rut',
+      queueOrder: 2,
+    })
+    expect(create).toHaveBeenNthCalledWith(2, {
+      _type: 'visdomsord',
+      quote: 'Sen nya.',
+      henName: 'Agda',
+      queueOrder: 3,
+    })
+  })
+
+  it('does not rewrite unused rows that already have the right order', async () => {
+    const chain = orderPatchChain()
+    patch.mockReturnValue(chain)
+    fetch.mockResolvedValue([
+      {_id: 'top', queueOrder: 0, _createdAt: '2026-09-03T00:00:00Z'},
+    ])
+
+    await expect(createVisdomsord([{quote: 'Ny.', henName: 'Rut'}])).resolves.toBe(1)
+    expect(patch).not.toHaveBeenCalled()
+    expect(create).toHaveBeenCalledWith({
+      _type: 'visdomsord',
+      quote: 'Ny.',
+      henName: 'Rut',
+      queueOrder: 1,
+    })
+  })
+})
+
 
 describe('rewriteVisdomsord', () => {
   beforeEach(() => {

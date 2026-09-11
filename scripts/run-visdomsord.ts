@@ -15,7 +15,7 @@ export async function runVisdomsord(now = new Date()): Promise<'posted' | 'skipp
   const client = getWriteClient()
   const rows = await client.fetch<VisdomsordRow[]>(
     `*[_type == "visdomsord" && !(_id in path("drafts.**"))] | order(_createdAt asc){
-      _id, quote, henName, usedDate, _createdAt
+      _id, quote, henName, usedDate, queueOrder, _createdAt
     }`,
   )
   if (alreadyPostedOn(rows, date)) {

@@ -2,15 +2,34 @@ import {getWriteClient} from '@/lib/sanity/write-client'
 import {generateVisdomsordDrafts, takeFreshDrafts} from './generate'
 import {normalizeQuoteKey} from './normalize'
 import type {VisdomsordDraft} from './parse'
+import {compareVisdomsordQueue} from './queue'
+
+type UnusedQueueRow = {
+  _id: string
+  queueOrder?: number | null
+  _createdAt: string
+}
 
 export async function createVisdomsord(drafts: VisdomsordDraft[]): Promise<number> {
+  if (drafts.length === 0) return 0
   const client = getWriteClient()
+  const unused =
+    (await client.fetch<UnusedQueueRow[]>(
+      `*[_type == "visdomsord" && !(_id in path("drafts.**")) && !defined(usedDate)]{_id, queueOrder, _createdAt}`,
+    )) ?? []
+  const sorted = [...unused].sort(compareVisdomsordQueue)
+  for (const [index, row] of sorted.entries()) {
+    if (row.queueOrder !== index) {
+      await client.patch(row._id).set({queueOrder: index}).commit()
+    }
+  }
 
-  for (const draft of drafts) {
+  for (const [index, draft] of drafts.entries()) {
     await client.create({
       _type: 'visdomsord',
       quote: draft.quote,
       henName: draft.henName,
+      queueOrder: sorted.length + index,
     })
   }
 
