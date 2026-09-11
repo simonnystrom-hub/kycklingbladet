@@ -10,9 +10,9 @@ describe('wrapWisdomQuote', () => {
 })
 
 describe('facebookWisdomMessage', () => {
-  it('wraps a bare quote and puts KUCKELIKUUUU, quote and hen name on separate blocks', () => {
+  it('puts quote and hen name on separate blocks', () => {
     expect(facebookWisdomMessage({quote: 'Sitt inte med ryggen mot luckan.', henName: 'Gerda Stålklöv'})).toBe(
-      ['KUCKELIKUUUU!', '"Sitt inte med ryggen mot luckan."', 'Gerda Stålklöv'].join('\n\n'),
+      ['"Sitt inte med ryggen mot luckan."', 'Gerda Stålklöv'].join('\n\n'),
     )
   })
 

@@ -10,5 +10,5 @@ export function wrapWisdomQuote(quote: string): string {
 }
 
 export function facebookWisdomMessage(input: {quote: string; henName: string}): string {
-  return ['KUCKELIKUUUU!', wrapWisdomQuote(input.quote), input.henName.trim()].join('\n\n')
+  return [wrapWisdomQuote(input.quote), input.henName.trim()].join('\n\n')
 }

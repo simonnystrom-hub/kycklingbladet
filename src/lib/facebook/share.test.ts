@@ -113,14 +113,15 @@ describe('shareToFacebook', () => {
     const fetchMock = vi.fn().mockResolvedValueOnce(jsonResponse(200, {id: 'page-1_status'}))
     vi.stubGlobal('fetch', fetchMock)
 
-    await expect(shareFacebookFeed('KUCKELIKUUUU!\n\n"Hacka i lagom takt."\n\nGerda')).resolves.toBe(
+    await expect(shareFacebookFeed('"Hacka i lagom takt."\n\nGerda')).resolves.toBe(
       'shared',
     )
 
     expect(fetchMock).toHaveBeenCalledTimes(1)
     expect(fetchMock.mock.calls[0][0]).toBe(`${FACEBOOK_GRAPH_BASE}/page-1/feed`)
     const body = String(fetchMock.mock.calls[0][1].body)
-    expect(body).toContain('message=KUCKELIKUUUU')
+    expect(body).toContain('message=')
+    expect(body).toContain('Hacka')
     expect(body).not.toContain('url=')
     expect(body).not.toContain('/photos')
   })
