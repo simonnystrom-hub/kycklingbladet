@@ -38,6 +38,11 @@ jobs:
       - if: ${{ inputs.ids != '' }}
         env:
           SHARE_IDS: ${{ inputs.ids }}
-        run: npx tsx scripts/share-published-leads.ts $SHARE_IDS
+        run: |
+          if echo "$SHARE_IDS" | grep -q extra-extra; then
+            npx tsx scripts/share-published-extras.ts $SHARE_IDS
+          else
+            npx tsx scripts/share-published-leads.ts $SHARE_IDS
+          fi
       - if: ${{ inputs.ids == '' }}
         run: npx tsx scripts/share-archive-to-facebook.ts
