@@ -6,6 +6,7 @@ import {
   loadXReplySettings,
   patchXReplyDraft,
 } from '@/lib/x/reply/persist'
+import {parseXCopyLanguage} from '@/lib/x/language'
 
 export const maxDuration = 60
 
@@ -34,6 +35,7 @@ export async function POST(request: Request) {
     }
 
     const id = (input as {id: string}).id
+    const language = parseXCopyLanguage((input as Record<string, unknown>).language)
     const reply = await loadXReply(id)
     if (!reply) throw new Error('Hittade inte svaret')
     if (reply.status !== 'pending') throw new Error('Svaret är inte i kön')
@@ -44,6 +46,7 @@ export async function POST(request: Request) {
       username: reply.sourceUsername,
       dumhet: settings.dumhet,
       uppskruvning: settings.uppskruvning,
+      ...(language ? {language} : {}),
     })
     const draft = {
       replyText: generated.text,

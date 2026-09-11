@@ -1,5 +1,13 @@
 import {describe, expect, it} from 'vitest'
-import {buildCitatUserPrompt, citatKnobsFromPayload, CITAT_SPEECH_BUBBLE_SYSTEM, CITAT_WRITE_SYSTEM} from './prompt'
+import {
+  buildCitatUserPrompt,
+  citatKnobsFromPayload,
+  citatSpeechBubbleSystem,
+  citatWriteSystem,
+  CITAT_SPEECH_BUBBLE_SYSTEM,
+  CITAT_WRITE_SYSTEM,
+} from './prompt'
+import {HEN_LEXICON, HEN_LEXICON_EN} from '@/lib/generate/hen-lexicon'
 
 describe('citatKnobsFromPayload', () => {
   it('is null when knobs are omitted so Claude chooses', () => {
@@ -39,6 +47,16 @@ describe('CITAT_WRITE_SYSTEM', () => {
     expect(CITAT_WRITE_SYSTEM).toContain('citat-tweet')
     expect(CITAT_WRITE_SYSTEM).not.toContain('EXTRA EXTRA')
     expect(CITAT_WRITE_SYSTEM).toContain('raka citattecken')
+    expect(CITAT_WRITE_SYSTEM).toContain(HEN_LEXICON)
+    expect(CITAT_WRITE_SYSTEM).toContain('Skriv citat-tweeten på svenska')
+  })
+
+  it('switches to English hen copy when language is en', () => {
+    const system = citatWriteSystem('en')
+    expect(system).toContain(HEN_LEXICON_EN)
+    expect(system).not.toContain(HEN_LEXICON)
+    expect(system).toContain('Write the hen tweet in English')
+    expect(system).toContain('English picture caption')
   })
 })
 
@@ -46,5 +64,11 @@ describe('CITAT_SPEECH_BUBBLE_SYSTEM', () => {
   it('asks for a short JSON balloon line', () => {
     expect(CITAT_SPEECH_BUBBLE_SYSTEM).toContain('pratbubbla')
     expect(CITAT_SPEECH_BUBBLE_SYSTEM).toContain('JSON')
+    expect(CITAT_SPEECH_BUBBLE_SYSTEM).toContain('svensk')
+  })
+
+  it('asks for an English balloon when language is en', () => {
+    expect(citatSpeechBubbleSystem('en')).toContain('Funny, short, English')
+    expect(citatSpeechBubbleSystem('en')).toContain(HEN_LEXICON_EN)
   })
 })

@@ -3,6 +3,7 @@ import {corsHeaders, extraExtraSecretOk} from '@/lib/extra-extra/auth'
 import {parseExtraPreviewImage} from '@/lib/extra-extra/payload'
 import {normalizeMentions} from '@/lib/x/citat/mentions'
 import {citatFollowUpText, citatParentText, parseTweetUsername} from '@/lib/x/citat/url'
+import {resolveXCopyLanguage} from '@/lib/x/language'
 import {shareToXDetailed} from '@/lib/x/share'
 
 export const maxDuration = 60
@@ -57,7 +58,11 @@ export async function POST(request: Request) {
       typeof payload.mentions === 'string' ? payload.mentions : '',
       sourceUsername,
     )
-    const followUp = sourceUrl ? citatFollowUpText(sourceUrl, extraMentions) : null
+    const language = resolveXCopyLanguage({
+      text: value.text,
+      language: payload.language ?? value.language,
+    })
+    const followUp = sourceUrl ? citatFollowUpText(sourceUrl, extraMentions, language) : null
     if (sourceUrl && !followUp) {
       throw new Error('Ogiltig tweet-URL')
     }
@@ -67,7 +72,7 @@ export async function POST(request: Request) {
       throw new Error('Saknar bild')
     }
 
-    const text = citatParentText(value.text, sourceUrl)
+    const text = citatParentText(value.text, sourceUrl, language)
     const parent = await shareToXDetailed({
       text,
       imageBase64: image.base64,

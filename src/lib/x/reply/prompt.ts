@@ -1,7 +1,8 @@
 import {parseExtraKnob, EXTRA_KNOB_DEFAULT} from '@/lib/generate/extra-prompt'
-import {HEN_HUMOR, HEN_LEXICON, HEN_NAMES} from '@/lib/generate/hen-lexicon'
+import {HEN_HUMOR, henLexiconForLanguage, henNamesForLanguage} from '@/lib/generate/hen-lexicon'
+import type {XCopyLanguage} from '@/lib/x/language'
 
-export const X_REPLY_PROMPT_VERSION = 'kb-x-reply-v1'
+export const X_REPLY_PROMPT_VERSION = 'kb-x-reply-v2'
 
 const DUMHET_HINTS: Record<number, string> = {
   1: 'Nästan bokstavlig hönsöversättning. Liten skevhet. Håll dig nära originalets händelse.',
@@ -19,15 +20,21 @@ const UPPSKRUVNING_HINTS: Record<number, string> = {
   5: 'Maximal uppskruvning. Panikvrål i rubriken, noll sans. Skriv inte stämpeln i brödtexten.',
 }
 
-export const X_REPLY_WRITE_SYSTEM = `Du skriver ett kort svar från Kycklingbladet på ett inlägg som nämner tidningen, som om hela världen vore ett hönshus.
+export function xReplyWriteSystem(language: XCopyLanguage = 'sv'): string {
+  const languageRule =
+    language === 'en'
+      ? '- Write the hen reply in English. Do not write Swedish except hen-ified names that already mix languages.'
+      : '- Skriv svaret på svenska.'
+
+  return `Du skriver ett kort svar från Kycklingbladet på ett inlägg som nämner tidningen, som om hela världen vore ett hönshus.
 
 Skriv en eller två meningar.
 
 ${HEN_HUMOR}
 
-${HEN_LEXICON}
+${henLexiconForLanguage(language)}
 
-${HEN_NAMES}
+${henNamesForLanguage(language)}
 
 Regler:
 - Svara på originalinlägget med en igenkännbar hönsvridning.
@@ -36,9 +43,13 @@ Regler:
 - Skriv inte EXTRA EXTRA.
 - Skriv inte "se länk".
 - Skriv ingen URL, @mention, hashtag eller emoji.
+${languageRule}
 
 Svara med ENDAST ett JSON-objekt:
 {"text":"string"}`
+}
+
+export const X_REPLY_WRITE_SYSTEM = xReplyWriteSystem('sv')
 
 export function buildXReplyUserPrompt(source: {
   text: string

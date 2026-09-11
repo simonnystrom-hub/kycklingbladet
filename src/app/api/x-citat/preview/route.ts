@@ -4,6 +4,7 @@ import {fetchSourceTweet, reusedSourceTweet} from '@/lib/x/citat/fetch-tweet'
 import {generateCitat} from '@/lib/x/citat/generate'
 import {citatKnobsFromPayload} from '@/lib/x/citat/prompt'
 import {parseTweetStatusId} from '@/lib/x/citat/url'
+import {resolveXCopyLanguage} from '@/lib/x/language'
 
 export const maxDuration = 60
 
@@ -70,9 +71,11 @@ export async function POST(request: Request) {
     }
 
     const knobs = citatKnobsFromPayload(payload)
+    const language = resolveXCopyLanguage({text: sourceText, language: payload.language})
     const result = await generateCitat({
       text: sourceText,
       username: sourceUsername,
+      language,
       ...(knobs ?? {}),
     })
 
@@ -86,6 +89,7 @@ export async function POST(request: Request) {
         text: result.generated.text,
         promptVersion: result.promptVersion,
         modelVersion: result.modelVersion,
+        language,
         imageShotType: result.generated.imageBrief?.shotType ?? '',
         imageCaption: result.generated.imageBrief?.caption ?? '',
         imagePrompt: result.generated.imageBrief?.scenePrompt ?? '',

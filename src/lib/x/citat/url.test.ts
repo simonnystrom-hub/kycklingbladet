@@ -50,6 +50,13 @@ describe('parseTweetUsername / citatParentText', () => {
         'https://x.com/SDTobbe/status/2097999724544454657?s=20',
       ),
     ).toBe('"Kackel i luckan."\n\nInspirerad av @SDTobbe')
+    expect(
+      citatParentText(
+        'Cluck in the hatch.',
+        'https://x.com/SDTobbe/status/2097999724544454657?s=20',
+        'en',
+      ),
+    ).toBe('"Cluck in the hatch."\n\nInspired by @SDTobbe')
   })
 })
 
@@ -68,6 +75,15 @@ describe('citatFollowUpText', () => {
       ]),
     ).toBe(
       '@svtnyheter\nKälla:\nhttps://x.com/SDTobbe/status/2097999724544454657?s=20',
+    )
+    expect(
+      citatFollowUpText(
+        'https://x.com/SDTobbe/status/2097999724544454657?s=20',
+        ['@svtnyheter'],
+        'en',
+      ),
+    ).toBe(
+      '@svtnyheter\nSource:\nhttps://x.com/SDTobbe/status/2097999724544454657?s=20',
     )
   })
 })

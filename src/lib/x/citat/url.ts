@@ -1,4 +1,5 @@
 import {wrapStraightQuotes} from '@/lib/generate/quotes'
+import type {XCopyLanguage} from '@/lib/x/language'
 
 export function parseTweetStatusId(url: string): string | null {
   return parseTweetPath(url)?.id ?? null
@@ -12,21 +13,34 @@ export function parseTweetUsername(url: string): string | null {
   return path.username
 }
 
-export function citatInspiredByLine(sourceUrl: string): string | null {
+export function citatInspiredByLine(
+  sourceUrl: string,
+  language: XCopyLanguage = 'sv',
+): string | null {
   const username = parseTweetUsername(sourceUrl)
-  return username ? `Inspirerad av @${username}` : null
+  if (!username) return null
+  return language === 'en' ? `Inspired by @${username}` : `Inspirerad av @${username}`
 }
 
-export function citatParentText(text: string, sourceUrl: string): string {
+export function citatParentText(
+  text: string,
+  sourceUrl: string,
+  language: XCopyLanguage = 'sv',
+): string {
   const body = wrapStraightQuotes(text)
-  const inspired = citatInspiredByLine(sourceUrl)
+  const inspired = citatInspiredByLine(sourceUrl, language)
   return [body, inspired].filter(Boolean).join('\n\n')
 }
 
-export function citatFollowUpText(sourceUrl: string, mentions: string[] = []): string | null {
+export function citatFollowUpText(
+  sourceUrl: string,
+  mentions: string[] = [],
+  language: XCopyLanguage = 'sv',
+): string | null {
   const url = sourceUrl.trim()
   if (!parseTweetStatusId(url)) return null
-  const source = `Källa:\n${url}`
+  const label = language === 'en' ? 'Source:' : 'Källa:'
+  const source = `${label}\n${url}`
   if (mentions.length === 0) return source
   return `${mentions.join(' ')}\n${source}`
 }

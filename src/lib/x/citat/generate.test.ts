@@ -65,7 +65,7 @@ describe('generateCitat', () => {
       promptVersion: CITAT_PROMPT_VERSION,
     })
 
-    expect(CITAT_PROMPT_VERSION).toBe('kb-x-citat-v2')
+    expect(CITAT_PROMPT_VERSION).toBe('kb-x-citat-v3')
     expect(createMessage).toHaveBeenCalledWith({
       model: 'test-model',
       max_tokens: 1200,
@@ -78,6 +78,28 @@ describe('generateCitat', () => {
         },
       ],
     })
+  })
+
+  it('uses the English hen prompt when language is en', async () => {
+    createMessage.mockResolvedValueOnce(
+      response({
+        text: 'The rooster called a crisis meeting.',
+        imageShotType: 'incident',
+        imageCaption: 'Rooster Gösta by the feeder.',
+        imagePrompt: 'A rooster beside an empty chicken feeder.',
+      }),
+    )
+
+    await generateCitat({
+      text: 'The government announced a new tax today.',
+      language: 'en',
+    })
+
+    expect(createMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        system: expect.stringContaining('Write the hen tweet in English'),
+      }),
+    )
   })
 
   it('requires an Anthropic API key', async () => {
@@ -126,6 +148,19 @@ describe('generateCitatSpeechBubble', () => {
       expect.objectContaining({
         max_tokens: 200,
         system: expect.stringContaining('pratbubbla'),
+      }),
+    )
+  })
+
+  it('asks for an English balloon when language is en', async () => {
+    createMessage.mockResolvedValueOnce(response({text: 'Cluck in the nest!'}))
+
+    await expect(
+      generateCitatSpeechBubble({text: 'The rooster called a crisis meeting.', language: 'en'}),
+    ).resolves.toBe('Cluck in the nest!')
+    expect(createMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        system: expect.stringContaining('Funny, short, English'),
       }),
     )
   })

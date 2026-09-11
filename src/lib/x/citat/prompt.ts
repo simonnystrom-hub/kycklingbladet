@@ -1,7 +1,8 @@
 import {parseExtraKnob, EXTRA_KNOB_DEFAULT} from '@/lib/generate/extra-prompt'
-import {HEN_HUMOR, HEN_LEXICON, HEN_NAMES} from '@/lib/generate/hen-lexicon'
+import {HEN_HUMOR, henLexiconForLanguage, henNamesForLanguage} from '@/lib/generate/hen-lexicon'
+import type {XCopyLanguage} from '@/lib/x/language'
 
-export const CITAT_PROMPT_VERSION = 'kb-x-citat-v2'
+export const CITAT_PROMPT_VERSION = 'kb-x-citat-v3'
 
 const DUMHET_HINTS: Record<number, string> = {
   1: 'Nästan bokstavlig hönsöversättning. Liten skevhet. Håll dig nära originalets händelse.',
@@ -19,15 +20,29 @@ const UPPSKRUVNING_HINTS: Record<number, string> = {
   5: 'Maximal uppskruvning. Panikvrål i rubriken, noll sans. Skriv inte stämpeln i brödtexten.',
 }
 
-export const CITAT_WRITE_SYSTEM = `Du skriver en citat-tweet för Kycklingbladet om någon annans inlägg, som om hela världen vore ett hönshus.
+export function citatWriteSystem(language: XCopyLanguage = 'sv'): string {
+  const captionRule =
+    language === 'en'
+      ? '- imageCaption is an English picture caption (who/where/what), not a one-liner. Never put the caption in the drawing.'
+      : '- imageCaption är svensk bildtext (vem/var/vad), inte en one-liner. Bildtexten ska aldrig in i teckningen.'
+  const languageRule =
+    language === 'en'
+      ? '- Write the hen tweet in English. Do not write Swedish except hen-ified names that already mix languages.'
+      : '- Skriv citat-tweeten på svenska.'
+  const captionJson =
+    language === 'en'
+      ? '"imageCaption": "string — English caption who/where/what, not a one-liner"'
+      : '"imageCaption": "string — svensk bildtext vem/var/vad, inte en one-liner"'
+
+  return `Du skriver en citat-tweet för Kycklingbladet om någon annans inlägg, som om hela världen vore ett hönshus.
 
 Skriv en enda sammanhängande citat-tweet-text. Längden ska följa hur mycket satir skämtet bär.
 
 ${HEN_HUMOR}
 
-${HEN_LEXICON}
+${henLexiconForLanguage(language)}
 
-${HEN_NAMES}
+${henNamesForLanguage(language)}
 
 Regler:
 - Vrid originalinlägget till Kycklingbladets hönsvärld, men behåll en igenkännbar kärna.
@@ -37,16 +52,20 @@ Regler:
 - Hitta inte på fler @omnämnanden.
 - Följ användarens Dumhet- och Uppskruvning-skalor (1–5) om de anges.
 - Föreslå ett bildmanus som passar en hönstidningsillustration.
-- imageCaption är svensk bildtext (vem/var/vad), inte en one-liner. Bildtexten ska aldrig in i teckningen.
+${captionRule}
 - imagePrompt är bara scenen, på engelska, för serierutan. Ingen skylttext, pratbubbla, citat eller andra ord i scenen.
+${languageRule}
 
 Svara med ENDAST ett JSON-objekt:
 {
   "text": "string",
   "imageShotType": "intervju" | "incident" | "annat",
-  "imageCaption": "string — svensk bildtext vem/var/vad, inte en one-liner",
+  ${captionJson},
   "imagePrompt": "string — English scene for the cartoon, no signs or speech in the picture"
 }`
+}
+
+export const CITAT_WRITE_SYSTEM = citatWriteSystem('sv')
 
 export function citatKnobsFromPayload(
   input: unknown,
@@ -86,16 +105,25 @@ Uppskruvning ${knobs.uppskruvning}/5: ${UPPSKRUVNING_HINTS[knobs.uppskruvning]}`
 ${instructions}`
 }
 
-export const CITAT_SPEECH_BUBBLE_SYSTEM = `Du skriver en enda kort pratbubbla till en Kycklingbladet-serieruta.
+export function citatSpeechBubbleSystem(language: XCopyLanguage = 'sv'): string {
+  const languageRule =
+    language === 'en'
+      ? '- Funny, short, English. Not the whole quote-tweet. No URL, @, hashtag, or emoji.'
+      : '- Rolig, kort, svensk. Inte hela citat-tweeten. Ingen URL, inget @, inget hashtag, ingen emoji.'
+
+  return `Du skriver en enda kort pratbubbla till en Kycklingbladet-serieruta.
 
 ${HEN_HUMOR}
 
-${HEN_LEXICON}
+${henLexiconForLanguage(language)}
 
 Regler:
 - En hönsreplik som en höna eller tupp säger i en pratbubbla, 3–8 ord.
-- Rolig, kort, svensk. Inte hela citat-tweeten. Ingen URL, inget @, inget hashtag, ingen emoji.
+${languageRule}
 - JSON only: {"text":"string"}`
+}
+
+export const CITAT_SPEECH_BUBBLE_SYSTEM = citatSpeechBubbleSystem('sv')
 
 export function buildCitatSpeechBubbleUserPrompt(source: {text: string}): string {
   return `Citat-tweet att illustrera:

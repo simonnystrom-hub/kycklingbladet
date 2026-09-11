@@ -29,8 +29,28 @@ describe('generateXReply', () => {
     ).resolves.toEqual({
       text: 'Kackel i redet.',
       modelVersion: 'claude-test',
-      promptVersion: 'kb-x-reply-v1',
+      promptVersion: 'kb-x-reply-v2',
     })
     expect(create).toHaveBeenCalledTimes(2)
+  })
+
+  it('uses the English hen prompt when language is en', async () => {
+    create.mockResolvedValueOnce({
+      content: [{type: 'text', text: '{"text":"The rooster called a crisis meeting."}'}],
+    })
+
+    await generateXReply({
+      text: 'The government announced a new tax today',
+      username: 'visitor',
+      dumhet: 5,
+      uppskruvning: 5,
+      language: 'en',
+    })
+
+    expect(create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        system: expect.stringContaining('Write the hen reply in English'),
+      }),
+    )
   })
 })

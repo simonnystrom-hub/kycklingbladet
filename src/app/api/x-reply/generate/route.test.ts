@@ -102,6 +102,44 @@ describe('X reply generate API', () => {
     })
   })
 
+  it('passes an explicit language override to generate', async () => {
+    vi.mocked(loadXReply).mockResolvedValue({
+      ...pendingReply,
+      sourceText: 'The government announced a new tax today',
+    })
+    vi.mocked(loadXReplySettings).mockResolvedValue({
+      mode: 'queue',
+      dumhet: 5,
+      uppskruvning: 5,
+      sinceId: null,
+    })
+    vi.mocked(generateXReply).mockResolvedValue({
+      text: 'The rooster called a crisis meeting.',
+      promptVersion: 'prompt-v2',
+      modelVersion: 'model-v3',
+    })
+
+    const response = await POST(
+      new Request('https://www.kycklingbladet.com/api/x-reply/generate', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'x-extra-extra-secret': 'test-secret',
+        },
+        body: JSON.stringify({id: 'reply-1', language: 'en'}),
+      }),
+    )
+
+    expect(response.status).toBe(200)
+    expect(generateXReply).toHaveBeenCalledWith({
+      text: 'The government announced a new tax today',
+      username: 'anka',
+      dumhet: 5,
+      uppskruvning: 5,
+      language: 'en',
+    })
+  })
+
   it('rejects a reply that is not pending', async () => {
     vi.mocked(loadXReply).mockResolvedValue({...pendingReply, status: 'posted'})
 

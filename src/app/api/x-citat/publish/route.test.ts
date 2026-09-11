@@ -64,6 +64,25 @@ describe('X citat publish API', () => {
     expect(sharePublishedExtra).not.toHaveBeenCalled()
   })
 
+  it('posts Inspired by and Source when language is English', async () => {
+    const response = await POST(
+      request({
+        ...validPayload,
+        preview: {...validPayload.preview, language: 'en'},
+      }),
+    )
+
+    expect(response.status).toBe(200)
+    expect(shareToXDetailed).toHaveBeenNthCalledWith(1, {
+      text: '"Hönan kommenterar dagens nyhet."\n\nInspired by @ekojonny',
+      imageBase64: 'aaa',
+    })
+    expect(shareToXDetailed).toHaveBeenNthCalledWith(2, {
+      text: '@expressen @svtnyheter\nSource:\nhttps://x.com/ekojonny/status/1234567890',
+      inReplyToTweetId: 'parent-1',
+    })
+  })
+
   it('posts a URL-only follow-up when there are no extra mentions', async () => {
     const payload = {
       ...validPayload,

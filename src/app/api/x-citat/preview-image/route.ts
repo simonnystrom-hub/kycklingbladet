@@ -3,6 +3,7 @@ import {corsHeaders, extraExtraSecretOk} from '@/lib/extra-extra/auth'
 import {drawExtraImage} from '@/lib/extra-extra/draw'
 import {validateExtraImageBrief} from '@/lib/generate/extra-image'
 import {generateCitatSpeechBubble} from '@/lib/x/citat/generate'
+import {resolveXCopyLanguage} from '@/lib/x/language'
 
 export const maxDuration = 60
 
@@ -39,11 +40,14 @@ export async function POST(request: Request) {
     const wantBubble = payload.speechBubble === true
     let speechBubble: string | null = null
     if (wantBubble) {
-      const henText = typeof (preview as {text?: unknown}).text === 'string'
-        ? (preview as {text: string}).text
-        : ''
+      const previewRecord = preview as Record<string, unknown>
+      const henText = typeof previewRecord.text === 'string' ? previewRecord.text : ''
+      const language = resolveXCopyLanguage({
+        text: henText,
+        language: payload.language ?? previewRecord.language,
+      })
       try {
-        speechBubble = await generateCitatSpeechBubble({text: henText})
+        speechBubble = await generateCitatSpeechBubble({text: henText, language})
       } catch (error) {
         return json({
           preview,

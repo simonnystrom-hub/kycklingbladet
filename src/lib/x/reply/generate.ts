@@ -1,11 +1,8 @@
 import Anthropic from '@anthropic-ai/sdk'
 import {resolveModel} from '@/lib/generate/claude'
 import {parseGeneratedAlarm} from '@/lib/generate/parse'
-import {
-  X_REPLY_PROMPT_VERSION,
-  X_REPLY_WRITE_SYSTEM,
-  buildXReplyUserPrompt,
-} from './prompt'
+import {detectXCopyLanguage, type XCopyLanguage} from '@/lib/x/language'
+import {X_REPLY_PROMPT_VERSION, buildXReplyUserPrompt, xReplyWriteSystem} from './prompt'
 import {validateGeneratedXReply} from './parse'
 
 export async function generateXReply(source: {
@@ -13,17 +10,19 @@ export async function generateXReply(source: {
   username: string
   dumhet: number
   uppskruvning: number
+  language?: XCopyLanguage
 }): Promise<{text: string; modelVersion: string; promptVersion: string}> {
   const model = resolveModel()
   const anthropic = new Anthropic({apiKey: process.env.ANTHROPIC_API_KEY})
   if (!process.env.ANTHROPIC_API_KEY) throw new Error('ANTHROPIC_API_KEY saknas')
+  const language = source.language ?? detectXCopyLanguage(source.text)
 
   const call = async () => {
     const message = await anthropic.messages.create({
       model,
       max_tokens: 400,
       temperature: 0.9,
-      system: X_REPLY_WRITE_SYSTEM,
+      system: xReplyWriteSystem(language),
       messages: [{role: 'user', content: buildXReplyUserPrompt(source)}],
     })
     const text = message.content

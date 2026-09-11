@@ -64,6 +64,7 @@ describe('X citat preview API', () => {
     expect(generateCitat).toHaveBeenCalledWith({
       text: 'Original tweet',
       username: 'Expressen',
+      language: 'sv',
     })
     expect(await response.json()).toEqual({
       preview: {
@@ -74,6 +75,7 @@ describe('X citat preview API', () => {
         text: 'Hönsen kacklar vidare.',
         promptVersion: 'kb-x-citat-v1',
         modelVersion: 'claude-test',
+        language: 'sv',
         imageShotType: 'incident',
         imageCaption: 'Hönor samlas utanför redaktionen.',
         imagePrompt: 'Chickens gathered outside a newsroom.',
@@ -99,6 +101,7 @@ describe('X citat preview API', () => {
     expect(generateCitat).toHaveBeenCalledWith({
       text: 'Sparad originaltweet',
       username: 'Expressen',
+      language: 'sv',
       dumhet: 2,
       uppskruvning: 5,
     })
@@ -114,7 +117,11 @@ describe('X citat preview API', () => {
 
     expect(response.status).toBe(200)
     expect(fetchSourceTweet).not.toHaveBeenCalled()
-    expect(generateCitat).toHaveBeenCalledWith({text: 'Klistrat kackel', username: null})
+    expect(generateCitat).toHaveBeenCalledWith({
+      text: 'Klistrat kackel',
+      username: null,
+      language: 'sv',
+    })
     expect((await response.json()).preview).toMatchObject({
       quoteTweetId: null,
       sourceUsername: null,
@@ -131,7 +138,11 @@ describe('X citat preview API', () => {
     )
 
     expect(response.status).toBe(200)
-    expect(generateCitat).toHaveBeenCalledWith({text: 'Reservkackel', username: null})
+    expect(generateCitat).toHaveBeenCalledWith({
+      text: 'Reservkackel',
+      username: null,
+      language: 'sv',
+    })
     expect((await response.json()).preview).toMatchObject({
       quoteTweetId: null,
       sourceError: 'Kunde inte hämta tweeten',
@@ -146,6 +157,7 @@ describe('X citat preview API', () => {
       username: null,
       dumhet: 5,
       uppskruvning: 1,
+      language: 'sv',
     })
   })
 
@@ -185,7 +197,11 @@ describe('X citat preview API', () => {
       request({url: 'https://example.com/status/123', text: 'Reservtext'}),
     )
     expect(fallback.status).toBe(200)
-    expect(generateCitat).toHaveBeenLastCalledWith({text: 'Reservtext', username: null})
+    expect(generateCitat).toHaveBeenLastCalledWith({
+      text: 'Reservtext',
+      username: null,
+      language: 'sv',
+    })
   })
 
   it('maps a null image brief to empty preview strings', async () => {
@@ -201,6 +217,40 @@ describe('X citat preview API', () => {
       imageCaption: '',
       imagePrompt: '',
     })
+  })
+
+  it('detects English source copy and returns language en', async () => {
+    vi.mocked(fetchSourceTweet).mockResolvedValue({
+      id: '123',
+      username: 'BBC',
+      text: 'The government announced a new tax today',
+    })
+
+    const response = await POST(request({url: 'https://x.com/BBC/status/123'}))
+
+    expect(response.status).toBe(200)
+    expect(generateCitat).toHaveBeenCalledWith({
+      text: 'The government announced a new tax today',
+      username: 'BBC',
+      language: 'en',
+    })
+    expect((await response.json()).preview).toMatchObject({language: 'en'})
+  })
+
+  it('lets an explicit language override win', async () => {
+    const response = await POST(
+      request({
+        text: 'The government announced a new tax today',
+        language: 'sv',
+      }),
+    )
+
+    expect(generateCitat).toHaveBeenCalledWith({
+      text: 'The government announced a new tax today',
+      username: null,
+      language: 'sv',
+    })
+    expect((await response.json()).preview).toMatchObject({language: 'sv'})
   })
 
   it('answers CORS preflight requests', async () => {

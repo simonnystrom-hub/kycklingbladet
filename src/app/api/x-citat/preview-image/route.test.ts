@@ -105,7 +105,7 @@ describe('X citat preview-image API', () => {
     const response = await POST(request({preview: imagePreview, speechBubble: true}))
 
     expect(response.status).toBe(200)
-    expect(generateCitatSpeechBubble).toHaveBeenCalledWith({text: 'Kackel'})
+    expect(generateCitatSpeechBubble).toHaveBeenCalledWith({text: 'Kackel', language: 'sv'})
     expect(drawExtraImage).toHaveBeenCalledWith(
       {
         shotType: 'incident',
@@ -120,6 +120,22 @@ describe('X citat preview-image API', () => {
       imageError: null,
       speechBubble: 'Kackel i redet!',
     })
+  })
+
+  it('passes an English language override to the balloon', async () => {
+    vi.mocked(generateCitatSpeechBubble).mockResolvedValue('Cluck in the nest!')
+    vi.mocked(drawExtraImage).mockResolvedValue({
+      image: {mimeType: 'image/jpeg', base64: 'abc'},
+      imageError: null,
+    })
+
+    const response = await POST(
+      request({preview: imagePreview, speechBubble: true, language: 'en'}),
+    )
+
+    expect(response.status).toBe(200)
+    expect(generateCitatSpeechBubble).toHaveBeenCalledWith({text: 'Kackel', language: 'en'})
+    expect((await response.json()).speechBubble).toBe('Cluck in the nest!')
   })
 
   it('exports duration and CORS preflight handlers', () => {
