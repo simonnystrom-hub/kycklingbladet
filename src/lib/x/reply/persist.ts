@@ -29,6 +29,18 @@ type SettingsRow = {
   xMentionsSinceId?: unknown
 }
 
+function xReplyKnobsFromRow(row: SettingsRow | null): {dumhet: number; uppskruvning: number} {
+  const dumhet = parseExtraKnob(row?.xReplyDumhet, EXTRA_KNOB_DEFAULT)
+  const uppskruvning = parseExtraKnob(row?.xReplyUppskruvning, EXTRA_KNOB_DEFAULT)
+  const oldDefaultPair =
+    parseExtraKnob(row?.xReplyDumhet, 0) === 3 &&
+    parseExtraKnob(row?.xReplyUppskruvning, 0) === 3
+  if (oldDefaultPair) {
+    return {dumhet: EXTRA_KNOB_DEFAULT, uppskruvning: EXTRA_KNOB_DEFAULT}
+  }
+  return {dumhet, uppskruvning}
+}
+
 type XReplyIndexRow = {
   sourceTweetId: string
   postedTweetId?: string | null
@@ -54,13 +66,12 @@ export async function loadXReplySettings(): Promise<XReplySettings> {
     '*[_id == "siteSettings"][0]{xReplyMode, xReplyDumhet, xReplyUppskruvning, xMentionsSinceId}',
   )
 
+  const knobs = xReplyKnobsFromRow(row)
+
   return {
     mode: row?.xReplyMode === 'auto' ? 'auto' : 'queue',
-    dumhet: parseExtraKnob(row?.xReplyDumhet, EXTRA_KNOB_DEFAULT),
-    uppskruvning: parseExtraKnob(
-      row?.xReplyUppskruvning,
-      EXTRA_KNOB_DEFAULT,
-    ),
+    dumhet: knobs.dumhet,
+    uppskruvning: knobs.uppskruvning,
     sinceId:
       typeof row?.xMentionsSinceId === 'string' && row.xMentionsSinceId
         ? row.xMentionsSinceId
@@ -113,7 +124,8 @@ export async function listPendingReady(limit: number): Promise<XReplyRow[]> {
       status == "pending" &&
       defined(replyText) &&
       replyText != "" &&
-      (!defined(error) || error == "")
+      (!defined(error) || error == "") &&
+      dateTime(_createdAt) > dateTime(now()) - 60 * 60 * 24 * 30
     ] | order(_createdAt asc)[0...$limit]{${X_REPLY_FIELDS}}`,
     {limit},
   )
@@ -156,4 +168,21 @@ export async function patchXReplyDraft(
 ): Promise<void> {
   const client = getWriteClient()
   await client.patch(id).set({...draft, error: ''}).commit()
+}
+
+export const X_REPLY_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000
+
+export function xReplyMaxAgeCutoff(now = new Date()): string {
+  return new Date(now.getTime() - X_REPLY_MAX_AGE_MS).toISOString()
+}
+
+export async function deleteOldXReplies(now = new Date()): Promise<number> {
+  const client = getWriteClient()
+  const cutoff = xReplyMaxAgeCutoff(now)
+  const ids = await client.fetch<string[]>(
+    '*[_type == "xReply" && dateTime(_createdAt) < dateTime($cutoff)]._id',
+    {cutoff},
+  )
+  await Promise.all(ids.map((id) => client.delete(id)))
+  return ids.length
 }

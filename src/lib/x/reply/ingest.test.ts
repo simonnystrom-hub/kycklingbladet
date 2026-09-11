@@ -3,6 +3,7 @@ import type {XMention} from './filter'
 
 const {
   createPendingXReply,
+  deleteOldXReplies,
   fetchXMentions,
   generateXReply,
   listPendingReady,
@@ -12,6 +13,7 @@ const {
   saveXMentionsSinceId,
 } = vi.hoisted(() => ({
   createPendingXReply: vi.fn(),
+  deleteOldXReplies: vi.fn(),
   fetchXMentions: vi.fn(),
   generateXReply: vi.fn(),
   listPendingReady: vi.fn(),
@@ -25,6 +27,7 @@ vi.mock('./mentions', () => ({fetchXMentions}))
 vi.mock('./generate', () => ({generateXReply}))
 vi.mock('./persist', () => ({
   createPendingXReply,
+  deleteOldXReplies,
   listPendingReady,
   loadXReplyIndex,
   loadXReplySettings,
@@ -73,6 +76,7 @@ describe('runXReply', () => {
       modelVersion: 'model-v1',
     })
     createPendingXReply.mockResolvedValue('reply-1')
+    deleteOldXReplies.mockResolvedValue(0)
     listPendingReady.mockResolvedValue([])
     publishXReply.mockResolvedValue({postedTweetId: 'posted-1'})
     saveXMentionsSinceId.mockResolvedValue(undefined)
@@ -103,6 +107,7 @@ describe('runXReply', () => {
       modelVersion: 'model-v1',
     })
     expect(saveXMentionsSinceId).toHaveBeenCalledWith('200')
+    expect(deleteOldXReplies).toHaveBeenCalledOnce()
     expect(listPendingReady).not.toHaveBeenCalled()
     expect(publishXReply).not.toHaveBeenCalled()
   })
@@ -168,6 +173,7 @@ describe('runXReply', () => {
     })
 
     expect(consoleError).toHaveBeenCalledWith(error)
+    expect(deleteOldXReplies).toHaveBeenCalledOnce()
     expect(loadXReplyIndex).not.toHaveBeenCalled()
     expect(saveXMentionsSinceId).not.toHaveBeenCalled()
     consoleError.mockRestore()
@@ -204,6 +210,7 @@ describe('runXReply', () => {
     fetchXMentions.mockRejectedValue(error)
 
     await expect(runXReply()).rejects.toBe(error)
+    expect(deleteOldXReplies).toHaveBeenCalledOnce()
     expect(loadXReplyIndex).not.toHaveBeenCalled()
     expect(saveXMentionsSinceId).not.toHaveBeenCalled()
   })

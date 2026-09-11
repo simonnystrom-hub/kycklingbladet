@@ -46,6 +46,7 @@ describe('generateExtraJpeg', () => {
   })
 
   it('hides Google internals behind a Swedish error', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
     create.mockRejectedValue(new Error('PERMISSION_DENIED: model not available'))
     const {generateExtraJpeg} = await import('./gemini')
     await expect(generateExtraJpeg('scene')).rejects.toThrow('Kunde inte rita bilden')
@@ -53,12 +54,15 @@ describe('generateExtraJpeg', () => {
   })
 
   it('retries quota errors with 2s then 4s sleep, then throws Swedish', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
     vi.useFakeTimers()
     create.mockRejectedValue(new Error('429 RESOURCE_EXHAUSTED quota exceeded'))
     const {generateExtraJpeg} = await import('./gemini')
 
     const pending = generateExtraJpeg('scene')
-    const expectation = expect(pending).rejects.toThrow('Kunde inte rita bilden')
+    const expectation = expect(pending).rejects.toThrow(
+      'Gemini-kvoten är slut just nu. Vänta en stund och rita igen.',
+    )
 
     await vi.advanceTimersByTimeAsync(0)
     expect(create).toHaveBeenCalledTimes(1)
@@ -76,6 +80,20 @@ describe('generateExtraJpeg', () => {
     expect(create).toHaveBeenCalledTimes(3)
 
     await expectation
+  })
+
+  it('throws billing error without retry when prepaid credits are depleted', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+    create.mockRejectedValue(
+      new Error(
+        '429 Your prepayment credits are depleted. Please go to AI Studio to manage billing.',
+      ),
+    )
+    const {generateExtraJpeg} = await import('./gemini')
+    await expect(generateExtraJpeg('scene')).rejects.toThrow(
+      'Gemini-krediten är slut. Fyll på i Google AI Studio och rita igen.',
+    )
+    expect(create).toHaveBeenCalledTimes(1)
   })
 
   it('returns jpeg after one quota retry', async () => {

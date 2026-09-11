@@ -48,6 +48,7 @@ describe('preview route', () => {
           caption: 'Hönor vid luckan.',
           scenePrompt: 'Chickens at a hatch.',
         },
+        hashtags: [],
       },
       promptVersion: 'v1',
       modelVersion: 'claude-test',
@@ -81,6 +82,7 @@ describe('preview route', () => {
         imageShotType: 'incident',
         imageCaption: 'Hönor vid luckan.',
         imagePrompt: 'Chickens at a hatch.',
+        xHashtags: '#svpol',
       },
     })
   })

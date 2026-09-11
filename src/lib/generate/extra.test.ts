@@ -7,12 +7,14 @@ describe('validateGeneratedExtra', () => {
       headline: 'Luckan',
       body: 'Kacklet tystnade.',
       imageBrief: null,
+      hashtags: [],
     })
     expect(validateGeneratedExtra({headline: '', body: 'x'})).toBeNull()
     expect(validateGeneratedExtra({headline: 'Luckan', body: 'Hon sa «nu».'})).toEqual({
       headline: 'Luckan',
       body: 'Hon sa "nu".',
       imageBrief: null,
+      hashtags: [],
     })
   })
 
@@ -33,11 +35,20 @@ describe('validateGeneratedExtra', () => {
         caption: 'Tuppen Gösta vid luckan i går kväll.',
         scenePrompt: 'Rooster at the hatch.',
       },
+      hashtags: [],
     })
     expect(validateGeneratedExtra({headline: 'Luckan', body: 'Kacklet tystnade.'})).toEqual({
       headline: 'Luckan',
       body: 'Kacklet tystnade.',
       imageBrief: null,
+      hashtags: [],
     })
+    expect(
+      validateGeneratedExtra({
+        headline: 'Luckan',
+        body: 'Kacklet tystnade.',
+        hashtags: ['#Försvar', 'svpol', 'nato'],
+      })?.hashtags,
+    ).toEqual(['forsvar', 'nato'])
   })
 })

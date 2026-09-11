@@ -1,4 +1,5 @@
 import {generateAlarm} from '@/lib/generate/claude'
+import {xHashtagLine} from '@/lib/x/hashtags'
 import {getWriteClient} from './write-client'
 
 export type LeadToRewrite = {
@@ -31,6 +32,7 @@ export async function rewriteLead(alarm: LeadToRewrite): Promise<string> {
       expertText: generated.expertText,
       promptVersion,
       modelVersion,
+      xHashtags: xHashtagLine(generated.hashtags),
     })
     .unset(['humorScore'])
     .commit()

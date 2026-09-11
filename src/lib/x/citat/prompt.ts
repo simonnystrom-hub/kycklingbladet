@@ -1,7 +1,7 @@
 import {parseExtraKnob, EXTRA_KNOB_DEFAULT} from '@/lib/generate/extra-prompt'
 import {HEN_HUMOR, HEN_LEXICON, HEN_NAMES} from '@/lib/generate/hen-lexicon'
 
-export const CITAT_PROMPT_VERSION = 'kb-x-citat-v1'
+export const CITAT_PROMPT_VERSION = 'kb-x-citat-v2'
 
 const DUMHET_HINTS: Record<number, string> = {
   1: 'Nästan bokstavlig hönsöversättning. Liten skevhet. Håll dig nära originalets händelse.',
@@ -32,6 +32,7 @@ ${HEN_NAMES}
 Regler:
 - Vrid originalinlägget till Kycklingbladets hönsvärld, men behåll en igenkännbar kärna.
 - Skriv bara en text, inte en artikel med rubrik och brödtext.
+- Sätt hela citat-tweeten inom raka citattecken " så här ". Inte « ». Inte typografiska citattecken.
 - Ingen särskild löpsedelsstämpel, artikel-URL, uppmaning om länk i kommentar, hashtag eller emoji.
 - Hitta inte på fler @omnämnanden.
 - Följ användarens Dumhet- och Uppskruvning-skalor (1–5) om de anges.
@@ -83,4 +84,22 @@ Uppskruvning ${knobs.uppskruvning}/5: ${UPPSKRUVNING_HINTS[knobs.uppskruvning]}`
 "${source.text}"
 
 ${instructions}`
+}
+
+export const CITAT_SPEECH_BUBBLE_SYSTEM = `Du skriver en enda kort pratbubbla till en Kycklingbladet-serieruta.
+
+${HEN_HUMOR}
+
+${HEN_LEXICON}
+
+Regler:
+- En hönsreplik som en höna eller tupp säger i en pratbubbla, 3–8 ord.
+- Rolig, kort, svensk. Inte hela citat-tweeten. Ingen URL, inget @, inget hashtag, ingen emoji.
+- JSON only: {"text":"string"}`
+
+export function buildCitatSpeechBubbleUserPrompt(source: {text: string}): string {
+  return `Citat-tweet att illustrera:
+"${source.text.trim()}"
+
+Skriv pratbubblan.`
 }

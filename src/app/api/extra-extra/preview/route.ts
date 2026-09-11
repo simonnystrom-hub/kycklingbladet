@@ -4,6 +4,7 @@ import {cachedArticleHeadline, scrapeArticleHeadline} from '@/lib/extra-extra/sc
 import {generateExtra} from '@/lib/generate/claude-extra'
 import {EXTRA_KICKER, parseExtraWriteKnobs} from '@/lib/generate/extra-prompt'
 import {resolveNewspaper} from '@/lib/extra-extra/papers'
+import {xHashtagLine} from '@/lib/x/hashtags'
 
 export const maxDuration = 60
 
@@ -57,6 +58,7 @@ export async function POST(request: Request) {
       imageShotType: result.generated.imageBrief?.shotType ?? '',
       imageCaption: result.generated.imageBrief?.caption ?? '',
       imagePrompt: result.generated.imageBrief?.scenePrompt ?? '',
+      xHashtags: xHashtagLine(result.generated.hashtags),
     }
     return json({preview})
   } catch (error) {

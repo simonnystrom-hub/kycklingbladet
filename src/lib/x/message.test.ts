@@ -26,6 +26,7 @@ describe('xLeadMessage', () => {
         'Första stycket.\n\nAndra stycket.',
         'Högsta hönset: "Skyddet innebär trygghet."',
         'I bilden: Hönan vid luckan.',
+        '#svpol',
         'https://www.kycklingbladet.com/arkiv/2026-09-05/luckan',
       ].join('\n\n'),
     )
@@ -44,7 +45,7 @@ describe('xLeadMessage', () => {
     })
     expect(text).not.toContain('I bilden:')
     expect(text).not.toContain('Högsta hönset')
-    expect(text).toBe(['Tvingades söka skydd i grannredet', 'Första stycket.\n\nAndra stycket.'].join('\n\n'))
+    expect(text).toBe(['Tvingades söka skydd i grannredet', 'Första stycket.\n\nAndra stycket.', '#svpol'].join('\n\n'))
   })
 })
 
@@ -78,9 +79,20 @@ describe('xExtraMessage', () => {
         'Efter månader av rävanfall tystnar hackandet.',
         'Gårdsanalytikern: "Hackandet tystnar bara tills nästa natt."',
         'I bilden: Taleshönan vid tråget.',
+        '#svpol',
         'https://www.kycklingbladet.com/extra-extra/2026-09-05',
       ].join('\n\n'),
     )
     expect(text).not.toContain('EXTRA EXTRA')
+  })
+
+  it('appends suggested tags after #svpol', () => {
+    expect(
+      xExtraMessage(
+        {headline: 'Nato-kackel', body: 'Gården rustar.'},
+        null,
+        ['#Försvar', 'nato'],
+      ),
+    ).toContain('#svpol #forsvar #nato')
   })
 })

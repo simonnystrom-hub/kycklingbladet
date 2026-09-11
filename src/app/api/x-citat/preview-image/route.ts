@@ -2,6 +2,7 @@ import {NextResponse} from 'next/server'
 import {corsHeaders, extraExtraSecretOk} from '@/lib/extra-extra/auth'
 import {drawExtraImage} from '@/lib/extra-extra/draw'
 import {validateExtraImageBrief} from '@/lib/generate/extra-image'
+import {generateCitatSpeechBubble} from '@/lib/x/citat/generate'
 
 export const maxDuration = 60
 
@@ -32,11 +33,31 @@ export async function POST(request: Request) {
 
     const brief = validateExtraImageBrief(preview)
     if (!brief) {
-      return json({preview, image: null, imageError: 'Saknar bildunderlag'})
+      return json({preview, image: null, imageError: 'Saknar bildunderlag', speechBubble: null})
     }
 
-    const draw = await drawExtraImage(brief)
-    return json({preview, ...draw})
+    const wantBubble = payload.speechBubble === true
+    let speechBubble: string | null = null
+    if (wantBubble) {
+      const henText = typeof (preview as {text?: unknown}).text === 'string'
+        ? (preview as {text: string}).text
+        : ''
+      try {
+        speechBubble = await generateCitatSpeechBubble({text: henText})
+      } catch (error) {
+        return json({
+          preview,
+          image: null,
+          imageError: error instanceof Error ? error.message : 'Kunde inte skriva pratbubblan',
+          speechBubble: null,
+        })
+      }
+    }
+
+    const draw = speechBubble
+      ? await drawExtraImage(brief, {speechBubble})
+      : await drawExtraImage(brief)
+    return json({preview, ...draw, speechBubble})
   } catch (error) {
     return json({error: error instanceof Error ? error.message : 'Ogiltig förfrågan'}, 400)
   }

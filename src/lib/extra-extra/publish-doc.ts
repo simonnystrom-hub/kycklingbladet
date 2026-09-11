@@ -1,4 +1,5 @@
 import {EXTRA_KICKER} from '@/lib/generate/extra-prompt'
+import {xHashtagLine} from '@/lib/x/hashtags'
 import type {ExtraExtraPreview} from './payload'
 
 export type ExtraPublishAsset = {_id: string}
@@ -26,6 +27,7 @@ export function extraCreateDocument(input: {
     promptVersion: preview.promptVersion,
     modelVersion: preview.modelVersion,
     createdAt,
+    xHashtags: xHashtagLine(preview.xHashtags),
   }
 
   if (

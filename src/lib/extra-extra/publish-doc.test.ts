@@ -44,6 +44,7 @@ describe('extraCreateDocument', () => {
       headline: flashPreview.headline,
       body: flashPreview.body,
       createdAt: '2026-09-05T12:00:00.000Z',
+      xHashtags: '#svpol',
     })
   })
 

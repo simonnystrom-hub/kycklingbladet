@@ -1,5 +1,5 @@
 import {describe, expect, it} from 'vitest'
-import {buildCitatUserPrompt, citatKnobsFromPayload, CITAT_WRITE_SYSTEM} from './prompt'
+import {buildCitatUserPrompt, citatKnobsFromPayload, CITAT_SPEECH_BUBBLE_SYSTEM, CITAT_WRITE_SYSTEM} from './prompt'
 
 describe('citatKnobsFromPayload', () => {
   it('is null when knobs are omitted so Claude chooses', () => {
@@ -38,6 +38,13 @@ describe('CITAT_WRITE_SYSTEM', () => {
   it('is one quote-tweet body, not EXTRA EXTRA', () => {
     expect(CITAT_WRITE_SYSTEM).toContain('citat-tweet')
     expect(CITAT_WRITE_SYSTEM).not.toContain('EXTRA EXTRA')
-    expect(CITAT_WRITE_SYSTEM).toContain('JSON-objekt')
+    expect(CITAT_WRITE_SYSTEM).toContain('raka citattecken')
+  })
+})
+
+describe('CITAT_SPEECH_BUBBLE_SYSTEM', () => {
+  it('asks for a short JSON balloon line', () => {
+    expect(CITAT_SPEECH_BUBBLE_SYSTEM).toContain('pratbubbla')
+    expect(CITAT_SPEECH_BUBBLE_SYSTEM).toContain('JSON')
   })
 })

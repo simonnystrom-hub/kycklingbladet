@@ -25,6 +25,7 @@ export type ExtraExtra = {
   createdAt: string
   imageUrl?: string | null
   imageCaption?: string | null
+  xHashtags?: string | null
 }
 
 export type Alarm = {
@@ -49,6 +50,7 @@ export type Alarm = {
   notices?: AlarmNotice[] | null
   imageUrl?: string | null
   imageCaption?: string | null
+  xHashtags?: string | null
 }
 
 export type AlarmTeaser = {

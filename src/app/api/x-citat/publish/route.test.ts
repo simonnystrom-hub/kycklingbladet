@@ -52,15 +52,31 @@ describe('X citat publish API', () => {
     expect(response.status).toBe(200)
     expect(await response.json()).toEqual({ok: true})
     expect(shareToXDetailed).toHaveBeenNthCalledWith(1, {
-      text: 'Hönan kommenterar dagens nyhet.\n\n@svtnyheter',
+      text: '"Hönan kommenterar dagens nyhet."\n\nInspirerad av @ekojonny',
       imageBase64: 'aaa',
     })
     expect(shareToXDetailed).toHaveBeenNthCalledWith(2, {
-      text: 'Inspirerat av: https://x.com/ekojonny/status/1234567890',
+      text: '@expressen @svtnyheter\nKälla:\nhttps://x.com/ekojonny/status/1234567890',
       inReplyToTweetId: 'parent-1',
     })
+    expect(shareToXDetailed).toHaveBeenCalledTimes(2)
     expect(getWriteClient).not.toHaveBeenCalled()
     expect(sharePublishedExtra).not.toHaveBeenCalled()
+  })
+
+  it('posts a URL-only follow-up when there are no extra mentions', async () => {
+    const payload = {
+      ...validPayload,
+      mentions: '',
+    }
+
+    const response = await POST(request(payload))
+
+    expect(response.status).toBe(200)
+    expect(shareToXDetailed).toHaveBeenNthCalledWith(2, {
+      text: 'Källa:\nhttps://x.com/ekojonny/status/1234567890',
+      inReplyToTweetId: 'parent-1',
+    })
   })
 
   it('posts only the hen tweet when there is no source URL', async () => {
@@ -75,7 +91,7 @@ describe('X citat publish API', () => {
     expect(response.status).toBe(200)
     expect(shareToXDetailed).toHaveBeenCalledOnce()
     expect(shareToXDetailed).toHaveBeenCalledWith({
-      text: 'Hönan kommenterar dagens nyhet.',
+      text: '"Hönan kommenterar dagens nyhet."',
       imageBase64: 'aaa',
     })
   })
@@ -126,6 +142,7 @@ describe('X citat publish API', () => {
     expect(await response.json()).toEqual({
       error: 'Hönstweeten gick ut men uppföljningen misslyckades: reply blocked',
     })
+    expect(shareToXDetailed).toHaveBeenCalledTimes(2)
   })
 
   it('reports missing X credentials', async () => {

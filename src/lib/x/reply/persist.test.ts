@@ -1,6 +1,7 @@
 import {beforeEach, describe, expect, it, vi} from 'vitest'
 import {
   createPendingXReply,
+  deleteOldXReplies,
   listPendingReady,
   loadXReply,
   loadXReplyIndex,
@@ -9,16 +10,18 @@ import {
   patchXReplyError,
   patchXReplyPosted,
   saveXMentionsSinceId,
+  xReplyMaxAgeCutoff,
 } from './persist'
 
-const {create, fetch, patch} = vi.hoisted(() => ({
+const {create, fetch, patch, del} = vi.hoisted(() => ({
   create: vi.fn(),
   fetch: vi.fn(),
   patch: vi.fn(),
+  del: vi.fn(),
 }))
 
 vi.mock('@/lib/sanity/write-client', () => ({
-  getWriteClient: () => ({create, fetch, patch}),
+  getWriteClient: () => ({create, fetch, patch, delete: del}),
 }))
 
 function patchChain() {
@@ -32,6 +35,7 @@ describe('X reply persistence', () => {
     create.mockReset()
     fetch.mockReset()
     patch.mockReset()
+    del.mockReset()
   })
 
   it('loads safe defaults when site settings are missing', async () => {
@@ -39,8 +43,8 @@ describe('X reply persistence', () => {
 
     await expect(loadXReplySettings()).resolves.toEqual({
       mode: 'queue',
-      dumhet: 3,
-      uppskruvning: 3,
+      dumhet: 5,
+      uppskruvning: 5,
       sinceId: null,
     })
     expect(fetch).toHaveBeenCalledWith(
@@ -71,9 +75,25 @@ describe('X reply persistence', () => {
     })
     await expect(loadXReplySettings()).resolves.toEqual({
       mode: 'queue',
-      dumhet: 3,
-      uppskruvning: 3,
+      dumhet: 5,
+      uppskruvning: 5,
       sinceId: null,
+    })
+  })
+
+  it('treats the old 3/3 knob pair as Galen and max', async () => {
+    fetch.mockResolvedValue({
+      xReplyMode: 'queue',
+      xReplyDumhet: 3,
+      xReplyUppskruvning: 3,
+      xMentionsSinceId: '9',
+    })
+
+    await expect(loadXReplySettings()).resolves.toEqual({
+      mode: 'queue',
+      dumhet: 5,
+      uppskruvning: 5,
+      sinceId: '9',
     })
   })
 
@@ -150,7 +170,34 @@ describe('X reply persistence', () => {
     const query = fetch.mock.calls[0][0] as string
     expect(query).toContain('replyText != ""')
     expect(query).toContain('!defined(error) || error == ""')
+    expect(query).toContain('dateTime(_createdAt) > dateTime(now()) - 60 * 60 * 24 * 30')
     expect(query).toContain('order(_createdAt asc)[0...$limit]')
+  })
+
+  it('deletes x-replies older than 30 days', async () => {
+    fetch.mockResolvedValue(['old-1', 'old-2'])
+    del.mockResolvedValue(undefined)
+
+    await expect(
+      deleteOldXReplies(new Date('2026-09-11T08:00:00.000Z')),
+    ).resolves.toBe(2)
+
+    expect(xReplyMaxAgeCutoff(new Date('2026-09-11T08:00:00.000Z'))).toBe(
+      '2026-08-12T08:00:00.000Z',
+    )
+    expect(fetch).toHaveBeenCalledWith(
+      '*[_type == "xReply" && dateTime(_createdAt) < dateTime($cutoff)]._id',
+      {cutoff: '2026-08-12T08:00:00.000Z'},
+    )
+    expect(del).toHaveBeenNthCalledWith(1, 'old-1')
+    expect(del).toHaveBeenNthCalledWith(2, 'old-2')
+  })
+
+  it('does not delete when nothing is older than a month', async () => {
+    fetch.mockResolvedValue([])
+
+    await expect(deleteOldXReplies()).resolves.toBe(0)
+    expect(del).not.toHaveBeenCalled()
   })
 
   it('patches posted, error, and successful draft states', async () => {

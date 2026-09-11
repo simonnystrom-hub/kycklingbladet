@@ -68,4 +68,18 @@ describe('buildGeminiImagePrompt', () => {
     expect(prompt).toMatch(/zero readable language/i)
     expect(prompt).toContain(EXTRA_IMAGE_SIGNATURE)
   })
+
+  it('allows one exact Swedish speech balloon when requested', () => {
+    const prompt = buildGeminiImagePrompt(
+      {
+        shotType: 'incident',
+        caption: 'Hönan Bodil i hönshuset.',
+        scenePrompt: 'A hen interviewed beside a grain bin.',
+      },
+      {speechBubble: 'Kackel i redet!'},
+    )
+    expect(prompt).toContain('Kackel i redet!')
+    expect(prompt).toMatch(/speech balloon/i)
+    expect(prompt).not.toMatch(/zero readable language except the exact signature/)
+  })
 })

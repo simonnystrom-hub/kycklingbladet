@@ -17,6 +17,7 @@ export type ExtraExtraPreview = {
   imageShotType?: string
   imageCaption?: string
   imagePrompt?: string
+  xHashtags?: string
 }
 
 const STRING_FIELDS = [
@@ -59,6 +60,10 @@ export function parseExtraPreview(input: unknown): ExtraExtraPreview | null {
   }
 
   const preview = Object.fromEntries(STRING_FIELDS.map((field) => [field, value[field]])) as ExtraExtraPreview
+
+  if (typeof value.xHashtags === 'string') {
+    preview.xHashtags = value.xHashtags
+  }
 
   if (!hasImageField(value)) return preview
 

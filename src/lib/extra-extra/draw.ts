@@ -4,13 +4,16 @@ import {generateExtraJpeg} from './gemini'
 export type ExtraPreviewImage = {mimeType: 'image/jpeg'; base64: string}
 export type ExtraDrawResult = {image: ExtraPreviewImage | null; imageError: string | null}
 
-export async function drawExtraImage(brief: ExtraImageBrief | null): Promise<ExtraDrawResult> {
+export async function drawExtraImage(
+  brief: ExtraImageBrief | null,
+  options?: {speechBubble?: string},
+): Promise<ExtraDrawResult> {
   if (!brief) {
     return {image: null, imageError: null}
   }
 
   try {
-    const buffer = await generateExtraJpeg(buildGeminiImagePrompt(brief))
+    const buffer = await generateExtraJpeg(buildGeminiImagePrompt(brief, options))
     return {
       image: {mimeType: 'image/jpeg', base64: buffer.toString('base64')},
       imageError: null,

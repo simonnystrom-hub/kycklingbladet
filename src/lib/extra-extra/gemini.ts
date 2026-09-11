@@ -17,9 +17,30 @@ function imageModel(): string {
   return process.env.GEMINI_IMAGE_MODEL?.trim() || DEFAULT_MODEL
 }
 
-function isQuotaError(error: unknown): boolean {
-  const message = error instanceof Error ? error.message : String(error)
-  return message.includes('429') || /quota/i.test(message)
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error)
+}
+
+function isBillingDepleted(error: unknown): boolean {
+  return /prepayment credits are depleted|credits are depleted/i.test(errorMessage(error))
+}
+
+function isRateLimitError(error: unknown): boolean {
+  if (isBillingDepleted(error)) return false
+  const message = errorMessage(error)
+  return message.includes('429') || /quota|RESOURCE_EXHAUSTED/i.test(message)
+}
+
+function drawError(error: unknown): Error {
+  const detail = errorMessage(error)
+  console.error('Gemini-bildfel:', detail.slice(0, 400))
+  if (isBillingDepleted(error)) {
+    return new Error('Gemini-krediten är slut. Fyll på i Google AI Studio och rita igen.')
+  }
+  if (isRateLimitError(error)) {
+    return new Error('Gemini-kvoten är slut just nu. Vänta en stund och rita igen.')
+  }
+  return new Error('Kunde inte rita bilden')
 }
 
 async function sleep(ms: number): Promise<void> {
@@ -51,11 +72,11 @@ export async function generateExtraJpeg(prompt: string): Promise<Buffer> {
       return Buffer.from(image.data, 'base64')
     } catch (error) {
       const isLastAttempt = attempt === MAX_ATTEMPTS
-      if (!isLastAttempt && isQuotaError(error)) {
+      if (!isLastAttempt && isRateLimitError(error)) {
         await sleep(QUOTA_SLEEP_MS * attempt)
         continue
       }
-      throw new Error('Kunde inte rita bilden')
+      throw drawError(error)
     }
   }
 

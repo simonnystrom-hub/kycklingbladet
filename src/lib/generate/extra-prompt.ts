@@ -1,10 +1,10 @@
 import {HEN_HUMOR, HEN_LEXICON, HEN_NAMES} from './hen-lexicon'
 
-export const EXTRA_PROMPT_VERSION = 'kb-extra-v2'
+export const EXTRA_PROMPT_VERSION = 'kb-extra-v3'
 export const EXTRA_KICKER = 'EXTRA EXTRA'
 export const EXTRA_KNOB_MIN = 1
 export const EXTRA_KNOB_MAX = 5
-export const EXTRA_KNOB_DEFAULT = 3
+export const EXTRA_KNOB_DEFAULT = 5
 
 export type ExtraWriteKnobs = {
   dumhet: number
@@ -59,7 +59,8 @@ ${HEN_NAMES}
 Regler:
 - Nyheten är ett fiktivt, konstigt scenario i hönshuset.
 - Noll proportioner. Dramatiska ord för det som händer i gården.
-- Svenska. Inga emoji, hashtags eller engelska meningar.
+- Svenska. Inga emoji, hashtags eller engelska meningar i rubrik och brödtext.
+- hashtags i JSON: 1–3 extra X-taggar för den verkliga nyheten (nato, migpol, klimat). Inte hönsord. Inte svpol. Bara a–z och siffror, inga åäö (skriv forsvar inte försvar). Utan #-tecken.
 - Kalla det inte satir. Skriv som om det vore sant. Skriv inte om poäng, index eller Alarmindex.
 - Rubriken är Kycklingbladets egen: mer uppskruvad än originalet, men igenkännbar. Kopiera inte originalet ordagrant.
 - Citat med raka citattecken " så här ". Inte « ». Citat kommer bara från höns och tuppar, aldrig från människor.
@@ -75,7 +76,8 @@ Svara med ENDAST ett JSON-objekt:
   "body": "string",
   "imageShotType": "intervju" | "incident" | "annat",
   "imageCaption": "string — svensk bildtext vem/var/vad, inte en one-liner",
-  "imagePrompt": "string — English scene for the cartoon, no signs or speech in the picture"
+  "imagePrompt": "string — English scene for the cartoon, no signs or speech in the picture",
+  "hashtags": ["nato", "forsvar"]
 }`
 
 export function buildExtraWriteUserPrompt(source: {

@@ -7,9 +7,13 @@ vi.mock('@/lib/extra-extra/auth', () => ({
 vi.mock('@/lib/extra-extra/draw', () => ({
   drawExtraImage: vi.fn(),
 }))
+vi.mock('@/lib/x/citat/generate', () => ({
+  generateCitatSpeechBubble: vi.fn(),
+}))
 
 import {extraExtraSecretOk} from '@/lib/extra-extra/auth'
 import {drawExtraImage} from '@/lib/extra-extra/draw'
+import {generateCitatSpeechBubble} from '@/lib/x/citat/generate'
 import {maxDuration, OPTIONS, POST} from './route'
 
 const imagePreview = {
@@ -32,6 +36,7 @@ describe('X citat preview-image API', () => {
     vi.mocked(extraExtraSecretOk).mockReset()
     vi.mocked(extraExtraSecretOk).mockReturnValue(true)
     vi.mocked(drawExtraImage).mockReset()
+    vi.mocked(generateCitatSpeechBubble).mockReset()
   })
 
   it('draws and returns an image for a valid preview brief', async () => {
@@ -48,10 +53,12 @@ describe('X citat preview-image API', () => {
       caption: 'Hönan.',
       scenePrompt: 'A hen.',
     })
+    expect(generateCitatSpeechBubble).not.toHaveBeenCalled()
     expect(await response.json()).toEqual({
       preview: imagePreview,
       image: {mimeType: 'image/jpeg', base64: 'abc'},
       imageError: null,
+      speechBubble: null,
     })
   })
 
@@ -66,6 +73,7 @@ describe('X citat preview-image API', () => {
       preview,
       image: null,
       imageError: 'Saknar bildunderlag',
+      speechBubble: null,
     })
   })
 
@@ -85,6 +93,33 @@ describe('X citat preview-image API', () => {
     expect(response.status).toBe(400)
     expect(await response.json()).toEqual({error: 'Ogiltig förfrågan'})
     expect(drawExtraImage).not.toHaveBeenCalled()
+  })
+
+  it('draws a speech balloon when requested', async () => {
+    vi.mocked(generateCitatSpeechBubble).mockResolvedValue('Kackel i redet!')
+    vi.mocked(drawExtraImage).mockResolvedValue({
+      image: {mimeType: 'image/jpeg', base64: 'abc'},
+      imageError: null,
+    })
+
+    const response = await POST(request({preview: imagePreview, speechBubble: true}))
+
+    expect(response.status).toBe(200)
+    expect(generateCitatSpeechBubble).toHaveBeenCalledWith({text: 'Kackel'})
+    expect(drawExtraImage).toHaveBeenCalledWith(
+      {
+        shotType: 'incident',
+        caption: 'Hönan.',
+        scenePrompt: 'A hen.',
+      },
+      {speechBubble: 'Kackel i redet!'},
+    )
+    expect(await response.json()).toEqual({
+      preview: imagePreview,
+      image: {mimeType: 'image/jpeg', base64: 'abc'},
+      imageError: null,
+      speechBubble: 'Kackel i redet!',
+    })
   })
 
   it('exports duration and CORS preflight handlers', () => {

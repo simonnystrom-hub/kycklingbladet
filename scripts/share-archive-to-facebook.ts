@@ -33,13 +33,13 @@ async function loadQueue(): Promise<QueueItem[]> {
   const [leads, extras] = await Promise.all([
     client.fetch<LeadRow[]>(
       `*[_type == "alarm" && defined(headline) && defined(body)] | order(date asc){
-        date, slug, slot, headline, body, expertVoice, expertHeadline, expertText, imageCaption,
+        date, slug, slot, headline, body, expertVoice, expertHeadline, expertText, imageCaption, xHashtags,
         "imageUrl": image.asset->url
       }`,
     ),
     client.fetch<ExtraExtra[]>(
       `*[_type == "extraExtra"] | order(date asc){
-        date, kicker, headline, body, imageCaption,
+        date, kicker, headline, body, imageCaption, xHashtags,
         "imageUrl": image.asset->url,
         sourceUrl, sourceHeadline, sourceNewspaper, sourceNewspaperSlug,
         promptVersion, modelVersion, createdAt, _id

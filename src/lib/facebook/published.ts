@@ -16,13 +16,14 @@ type StoredLead = FacebookLeadCopy & {
   date: string
   slug?: string | null
   imageUrl?: string | null
+  xHashtags?: string | null
 }
 
 export async function sharePublishedLead(id: string): Promise<ShareToFacebookResult> {
   try {
     const alarm = await getWriteClient().fetch<StoredLead | null>(
       `*[_id == $id][0]{
-        date, slug, headline, body, expertVoice, expertHeadline, expertText, imageCaption,
+        date, slug, headline, body, expertVoice, expertHeadline, expertText, imageCaption, xHashtags,
         "imageUrl": image.asset->url
       }`,
       {id},
@@ -41,7 +42,7 @@ export async function sharePublishedLead(id: string): Promise<ShareToFacebookRes
         articleUrl,
       }),
       shareToX({
-        text: xLeadMessage(alarm, articleUrl),
+        text: xLeadMessage(alarm, articleUrl, alarm.xHashtags),
         imageUrl: alarm.imageUrl,
       }),
     ])
@@ -68,7 +69,7 @@ export async function sharePublishedExtra(
         articleUrl,
       }),
       shareToX({
-        text: xExtraMessage(extra, articleUrl),
+        text: xExtraMessage(extra, articleUrl, extra.xHashtags),
         imageUrl: extra.imageUrl,
       }),
     ])

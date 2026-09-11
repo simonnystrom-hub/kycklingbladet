@@ -1,3 +1,4 @@
+import {xHashtagLine} from '@/lib/x/hashtags'
 import {
   facebookBold,
   facebookBoldCaps,
@@ -24,12 +25,14 @@ export type FacebookLeadCopy = FacebookExpertCopy & {
   expertHeadline?: string | null
   imageCaption?: string | null
   notices?: FacebookNoticeCopy[] | null
+  xHashtags?: string | null
 }
 
 export type FacebookExtraCopy = FacebookExpertCopy & {
   headline: string
   body: string
   imageCaption?: string | null
+  xHashtags?: string | null
 }
 
 function joinBlocks(blocks: Array<string | null | undefined>): string {
@@ -70,6 +73,7 @@ export function facebookLeadMessage(lead: FacebookLeadCopy): string {
     formatFacebookBody(lead.body),
     facebookExpertBlock(lead),
     captionBlock(lead.imageCaption),
+    xHashtagLine(lead.xHashtags),
   ])
 }
 
@@ -79,5 +83,6 @@ export function facebookExtraMessage(extra: FacebookExtraCopy): string {
     formatFacebookBody(stripLeadingExtraExtra(extra.body)),
     facebookExpertBlock(extra),
     captionBlock(extra.imageCaption),
+    xHashtagLine(extra.xHashtags),
   ])
 }

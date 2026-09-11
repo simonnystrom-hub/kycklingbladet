@@ -34,11 +34,28 @@ SIGNATURE (always, never vary): in one bottom corner, a tiny loose ink cartoonis
 NO OTHER TEXT in the image: no letters, numbers, words, quotes, proverbs, Swedish, English, signs, papers, logos, captions, or speech bubbles besides that one signature. The cartoon is silent acting only.
 Aspect 3:4 portrait. One clear scene.`
 
-export function buildGeminiImagePrompt(brief: ExtraImageBrief): string {
-  return `${EXTRA_IMAGE_STYLE}
+export function buildGeminiImagePrompt(
+  brief: ExtraImageBrief,
+  options?: {speechBubble?: string},
+): string {
+  const balloon = options?.speechBubble?.trim()
+  if (!balloon) {
+    return `${EXTRA_IMAGE_STYLE}
 
 SHOT TYPE: ${brief.shotType}
 SCENE: ${brief.scenePrompt}
 
 HARD RULE: the finished drawing contains zero readable language except the exact signature "${EXTRA_IMAGE_SIGNATURE}" in a bottom corner. Do not write headlines, quotes, captions, or any other words on signs, fences, papers, or speech balloons.`
+  }
+
+  return `${EXTRA_IMAGE_STYLE}
+
+SHOT TYPE: ${brief.shotType}
+SCENE: ${brief.scenePrompt}
+
+SPEECH BUBBLE (required): ignore the STYLE sentence that forbids speech bubbles. Draw exactly one classic comic speech balloon from one hen or rooster in the scene. Letter it in clear Swedish handwriting. The balloon text must be exactly this, character for character:
+"${balloon.replace(/"/g, "'")}"
+No other balloons, signs, headlines, captions, or readable words.
+
+HARD RULE: the finished drawing contains zero readable language except (1) the exact signature "${EXTRA_IMAGE_SIGNATURE}" in a bottom corner and (2) that one speech balloon.`
 }

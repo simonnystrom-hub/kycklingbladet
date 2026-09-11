@@ -7,6 +7,7 @@ import {generateXReply} from './generate'
 import {fetchXMentions} from './mentions'
 import {
   createPendingXReply,
+  deleteOldXReplies,
   listPendingReady,
   loadXReplyIndex,
   loadXReplySettings,
@@ -20,6 +21,7 @@ export async function runXReply(): Promise<{
   skipped: number
 }> {
   const settings = await loadXReplySettings()
+  await deleteOldXReplies()
 
   let fetched: Awaited<ReturnType<typeof fetchXMentions>>
   try {

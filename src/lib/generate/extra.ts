@@ -1,3 +1,4 @@
+import {parseHashtagSuggestions} from '@/lib/x/hashtags'
 import {validateExtraImageBrief, type ExtraImageBrief} from './extra-image'
 import {normalizeQuotes} from './quotes'
 
@@ -5,6 +6,7 @@ export type GeneratedExtra = {
   headline: string
   body: string
   imageBrief: ExtraImageBrief | null
+  hashtags: string[]
 }
 
 export function validateGeneratedExtra(input: unknown): GeneratedExtra | null {
@@ -17,5 +19,6 @@ export function validateGeneratedExtra(input: unknown): GeneratedExtra | null {
     headline: normalizeQuotes(headline),
     body: normalizeQuotes(body),
     imageBrief: validateExtraImageBrief(record),
+    hashtags: parseHashtagSuggestions(record.hashtags),
   }
 }

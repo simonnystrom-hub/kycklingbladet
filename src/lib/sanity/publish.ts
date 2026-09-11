@@ -7,6 +7,7 @@ import {
   type UsedLeadSource,
 } from '@/lib/select/select-winner'
 import {alarmindexDayUrl} from '@/lib/alarmindex/url'
+import {xHashtagLine} from '@/lib/x/hashtags'
 import {getWriteClient} from './write-client'
 
 export type PublishedAlarmSlot = {
@@ -122,6 +123,7 @@ export async function publishAlarm(input: {
     sourceScore: input.source.displayScore,
     promptVersion: input.promptVersion,
     modelVersion: input.modelVersion,
+    xHashtags: xHashtagLine(input.generated.hashtags),
   })
   return 'created'
 }

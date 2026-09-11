@@ -51,7 +51,7 @@ describe('sharePublishedLead', () => {
       articleUrl,
     })
     expect(shareToX).toHaveBeenCalledWith({
-      text: xLeadMessage(alarm, articleUrl),
+      text: xLeadMessage(alarm, articleUrl, alarm.xHashtags),
       imageUrl: 'https://cdn.sanity.io/lead.jpg',
     })
   })
@@ -113,7 +113,7 @@ describe('sharePublishedExtra', () => {
       articleUrl,
     })
     expect(shareToX).toHaveBeenCalledWith({
-      text: xExtraMessage(extra, articleUrl),
+      text: xExtraMessage(extra, articleUrl, extra.xHashtags),
       imageUrl: extra.imageUrl,
     })
   })

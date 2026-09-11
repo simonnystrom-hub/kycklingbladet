@@ -66,6 +66,7 @@ describe('extra extra publish Facebook', () => {
       body: preview.body,
       imageCaption: undefined,
       imageUrl: null,
+      xHashtags: '#svpol',
     })
   })
 
@@ -88,6 +89,7 @@ describe('extra extra publish Facebook', () => {
       body: preview.body,
       imageCaption: undefined,
       imageUrl: null,
+      xHashtags: '#svpol',
     })
   })
 })

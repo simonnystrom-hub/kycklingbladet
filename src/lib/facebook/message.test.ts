@@ -24,10 +24,21 @@ describe('facebookLeadMessage', () => {
         'Första stycket.\n\nAndra stycket.',
         `${facebookBold('Högsta hönset')}: "Skyddet innebär trygghet."`,
         facebookItalic('I bilden: Hönan vid luckan.'),
+        '#svpol',
       ].join('\n\n'),
     )
     expect(text).not.toContain('Notiser')
     expect(text).not.toContain('Se länk i kommentar')
+  })
+
+  it('appends suggested tags after #svpol', () => {
+    expect(
+      facebookLeadMessage({
+        headline: lead.headline,
+        body: lead.body,
+        xHashtags: '#svpol #migpol',
+      }),
+    ).toContain('#svpol #migpol')
   })
 
   it('omits the caption and expert lines when they are missing', () => {
@@ -42,9 +53,11 @@ describe('facebookLeadMessage', () => {
     expect(text).not.toContain('I bilden:')
     expect(text).not.toContain(facebookBold('Högsta hönset'))
     expect(text).toBe(
-      [facebookBoldCaps('Tvingades söka skydd i grannredet'), 'Första stycket.\n\nAndra stycket.'].join(
-        '\n\n',
-      ),
+      [
+        facebookBoldCaps('Tvingades söka skydd i grannredet'),
+        'Första stycket.\n\nAndra stycket.',
+        '#svpol',
+      ].join('\n\n'),
     )
   })
 })
@@ -76,8 +89,19 @@ describe('facebookExtraMessage', () => {
         'Efter månader av rävanfall tystnar hackandet.',
         `${facebookBold('Gårdsanalytikern')}: "Hackandet tystnar bara tills nästa natt."`,
         facebookItalic('I bilden: Taleshönan vid tråget.'),
+        '#svpol',
       ].join('\n\n'),
     )
     expect(text).not.toContain('EXTRA EXTRA')
+  })
+
+  it('appends suggested tags after #svpol', () => {
+    expect(
+      facebookExtraMessage({
+        headline: 'Nato-kackel',
+        body: 'Gården rustar.',
+        xHashtags: '#svpol #Försvar #nato',
+      }),
+    ).toContain('#svpol #forsvar #nato')
   })
 })

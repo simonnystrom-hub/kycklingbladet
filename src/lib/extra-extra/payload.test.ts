@@ -36,6 +36,13 @@ describe('parseExtraPreview', () => {
     expect(parseExtraPreview({...validPreview, sourceUrl: 'not a URL'})).toBeNull()
   })
 
+  it('keeps optional X hashtags', () => {
+    expect(parseExtraPreview({...validPreview, xHashtags: '#svpol #nato'})).toEqual({
+      ...validPreview,
+      xHashtags: '#svpol #nato',
+    })
+  })
+
   it.each([null, undefined, [], 'preview', 42])('rejects non-object input %#', (input) => {
     expect(parseExtraPreview(input)).toBeNull()
   })

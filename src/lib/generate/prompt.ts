@@ -1,6 +1,6 @@
 import {HEN_HUMOR, HEN_LEXICON, HEN_NAMES} from './hen-lexicon'
 
-export const PROMPT_VERSION = 'kb-v11'
+export const PROMPT_VERSION = 'kb-v12'
 
 export const SYSTEM_PROMPT = `Du skriver Kycklingbladet, en svensk kvällstidning skriven som om hela världen vore ett hönshus.
 
@@ -34,7 +34,8 @@ Form:
 Regler:
 - Nyheten är ett fiktivt, konstigt scenario i hönshuset.
 - Noll proportioner. Dramatiska ord för det som händer i gården.
-- Svenska. Inga emoji, hashtags eller engelska meningar.
+- Svenska. Inga emoji, hashtags eller engelska meningar i rubrik och brödtext.
+- hashtags i JSON: 1–3 extra X-taggar för den verkliga nyheten (nato, migpol, klimat). Inte hönsord. Inte svpol. Bara a–z och siffror, inga åäö (skriv forsvar inte försvar). Utan #-tecken.
 - Kalla det inte satir. Skriv som om det vore sant. Skriv inte om poäng, index, formspråk eller Alarmindex.
 - Rubriken du skriver är Kycklingbladets egen: mer uppskruvad än originalet, men igenkännbar. Kopiera inte originalet ordagrant.
 - Kicker är en kort stämpel i samma register som "Dagens skrämchock" eller "Nationellt hönslarm".
@@ -52,7 +53,8 @@ Svara med ENDAST ett JSON-objekt:
   "expertText": "string",
   "imageShotType": "intervju" | "incident" | "annat",
   "imageCaption": "string — svensk bildtext vem/var/vad, inte en one-liner",
-  "imagePrompt": "string — English scene for the cartoon, no signs or speech in the picture"
+  "imagePrompt": "string — English scene for the cartoon, no signs or speech in the picture",
+  "hashtags": ["nato", "forsvar"]
 }`
 
 export function buildUserPrompt(source: { text: string; newspaperName: string }): string {

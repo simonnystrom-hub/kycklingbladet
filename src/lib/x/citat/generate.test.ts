@@ -1,6 +1,6 @@
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest'
 import {CITAT_PROMPT_VERSION, CITAT_WRITE_SYSTEM} from './prompt'
-import {generateCitat} from './generate'
+import {generateCitat, generateCitatSpeechBubble} from './generate'
 
 const {createMessage} = vi.hoisted(() => ({
   createMessage: vi.fn(),
@@ -54,7 +54,7 @@ describe('generateCitat', () => {
       }),
     ).resolves.toEqual({
       generated: {
-        text: 'Tuppen kallade till krismöte.',
+        text: '"Tuppen kallade till krismöte."',
         imageBrief: {
           shotType: 'incident',
           caption: 'Tuppen Gösta vid foderautomaten.',
@@ -65,7 +65,7 @@ describe('generateCitat', () => {
       promptVersion: CITAT_PROMPT_VERSION,
     })
 
-    expect(CITAT_PROMPT_VERSION).toBe('kb-x-citat-v1')
+    expect(CITAT_PROMPT_VERSION).toBe('kb-x-citat-v2')
     expect(createMessage).toHaveBeenCalledWith({
       model: 'test-model',
       max_tokens: 1200,
@@ -96,5 +96,37 @@ describe('generateCitat', () => {
       'Claude-svaret saknade citat-text',
     )
     expect(createMessage).toHaveBeenCalledTimes(2)
+  })
+})
+
+describe('generateCitatSpeechBubble', () => {
+  const originalKey = process.env.ANTHROPIC_API_KEY
+  const originalModel = process.env.ANTHROPIC_MODEL
+
+  beforeEach(() => {
+    process.env.ANTHROPIC_API_KEY = 'test-key'
+    process.env.ANTHROPIC_MODEL = 'test-model'
+    createMessage.mockReset()
+  })
+
+  afterEach(() => {
+    if (originalKey === undefined) delete process.env.ANTHROPIC_API_KEY
+    else process.env.ANTHROPIC_API_KEY = originalKey
+    if (originalModel === undefined) delete process.env.ANTHROPIC_MODEL
+    else process.env.ANTHROPIC_MODEL = originalModel
+  })
+
+  it('returns a short balloon line', async () => {
+    createMessage.mockResolvedValueOnce(response({text: 'Kackel i redet!'}))
+
+    await expect(generateCitatSpeechBubble({text: 'Tuppen kallade till krismöte.'})).resolves.toBe(
+      'Kackel i redet!',
+    )
+    expect(createMessage).toHaveBeenCalledWith(
+      expect.objectContaining({
+        max_tokens: 200,
+        system: expect.stringContaining('pratbubbla'),
+      }),
+    )
   })
 })

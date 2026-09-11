@@ -1,5 +1,6 @@
 import type {FacebookExtraCopy, FacebookLeadCopy} from '@/lib/facebook/message'
 import {formatFacebookBody, stripLeadingExtraExtra} from '@/lib/facebook/style-text'
+import {xHashtagLine} from './hashtags'
 
 function joinBlocks(blocks: Array<string | null | undefined>): string {
   return blocks
@@ -36,22 +37,32 @@ export function xExpertBlock(input: {
   return `${who}: ${quotedSpeech(said)}`
 }
 
-export function xLeadMessage(lead: FacebookLeadCopy, articleUrl?: string | null): string {
+export function xLeadMessage(
+  lead: FacebookLeadCopy,
+  articleUrl?: string | null,
+  hashtags?: unknown,
+): string {
   return joinBlocks([
     lead.headline,
     formatFacebookBody(lead.body),
     xExpertBlock(lead),
     captionBlock(lead.imageCaption),
+    xHashtagLine(hashtags),
     articleUrl,
   ])
 }
 
-export function xExtraMessage(extra: FacebookExtraCopy, articleUrl?: string | null): string {
+export function xExtraMessage(
+  extra: FacebookExtraCopy,
+  articleUrl?: string | null,
+  hashtags?: unknown,
+): string {
   return joinBlocks([
     extra.headline,
     formatFacebookBody(stripLeadingExtraExtra(extra.body)),
     xExpertBlock(extra),
     captionBlock(extra.imageCaption),
+    xHashtagLine(hashtags),
     articleUrl,
   ])
 }

@@ -1,3 +1,4 @@
+import {parseHashtagSuggestions} from '@/lib/x/hashtags'
 import {isExpertVoice, type ExpertVoice} from './experts'
 import {validateExtraImageBrief, type ExtraImageBrief} from './extra-image'
 import {normalizeQuotes} from './quotes'
@@ -10,6 +11,7 @@ export type GeneratedAlarm = {
   expertHeadline: string
   expertText: string
   imageBrief: ExtraImageBrief | null
+  hashtags: string[]
 }
 
 function asNonEmpty(value: unknown): string | null {
@@ -39,5 +41,6 @@ export function validateGeneratedAlarm(input: unknown): GeneratedAlarm | null {
     expertHeadline: normalizeQuotes(expertHeadline),
     expertText: normalizeQuotes(expertText),
     imageBrief: validateExtraImageBrief(record),
+    hashtags: parseHashtagSuggestions(record.hashtags),
   }
 }

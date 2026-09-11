@@ -14,7 +14,7 @@ const good = {
 
 describe('validateGeneratedAlarm', () => {
   it('accepts a complete payload', () => {
-    expect(validateGeneratedAlarm(good)).toEqual({...good, imageBrief: null})
+    expect(validateGeneratedAlarm(good)).toEqual({...good, imageBrief: null, hashtags: []})
   })
 
   it('rejects missing kicker, headline, body, or expert fields', () => {
@@ -72,6 +72,12 @@ describe('validateGeneratedAlarm', () => {
     expect(
       validateGeneratedAlarm({...good, imageCaption: 'bara text'})?.imageBrief,
     ).toBeNull()
+    expect(
+      validateGeneratedAlarm({
+        ...good,
+        hashtags: ['#Försvar', 'svpol', 'nato'],
+      })?.hashtags,
+    ).toEqual(['forsvar', 'nato'])
   })
 })
 

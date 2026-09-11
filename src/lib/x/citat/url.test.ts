@@ -1,5 +1,10 @@
 import {describe, expect, it} from 'vitest'
-import {citatFollowUpText, parseTweetStatusId} from './url'
+import {
+  citatFollowUpText,
+  citatParentText,
+  parseTweetStatusId,
+  parseTweetUsername,
+} from './url'
 
 describe('parseTweetStatusId', () => {
   it('reads x.com and twitter.com status ids', () => {
@@ -9,18 +14,60 @@ describe('parseTweetStatusId', () => {
     expect(
       parseTweetStatusId('https://www.twitter.com/someone/status/12345?s=20'),
     ).toBe('12345')
-  })
-
-  it('builds the follow-up reply from a status URL', () => {
-    expect(citatFollowUpText('  https://x.com/jack/status/20  ')).toBe(
-      'Inspirerat av: https://x.com/jack/status/20',
-    )
-    expect(citatFollowUpText('https://x.com/Kycklingbladet')).toBeNull()
+    expect(parseTweetStatusId('https://x.com/i/status/12345')).toBe('12345')
+    expect(parseTweetStatusId('https://x.com/i/web/status/12345')).toBe('12345')
+    expect(parseTweetStatusId('https://x.com/someone/status/12345/photo/1')).toBe('12345')
   })
 
   it('rejects junk', () => {
     expect(parseTweetStatusId('https://x.com/Kycklingbladet')).toBeNull()
     expect(parseTweetStatusId('not a url')).toBeNull()
     expect(parseTweetStatusId('https://www.kycklingbladet.com/status/1')).toBeNull()
+  })
+})
+
+describe('parseTweetUsername / citatParentText', () => {
+  it('keeps the handle from the status URL', () => {
+    expect(
+      parseTweetUsername(
+        'https://x.com/SDTobbe/status/2097999724544454657?s=20',
+      ),
+    ).toBe('SDTobbe')
+    expect(parseTweetUsername('https://x.com/i/web/status/12345')).toBeNull()
+    expect(parseTweetUsername('https://x.com/i/status/12345')).toBeNull()
+  })
+
+  it('appends Inspirerad av to the hen tweet', () => {
+    expect(
+      citatParentText(
+        '  Kackel i luckan.  ',
+        'https://x.com/SDTobbe/status/2097999724544454657?s=20',
+      ),
+    ).toBe('"Kackel i luckan."\n\nInspirerad av @SDTobbe')
+    expect(
+      citatParentText(
+        '"Kackel i luckan."',
+        'https://x.com/SDTobbe/status/2097999724544454657?s=20',
+      ),
+    ).toBe('"Kackel i luckan."\n\nInspirerad av @SDTobbe')
+  })
+})
+
+describe('citatFollowUpText', () => {
+  it('posts Källa and the URL', () => {
+    expect(citatFollowUpText('  https://x.com/jack/status/20  ')).toBe(
+      'Källa:\nhttps://x.com/jack/status/20',
+    )
+    expect(citatFollowUpText('https://x.com/Kycklingbladet')).toBeNull()
+  })
+
+  it('puts extra mentions first, then Källa and the URL', () => {
+    expect(
+      citatFollowUpText('https://x.com/SDTobbe/status/2097999724544454657?s=20', [
+        '@svtnyheter',
+      ]),
+    ).toBe(
+      '@svtnyheter\nKälla:\nhttps://x.com/SDTobbe/status/2097999724544454657?s=20',
+    )
   })
 })

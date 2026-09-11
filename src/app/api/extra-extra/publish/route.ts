@@ -4,6 +4,7 @@ import {extraExtraId, nextExtraExtraSlot} from '@/lib/extra-extra/id'
 import {parseExtraPreview, parseExtraPreviewImage} from '@/lib/extra-extra/payload'
 import {extraCreateDocument, type ExtraPublishAsset} from '@/lib/extra-extra/publish-doc'
 import {sharePublishedExtra} from '@/lib/facebook/published'
+import {xHashtagLine} from '@/lib/x/hashtags'
 import {getWriteClient} from '@/lib/sanity/write-client'
 import {stockholmToday} from '@/lib/select/stockholm-date'
 
@@ -69,6 +70,7 @@ export async function POST(request: Request) {
       body: preview.body,
       imageCaption: preview.imageCaption,
       imageUrl,
+      xHashtags: xHashtagLine(preview.xHashtags),
     })
 
     return json({ok: true})

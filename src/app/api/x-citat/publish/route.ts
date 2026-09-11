@@ -1,8 +1,8 @@
 import {NextResponse} from 'next/server'
 import {corsHeaders, extraExtraSecretOk} from '@/lib/extra-extra/auth'
 import {parseExtraPreviewImage} from '@/lib/extra-extra/payload'
-import {appendMentions, normalizeMentions} from '@/lib/x/citat/mentions'
-import {citatFollowUpText} from '@/lib/x/citat/url'
+import {normalizeMentions} from '@/lib/x/citat/mentions'
+import {citatFollowUpText, citatParentText, parseTweetUsername} from '@/lib/x/citat/url'
 import {shareToXDetailed} from '@/lib/x/share'
 
 export const maxDuration = 60
@@ -50,7 +50,14 @@ export async function POST(request: Request) {
     }
 
     const sourceUrl = typeof value.sourceUrl === 'string' ? value.sourceUrl.trim() : ''
-    const followUp = sourceUrl ? citatFollowUpText(sourceUrl) : null
+    const sourceUsername =
+      parseTweetUsername(sourceUrl) ??
+      (typeof value.sourceUsername === 'string' ? value.sourceUsername : undefined)
+    const extraMentions = normalizeMentions(
+      typeof payload.mentions === 'string' ? payload.mentions : '',
+      sourceUsername,
+    )
+    const followUp = sourceUrl ? citatFollowUpText(sourceUrl, extraMentions) : null
     if (sourceUrl && !followUp) {
       throw new Error('Ogiltig tweet-URL')
     }
@@ -60,13 +67,7 @@ export async function POST(request: Request) {
       throw new Error('Saknar bild')
     }
 
-    const sourceUsername =
-      typeof value.sourceUsername === 'string' ? value.sourceUsername : undefined
-    const mentions = typeof payload.mentions === 'string' ? payload.mentions : ''
-    const text = appendMentions(
-      value.text,
-      normalizeMentions(mentions, sourceUsername),
-    )
+    const text = citatParentText(value.text, sourceUrl)
     const parent = await shareToXDetailed({
       text,
       imageBase64: image.base64,
