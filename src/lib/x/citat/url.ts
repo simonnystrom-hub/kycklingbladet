@@ -1,4 +1,5 @@
 import {wrapStraightQuotes} from '@/lib/generate/quotes'
+import {xHashtagLine} from '@/lib/x/hashtags'
 import type {XCopyLanguage} from '@/lib/x/language'
 
 export function parseTweetStatusId(url: string): string | null {
@@ -26,10 +27,11 @@ export function citatParentText(
   text: string,
   sourceUrl: string,
   language: XCopyLanguage = 'sv',
+  hashtags?: unknown,
 ): string {
   const body = wrapStraightQuotes(text)
   const inspired = citatInspiredByLine(sourceUrl, language)
-  return [body, inspired].filter(Boolean).join('\n\n')
+  return [body, inspired, xHashtagLine(hashtags)].filter(Boolean).join('\n\n')
 }
 
 export function citatFollowUpText(

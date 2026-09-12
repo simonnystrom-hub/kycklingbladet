@@ -1,9 +1,11 @@
 import {validateExtraImageBrief, type ExtraImageBrief} from '@/lib/generate/extra-image'
 import {normalizeQuotes, wrapStraightQuotes} from '@/lib/generate/quotes'
+import {parseHashtagSuggestions} from '@/lib/x/hashtags'
 
 export type GeneratedCitat = {
   text: string
   imageBrief: ExtraImageBrief | null
+  hashtags: string[]
 }
 
 export function validateGeneratedCitat(input: unknown): GeneratedCitat | null {
@@ -11,7 +13,11 @@ export function validateGeneratedCitat(input: unknown): GeneratedCitat | null {
   const record = input as Record<string, unknown>
   const text = typeof record.text === 'string' ? wrapStraightQuotes(record.text) : ''
   if (!text) return null
-  return {text, imageBrief: validateExtraImageBrief(record)}
+  return {
+    text,
+    imageBrief: validateExtraImageBrief(record),
+    hashtags: parseHashtagSuggestions(record.hashtags),
+  }
 }
 
 export function validateCitatSpeechBubble(input: unknown): string | null {

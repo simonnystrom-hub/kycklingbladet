@@ -2,7 +2,7 @@ import {parseExtraKnob, EXTRA_KNOB_DEFAULT} from '@/lib/generate/extra-prompt'
 import {HEN_HUMOR, henLexiconForLanguage, henNamesForLanguage} from '@/lib/generate/hen-lexicon'
 import type {XCopyLanguage} from '@/lib/x/language'
 
-export const CITAT_PROMPT_VERSION = 'kb-x-citat-v3'
+export const CITAT_PROMPT_VERSION = 'kb-x-citat-v4'
 
 const DUMHET_HINTS: Record<number, string> = {
   1: 'Nästan bokstavlig hönsöversättning. Liten skevhet. Håll dig nära originalets händelse.',
@@ -48,8 +48,9 @@ Regler:
 - Vrid originalinlägget till Kycklingbladets hönsvärld, men behåll en igenkännbar kärna.
 - Skriv bara en text, inte en artikel med rubrik och brödtext.
 - Sätt hela citat-tweeten inom raka citattecken " så här ". Inte « ». Inte typografiska citattecken.
-- Ingen särskild löpsedelsstämpel, artikel-URL, uppmaning om länk i kommentar, hashtag eller emoji.
+- Ingen särskild löpsedelsstämpel, artikel-URL, uppmaning om länk i kommentar, hashtag eller emoji i själva citat-tweeten.
 - Hitta inte på fler @omnämnanden.
+- hashtags i JSON: 1–3 extra X-taggar för den verkliga nyheten (nato, migpol, klimat). Inte hönsord. Inte svpol. Bara a–z och siffror, inga åäö (skriv forsvar inte försvar). Utan #-tecken.
 - Följ användarens Dumhet- och Uppskruvning-skalor (1–5) om de anges.
 - Föreslå ett bildmanus som passar en hönstidningsillustration.
 ${captionRule}
@@ -61,7 +62,8 @@ Svara med ENDAST ett JSON-objekt:
   "text": "string",
   "imageShotType": "intervju" | "incident" | "annat",
   ${captionJson},
-  "imagePrompt": "string — English scene for the cartoon, no signs or speech in the picture"
+  "imagePrompt": "string — English scene for the cartoon, no signs or speech in the picture",
+  "hashtags": ["nato", "forsvar"]
 }`
 }
 

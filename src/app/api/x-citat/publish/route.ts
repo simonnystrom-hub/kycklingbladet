@@ -72,7 +72,8 @@ export async function POST(request: Request) {
       throw new Error('Saknar bild')
     }
 
-    const text = citatParentText(value.text, sourceUrl, language)
+    const hashtags = typeof payload.xHashtags === 'string' ? payload.xHashtags : value.xHashtags
+    const text = citatParentText(value.text, sourceUrl, language, hashtags)
     const parent = await shareToXDetailed({
       text,
       imageBase64: image.base64,

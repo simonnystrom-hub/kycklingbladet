@@ -4,6 +4,7 @@ import {fetchSourceTweet, reusedSourceTweet} from '@/lib/x/citat/fetch-tweet'
 import {generateCitat} from '@/lib/x/citat/generate'
 import {citatKnobsFromPayload} from '@/lib/x/citat/prompt'
 import {parseTweetStatusId} from '@/lib/x/citat/url'
+import {xHashtagLine} from '@/lib/x/hashtags'
 import {resolveXCopyLanguage} from '@/lib/x/language'
 
 export const maxDuration = 60
@@ -93,6 +94,7 @@ export async function POST(request: Request) {
         imageShotType: result.generated.imageBrief?.shotType ?? '',
         imageCaption: result.generated.imageBrief?.caption ?? '',
         imagePrompt: result.generated.imageBrief?.scenePrompt ?? '',
+        xHashtags: xHashtagLine(result.generated.hashtags),
       },
     })
   } catch (error) {

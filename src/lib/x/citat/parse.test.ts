@@ -11,6 +11,16 @@ describe('validateGeneratedCitat', () => {
     })
     expect(got?.text).toBe('"Räven utanför luckan igen."')
     expect(got?.imageBrief?.shotType).toBe('incident')
+    expect(got?.hashtags).toEqual([])
+  })
+
+  it('normalizes extra hashtags and drops svpol', () => {
+    expect(
+      validateGeneratedCitat({
+        text: 'Räven utanför luckan igen.',
+        hashtags: ['#Försvar', 'svpol', 'nato'],
+      })?.hashtags,
+    ).toEqual(['forsvar', 'nato'])
   })
 
   it('does not double-wrap existing quotes', () => {

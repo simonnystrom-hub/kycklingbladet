@@ -43,20 +43,28 @@ describe('parseTweetUsername / citatParentText', () => {
         '  Kackel i luckan.  ',
         'https://x.com/SDTobbe/status/2097999724544454657?s=20',
       ),
-    ).toBe('"Kackel i luckan."\n\nInspirerad av @SDTobbe')
+    ).toBe('"Kackel i luckan."\n\nInspirerad av @SDTobbe\n\n#svpol')
     expect(
       citatParentText(
         '"Kackel i luckan."',
         'https://x.com/SDTobbe/status/2097999724544454657?s=20',
       ),
-    ).toBe('"Kackel i luckan."\n\nInspirerad av @SDTobbe')
+    ).toBe('"Kackel i luckan."\n\nInspirerad av @SDTobbe\n\n#svpol')
     expect(
       citatParentText(
         'Cluck in the hatch.',
         'https://x.com/SDTobbe/status/2097999724544454657?s=20',
         'en',
       ),
-    ).toBe('"Cluck in the hatch."\n\nInspired by @SDTobbe')
+    ).toBe('"Cluck in the hatch."\n\nInspired by @SDTobbe\n\n#svpol')
+    expect(
+      citatParentText(
+        'Kackel i luckan.',
+        'https://x.com/SDTobbe/status/2097999724544454657?s=20',
+        'sv',
+        ['nato', 'Försvar'],
+      ),
+    ).toBe('"Kackel i luckan."\n\nInspirerad av @SDTobbe\n\n#svpol #nato #forsvar')
   })
 })
 

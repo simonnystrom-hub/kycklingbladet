@@ -60,12 +60,13 @@ describe('generateCitat', () => {
           caption: 'Tuppen Gösta vid foderautomaten.',
           scenePrompt: 'A rooster beside an empty chicken feeder.',
         },
+        hashtags: [],
       },
       modelVersion: 'test-model',
       promptVersion: CITAT_PROMPT_VERSION,
     })
 
-    expect(CITAT_PROMPT_VERSION).toBe('kb-x-citat-v3')
+    expect(CITAT_PROMPT_VERSION).toBe('kb-x-citat-v4')
     expect(createMessage).toHaveBeenCalledWith({
       model: 'test-model',
       max_tokens: 1200,

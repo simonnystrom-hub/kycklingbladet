@@ -52,7 +52,7 @@ describe('X citat publish API', () => {
     expect(response.status).toBe(200)
     expect(await response.json()).toEqual({ok: true})
     expect(shareToXDetailed).toHaveBeenNthCalledWith(1, {
-      text: '"Hönan kommenterar dagens nyhet."\n\nInspirerad av @ekojonny',
+      text: '"Hönan kommenterar dagens nyhet."\n\nInspirerad av @ekojonny\n\n#svpol',
       imageBase64: 'aaa',
     })
     expect(shareToXDetailed).toHaveBeenNthCalledWith(2, {
@@ -74,12 +74,27 @@ describe('X citat publish API', () => {
 
     expect(response.status).toBe(200)
     expect(shareToXDetailed).toHaveBeenNthCalledWith(1, {
-      text: '"Hönan kommenterar dagens nyhet."\n\nInspired by @ekojonny',
+      text: '"Hönan kommenterar dagens nyhet."\n\nInspired by @ekojonny\n\n#svpol',
       imageBase64: 'aaa',
     })
     expect(shareToXDetailed).toHaveBeenNthCalledWith(2, {
       text: '@expressen @svtnyheter\nSource:\nhttps://x.com/ekojonny/status/1234567890',
       inReplyToTweetId: 'parent-1',
+    })
+  })
+
+  it('appends edited extra tags after svpol on the hen tweet', async () => {
+    const response = await POST(
+      request({
+        ...validPayload,
+        preview: {...validPayload.preview, xHashtags: '#svpol #Försvar #nato'},
+      }),
+    )
+
+    expect(response.status).toBe(200)
+    expect(shareToXDetailed).toHaveBeenNthCalledWith(1, {
+      text: '"Hönan kommenterar dagens nyhet."\n\nInspirerad av @ekojonny\n\n#svpol #forsvar #nato',
+      imageBase64: 'aaa',
     })
   })
 
@@ -110,7 +125,7 @@ describe('X citat publish API', () => {
     expect(response.status).toBe(200)
     expect(shareToXDetailed).toHaveBeenCalledOnce()
     expect(shareToXDetailed).toHaveBeenCalledWith({
-      text: '"Hönan kommenterar dagens nyhet."',
+      text: '"Hönan kommenterar dagens nyhet."\n\n#svpol',
       imageBase64: 'aaa',
     })
   })

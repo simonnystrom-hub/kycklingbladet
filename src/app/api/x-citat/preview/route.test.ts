@@ -79,6 +79,7 @@ describe('X citat preview API', () => {
         imageShotType: 'incident',
         imageCaption: 'Hönor samlas utanför redaktionen.',
         imagePrompt: 'Chickens gathered outside a newsroom.',
+        xHashtags: '#svpol',
       },
     })
   })
@@ -251,6 +252,19 @@ describe('X citat preview API', () => {
       language: 'sv',
     })
     expect((await response.json()).preview).toMatchObject({language: 'sv'})
+  })
+
+  it('returns suggested X hashtags with svpol first', async () => {
+    vi.mocked(generateCitat).mockResolvedValue({
+      ...generated,
+      generated: {...generated.generated, hashtags: ['nato', 'forsvar']},
+    })
+
+    const response = await POST(request({text: 'x'}))
+
+    expect((await response.json()).preview).toMatchObject({
+      xHashtags: '#svpol #nato #forsvar',
+    })
   })
 
   it('answers CORS preflight requests', async () => {

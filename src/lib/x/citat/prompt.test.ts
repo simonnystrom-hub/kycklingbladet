@@ -49,6 +49,8 @@ describe('CITAT_WRITE_SYSTEM', () => {
     expect(CITAT_WRITE_SYSTEM).toContain('raka citattecken')
     expect(CITAT_WRITE_SYSTEM).toContain(HEN_LEXICON)
     expect(CITAT_WRITE_SYSTEM).toContain('Skriv citat-tweeten på svenska')
+    expect(CITAT_WRITE_SYSTEM).toContain('hashtags')
+    expect(CITAT_WRITE_SYSTEM).toContain('forsvar')
   })
 
   it('switches to English hen copy when language is en', () => {
