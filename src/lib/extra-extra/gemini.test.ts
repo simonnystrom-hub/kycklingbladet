@@ -110,4 +110,18 @@ describe('generateExtraJpeg', () => {
     await expect(done).resolves.toBe('jpeg')
     expect(create).toHaveBeenCalledTimes(2)
   })
+
+  it('sends a reference photo as image input', async () => {
+    create.mockResolvedValue({output_image: {data: Buffer.from('jpeg').toString('base64')}})
+    const {generateExtraJpeg} = await import('./gemini')
+    await generateExtraJpeg('a hen at the hatch', {mimeType: 'image/jpeg', base64: 'abc'})
+    expect(create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        input: [
+          {type: 'image', mime_type: 'image/jpeg', data: 'abc'},
+          {type: 'text', text: 'a hen at the hatch'},
+        ],
+      }),
+    )
+  })
 })

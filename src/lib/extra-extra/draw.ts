@@ -6,14 +6,25 @@ export type ExtraDrawResult = {image: ExtraPreviewImage | null; imageError: stri
 
 export async function drawExtraImage(
   brief: ExtraImageBrief | null,
-  options?: {speechBubble?: string},
+  options?: {
+    speechBubble?: string
+    sourceImage?: {mimeType: string; base64: string}
+    balloonLanguage?: 'sv' | 'en'
+  },
 ): Promise<ExtraDrawResult> {
   if (!brief) {
     return {image: null, imageError: null}
   }
 
   try {
-    const buffer = await generateExtraJpeg(buildGeminiImagePrompt(brief, options))
+    const buffer = await generateExtraJpeg(
+      buildGeminiImagePrompt(brief, {
+        speechBubble: options?.speechBubble,
+        fromReference: Boolean(options?.sourceImage),
+        balloonLanguage: options?.balloonLanguage,
+      }),
+      options?.sourceImage,
+    )
     return {
       image: {mimeType: 'image/jpeg', base64: buffer.toString('base64')},
       imageError: null,

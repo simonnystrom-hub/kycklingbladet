@@ -39,6 +39,15 @@ describe('drawExtraImage', () => {
     expect(generateExtraJpeg).toHaveBeenCalledOnce()
   })
 
+  it('passes a reference photo through to Gemini', async () => {
+    const jpegBytes = Buffer.from('jpeg-data')
+    generateExtraJpeg.mockResolvedValue(jpegBytes)
+    const {drawExtraImage} = await import('./draw')
+    const sourceImage = {mimeType: 'image/jpeg', base64: 'abc'}
+    await drawExtraImage(brief, {sourceImage})
+    expect(generateExtraJpeg).toHaveBeenCalledWith(expect.stringMatching(/attached photograph/i), sourceImage)
+  })
+
   it('returns imageError on failure without throwing', async () => {
     generateExtraJpeg.mockRejectedValue(new Error('Kunde inte rita bilden'))
     const {drawExtraImage} = await import('./draw')

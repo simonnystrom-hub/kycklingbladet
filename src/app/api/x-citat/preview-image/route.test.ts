@@ -48,11 +48,14 @@ describe('X citat preview-image API', () => {
     const response = await POST(request({preview: imagePreview}))
 
     expect(response.status).toBe(200)
-    expect(drawExtraImage).toHaveBeenCalledWith({
-      shotType: 'incident',
-      caption: 'Hönan.',
-      scenePrompt: 'A hen.',
-    })
+    expect(drawExtraImage).toHaveBeenCalledWith(
+      {
+        shotType: 'incident',
+        caption: 'Hönan.',
+        scenePrompt: 'A hen.',
+      },
+      {balloonLanguage: 'sv'},
+    )
     expect(generateCitatSpeechBubble).not.toHaveBeenCalled()
     expect(await response.json()).toEqual({
       preview: imagePreview,
@@ -112,7 +115,7 @@ describe('X citat preview-image API', () => {
         caption: 'Hönan.',
         scenePrompt: 'A hen.',
       },
-      {speechBubble: 'Kackel i redet!'},
+      {speechBubble: 'Kackel i redet!', balloonLanguage: 'sv'},
     )
     expect(await response.json()).toEqual({
       preview: imagePreview,
@@ -136,6 +139,63 @@ describe('X citat preview-image API', () => {
     expect(response.status).toBe(200)
     expect(generateCitatSpeechBubble).toHaveBeenCalledWith({text: 'Kackel', language: 'en'})
     expect((await response.json()).speechBubble).toBe('Cluck in the nest!')
+  })
+
+  it('uses a typed balloon instead of asking Claude', async () => {
+    vi.mocked(drawExtraImage).mockResolvedValue({
+      image: {mimeType: 'image/jpeg', base64: 'abc'},
+      imageError: null,
+    })
+
+    const response = await POST(
+      request({
+        preview: imagePreview,
+        speechBubble: true,
+        speechBubbleText: '  Kackel själv!  ',
+      }),
+    )
+
+    expect(response.status).toBe(200)
+    expect(generateCitatSpeechBubble).not.toHaveBeenCalled()
+    expect(drawExtraImage).toHaveBeenCalledWith(
+      {
+        shotType: 'incident',
+        caption: 'Hönan.',
+        scenePrompt: 'A hen.',
+      },
+      {speechBubble: 'Kackel själv!', balloonLanguage: 'sv'},
+    )
+    expect((await response.json()).speechBubble).toBe('Kackel själv!')
+  })
+
+  it('passes a source photo through to drawing', async () => {
+    vi.mocked(drawExtraImage).mockResolvedValue({
+      image: {mimeType: 'image/jpeg', base64: 'abc'},
+      imageError: null,
+    })
+    const sourceImage = {mimeType: 'image/jpeg', base64: 'a'.repeat(24)}
+
+    const response = await POST(request({preview: imagePreview, sourceImage}))
+
+    expect(response.status).toBe(200)
+    expect(drawExtraImage).toHaveBeenCalledWith(
+      {
+        shotType: 'incident',
+        caption: 'Hönan.',
+        scenePrompt: 'A hen.',
+      },
+      {sourceImage, balloonLanguage: 'sv'},
+    )
+  })
+
+  it('rejects an invalid source photo', async () => {
+    const response = await POST(
+      request({preview: imagePreview, sourceImage: {mimeType: 'image/gif', base64: 'abc'}}),
+    )
+
+    expect(response.status).toBe(400)
+    expect(await response.json()).toEqual({error: 'Ogiltig förlaga'})
+    expect(drawExtraImage).not.toHaveBeenCalled()
   })
 
   it('exports duration and CORS preflight handlers', () => {

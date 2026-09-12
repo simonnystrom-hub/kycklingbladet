@@ -3,6 +3,7 @@ import {corsHeaders, extraExtraSecretOk} from '@/lib/extra-extra/auth'
 import {drawExtraImage} from '@/lib/extra-extra/draw'
 import {validateExtraImageBrief} from '@/lib/generate/extra-image'
 import {generateCitatSpeechBubble} from '@/lib/x/citat/generate'
+import {parseCitatSourceImage, parseManualSpeechBubble} from '@/lib/x/citat/source-image'
 import {resolveXCopyLanguage} from '@/lib/x/language'
 
 export const maxDuration = 60
@@ -37,15 +38,23 @@ export async function POST(request: Request) {
       return json({preview, image: null, imageError: 'Saknar bildunderlag', speechBubble: null})
     }
 
-    const wantBubble = payload.speechBubble === true
-    let speechBubble: string | null = null
-    if (wantBubble) {
-      const previewRecord = preview as Record<string, unknown>
-      const henText = typeof previewRecord.text === 'string' ? previewRecord.text : ''
-      const language = resolveXCopyLanguage({
-        text: henText,
-        language: payload.language ?? previewRecord.language,
-      })
+    const sourceImage =
+      payload.sourceImage === undefined ? null : parseCitatSourceImage(payload.sourceImage)
+    if (payload.sourceImage !== undefined && !sourceImage) {
+      throw new Error('Ogiltig förlaga')
+    }
+
+    const previewRecord = preview as Record<string, unknown>
+    const henText = typeof previewRecord.text === 'string' ? previewRecord.text : ''
+    const language = resolveXCopyLanguage({
+      text: henText,
+      language: payload.language ?? previewRecord.language,
+    })
+    const typedBubble = parseManualSpeechBubble(payload.speechBubbleText)
+    const wantBubble = payload.speechBubble === true || Boolean(typedBubble)
+
+    let speechBubble: string | null = typedBubble
+    if (wantBubble && !speechBubble) {
       try {
         speechBubble = await generateCitatSpeechBubble({text: henText, language})
       } catch (error) {
@@ -58,9 +67,11 @@ export async function POST(request: Request) {
       }
     }
 
-    const draw = speechBubble
-      ? await drawExtraImage(brief, {speechBubble})
-      : await drawExtraImage(brief)
+    const draw = await drawExtraImage(brief, {
+      ...(speechBubble ? {speechBubble} : {}),
+      ...(sourceImage ? {sourceImage} : {}),
+      balloonLanguage: language,
+    })
     return json({preview, ...draw, speechBubble})
   } catch (error) {
     return json({error: error instanceof Error ? error.message : 'Ogiltig förfrågan'}, 400)

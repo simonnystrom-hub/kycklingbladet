@@ -36,14 +36,21 @@ Aspect 3:4 portrait. One clear scene.`
 
 export function buildGeminiImagePrompt(
   brief: ExtraImageBrief,
-  options?: {speechBubble?: string},
+  options?: {speechBubble?: string; fromReference?: boolean; balloonLanguage?: 'sv' | 'en'},
 ): string {
   const balloon = options?.speechBubble?.trim()
+  const reference = options?.fromReference
+    ? `
+
+REFERENCE PHOTO (required): redraw the attached photograph as this cartoon. Keep composition, camera angle, pose and setting recognizable. Replace every human with a hen or rooster. Do not copy photoreal detail. Apply the STYLE above.`
+    : ''
+  const handwriting = options?.balloonLanguage === 'en' ? 'English' : 'Swedish'
+
   if (!balloon) {
     return `${EXTRA_IMAGE_STYLE}
 
 SHOT TYPE: ${brief.shotType}
-SCENE: ${brief.scenePrompt}
+SCENE: ${brief.scenePrompt}${reference}
 
 HARD RULE: the finished drawing contains zero readable language except the exact signature "${EXTRA_IMAGE_SIGNATURE}" in a bottom corner. Do not write headlines, quotes, captions, or any other words on signs, fences, papers, or speech balloons.`
   }
@@ -51,9 +58,9 @@ HARD RULE: the finished drawing contains zero readable language except the exact
   return `${EXTRA_IMAGE_STYLE}
 
 SHOT TYPE: ${brief.shotType}
-SCENE: ${brief.scenePrompt}
+SCENE: ${brief.scenePrompt}${reference}
 
-SPEECH BUBBLE (required): ignore the STYLE sentence that forbids speech bubbles. Draw exactly one classic comic speech balloon from one hen or rooster in the scene. Letter it in clear Swedish handwriting. The balloon text must be exactly this, character for character:
+SPEECH BUBBLE (required): ignore the STYLE sentence that forbids speech bubbles. Draw exactly one classic comic speech balloon from one hen or rooster in the scene. Letter it in clear ${handwriting} handwriting. The balloon text must be exactly this, character for character:
 "${balloon.replace(/"/g, "'")}"
 No other balloons, signs, headlines, captions, or readable words.
 

@@ -80,6 +80,33 @@ describe('buildGeminiImagePrompt', () => {
     )
     expect(prompt).toContain('Kackel i redet!')
     expect(prompt).toMatch(/speech balloon/i)
+    expect(prompt).toMatch(/Swedish handwriting/)
     expect(prompt).not.toMatch(/zero readable language except the exact signature/)
+  })
+
+  it('redraws an attached photograph when fromReference is set', () => {
+    const prompt = buildGeminiImagePrompt(
+      {
+        shotType: 'incident',
+        caption: 'Hönan Bodil i hönshuset.',
+        scenePrompt: 'A hen interviewed beside a grain bin.',
+      },
+      {fromReference: true},
+    )
+    expect(prompt).toMatch(/attached photograph/i)
+    expect(prompt).toMatch(/Replace every human/i)
+  })
+
+  it('letters an English balloon when language is en', () => {
+    const prompt = buildGeminiImagePrompt(
+      {
+        shotType: 'incident',
+        caption: 'Hönan Bodil i hönshuset.',
+        scenePrompt: 'A hen interviewed beside a grain bin.',
+      },
+      {speechBubble: 'Cluck in the nest!', balloonLanguage: 'en'},
+    )
+    expect(prompt).toMatch(/English handwriting/)
+    expect(prompt).toContain('Cluck in the nest!')
   })
 })

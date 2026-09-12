@@ -47,15 +47,24 @@ async function sleep(ms: number): Promise<void> {
   await new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-export async function generateExtraJpeg(prompt: string): Promise<Buffer> {
+export async function generateExtraJpeg(
+  prompt: string,
+  sourceImage?: {mimeType: string; base64: string},
+): Promise<Buffer> {
   const ai = getGeminiClient()
   const model = imageModel()
+  const input = sourceImage
+    ? [
+        {type: 'image' as const, mime_type: sourceImage.mimeType, data: sourceImage.base64},
+        {type: 'text' as const, text: prompt},
+      ]
+    : prompt
 
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
     try {
       const interaction = await ai.interactions.create({
         model,
-        input: prompt,
+        input,
         response_format: {
           type: 'image',
           mime_type: 'image/jpeg',
